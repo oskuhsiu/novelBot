@@ -1,0 +1,54 @@
+# Faction Registry - 社會權力資料庫
+# 採用「勢力等級」與「外交矩陣」設計
+
+factions:
+  - id: "FAC_001"
+    name: ""
+    
+    # 勢力等級
+    # S = Superpower / A = Major / B = Regional / C = Local / D = Minor
+    tier: ""
+    
+    # 類型
+    type: ""                 # Corporation / Government / Guild / Cult / etc.
+    
+    # 核心理念/教義
+    philosophy: ""
+    
+    # 簡介
+    description: ""
+    
+    # 資源與資產
+    assets: []
+    
+    # 控制領土（連結 world_atlas）
+    territory: []            # 區域或地點 ID
+    
+    # 成員（連結 character_db）
+    notable_members: []      # 角色 ID
+    
+    # 派系階層
+    hierarchy:
+      - rank: ""
+        title: ""
+        privileges: ""
+    
+    # 派系秘密
+    secrets: []
+
+# 外交關係矩陣
+relations:
+  - source_id: "FAC_001"
+    target_id: "FAC_002"
+    status: ""               # Allied / Neutral / Hostile / Tolerated / etc.
+    tension: 0               # 緊張度 0-100（越高越容易爆發衝突）
+    trade_agreement: false
+    history: ""              # 歷史恩怨
+    secret_dealings: ""      # 檯面下的交易
+
+# 當前事件/動態
+current_events:
+  - event_id: ""
+    affected_factions: []
+    description: ""
+    impact: ""               # 對緊張度或關係的影響

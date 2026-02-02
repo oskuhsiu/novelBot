@@ -1,0 +1,442 @@
+```yaml
+novel_types:
+  # Eastern / Web Novel Genres (CN/JP/KR inspired)
+  - 玄幻 (Xuanhuan - Eastern Fantasy)
+  - 奇幻 (Qihuan - Fantasy)
+  - 仙侠 (Xianxia - Immortal Hero)
+  - 武侠 (Wuxia - Martial Hero)
+  - 都市 (Urban)
+  - 歷史 (Historical)
+  - 軍事 (Military)
+  - 遊戲 (Game/GameLit)
+  - 體育 (Sports)
+  - 科幻 (Sci-Fi)
+  - 靈異 (Supernatural/Horror)
+  - 懸疑 (Mystery/Suspense)
+  - 言情 (Romance)
+  - 耽美 (BL/Danmei)
+  - 百合 (GL/Baihe)
+  - 二次元 (Anime/Manga Fanfic)
+  - 輕小說 (Light Novel)
+  - 無限流 (Infinite Flow)
+  - 系統流 (System)
+  - 穿越 (Transmigration)
+  - 重生 (Reincarnation/Rebirth)
+  - 末世 (Apocalypse)
+  - 賽博龐克 (Cyberpunk)
+  - 蒸汽龐克 (Steampunk)
+  - 克蘇魯 (Cthulhu/Lovecraftian)
+  - 西方奇幻 (Western Fantasy)
+  - 東方玄幻 (Eastern Fantasy)
+  - 高武世界 (High Martial Arts)
+  - 低武世界 (Low Martial Arts)
+  - 洪荒 (Prehistoric/Mythological)
+  - 修真 (Cultivation)
+  - 魔法 (Magic)
+  - 異界 (Otherworld/Isekai)
+  - 網遊 (Virtual Reality MMO)
+  - 電競 (Esports)
+  - 星際 (Interstellar)
+  - 機甲 (Mecha)
+  - 變身 (Gender Bender/Transformation)
+  - 後宮 (Harem)
+  - 逆後宮 (Reverse Harem)
+  - 諸天萬界 (Myriad Heavens)
+  - 簽到流 (Sign-in System)
+  - 聊天群 (Chat Group)
+  - 苟道 (Cautious/Low-key)
+  - 無敵流 (Invincible/Overpowered)
+  - 凡人流 (Mortal/Slow Cultivation)
+  - 廢柴流 (Good-for-nothing/Underdog)
+  - 退婚流 (Broken Engagement)
+  - 隨身流 (Portable Space/Item)
+  - 種田流 (Farming/Kingdom Building)
+  - 經營流 (Management/Business)
+  - 召喚流 (Summoner)
+  - 御獸流 (Beast Taming)
+  - 煉丹 (Alchemy)
+  - 練氣 (Qi Refining)
+  - 劍道 (Path of the Sword)
+  - 陣法 (Formations)
+  - 符籙 (Talismans)
+  - 傀儡 (Puppetry)
+  - 趕屍 (Corpse Driving/Necromancy)
+  - 吸血鬼 (Vampire)
+  - 狼人 (Werewolf)
+  - 喪屍 (Zombie)
+  - 異能 (Superpower/Esper)
+  - 基因 (Genetic/Evolution)
+  - 古武 (Ancient Martial Arts)
+  - 國術 (National Arts/Kung Fu)
+  - 分身 (Clone/Avatar)
+  - 團寵 (Group Favorite)
+  - 錦鯉 (Lucky/Koi)
+  - 娛樂圈 (Entertainment Circle)
+  - 校園 (School Life)
+  - 職場 (Workplace)
+  - 醫生 (Medical)
+  - 律師 (Legal)
+  - 偵探 (Detective)
+  - 特工 (Secret Agent/Spy)
+  - 殺手 (Assassin)
+  - 海盜 (Pirate)
+  - 荒島 (Desert Island)
+  - 求生 (Survival)
+  - 尋寶 (Treasure Hunting)
+  - 盜墓 (Tomb Raiding)
+  - 鑒寶 (Appraisal)
+  - 美食 (Gourmet/Cooking)
+  - 直播 (Livestreaming)
+  - 奶爸 (Super Dad)
+  - 贅婿 (Matrilocal Son-in-law)
+  - 龍王 (Dragon King/Hidden Boss)
+  - 戰神 (War God)
+  - 兵王 (Soldier King)
+  - 老師 (Teacher)
+  - 學生 (Student)
+  - 總裁 (CEO)
+  - 高干 (High Official)
+  - 權謀 (Political Intrigue)
+  - 宮鬭 (Harem Intrigue)
+  - 宅鬥 (House Intrigue)
+  - 復仇 (Revenge)
+  - 虐文 (Angst/Tragedy)
+  - 甜文 (Fluff/Sweet)
+  - 爽文 (Feel-good/Power Fantasy)
+  - 搞笑 (Comedy/Funny)
+  - 吐槽 (Roast/Parody)
+  - 腹黑 (Belly Black/Scheming)
+  - 高冷 (Cold/Aloof)
+  - 傲嬌 (Tsundere)
+  - 病嬌 (Yandere)
+  - 忠犬 (Loyal/Dog-like)
+  - 歡喜冤家 (Quarrelling Lovers)
+  - 青梅竹馬 (Childhood Friends)
+  - 先婚後愛 (Marriage First, Love Later)
+  - 契約婚姻 (Contract Marriage)
+  - 替身 (Stand-in)
+  - 穿書 (Transmigrated into a Book)
+  - 快穿 (Quick Transmigration)
+  - 慢穿 (Slow Transmigration)
+  - 反派 (Villain)
+  - 配角 (Side Character/Mob)
+  - 炮灰 (Cannon Fodder)
+  - 女強 (Strong Female Lead)
+  - 男強 (Strong Male Lead)
+  - 雙強 (Power Couple)
+  - 治癒 (Healing)
+  - 致鬱 (Depressing)
+  - 暗黑 (Dark)
+  - 驚悚 (Thriller)
+  - 恐怖 (Horror)
+  - 怪談 (Urban Legend)
+  - 民俗 (Folklore)
+  - 神話 (Mythology)
+  - 史詩 (Epic)
+  - 歌劇 (Space Opera)
+  - 迪化 (Misunderstanding/Overestimating)
+  - 腦洞 (High Concept/Unique Idea)
+  - 變異 (Mutation)
+  - 廢土 (Wasteland)
+  - 蒸汽 (Steam)
+  - 賽博 (Cyber)
+  - 魔法學院 (Magic Academy)
+  - 綜漫 (Anime Crossover)
+  - 同人 (Fanfiction)
+  - 萬族 (Ten Thousand Races)
+  - 神魔 (Gods and Demons)
+  - 蠻荒 (Wilderness)
+  # Japanese / Narou Specific (J-Novel)
+  - 轉生 (Reincarnation - Tensei)
+  - 轉移 (Transfer - Teni)
+  - 惡役千金 (Villainess/Otome Game)
+  - 慢生活 (Slow Life)
+  - 退隊流 (Kicked from the Party)
+  - 婚約破棄 (Broken Engagement - Specific JP trope)
+  - 乙女遊戲 (Otome Game Setting)
+  - 異世界居酒屋 (Isekai Izakaya/Restaurant)
+  - 地下城經營 (Dungeon Management)
+  - 藥師/煉金術師 (Apothecary/Alchemist - often cozy)
+  - 聖女 (Saintess)
+  - 魔王 (Demon King)
+  - 勇者 (Hero)
+  - 冒險者 (Adventurer)
+  - 公會 (Guild)
+  - 奴隸 (Slave - Common in specific subgenres)
+  - 獸人 (Beastkin)
+  - 精靈 (Elf)
+  - 矮人 (Dwarf)
+  - 哥布林 (Goblin)
+  - 史萊姆 (Slime)
+  - 龍 (Dragon)
+  - 傲天 (Ore TUEEE/Overpowered Protagonist)
+  - 催眠 (Hypnosis)
+  - TS (Transsexual/Gender Swap - Specific JP tag)
+  - 性轉 (Gender Bender - wider usage)
+  - 妹系 (Imouto/Sister Complex)
+  - 姐系 (Onee-san/Older Sister)
+  - 青梅 (Osananajimi/Childhood Friend)
+  - 老師 (Sensei/Teacher)
+  - 偶像 (Idol)
+  - V-Tuber (Virtual YouTuber)
+  - 異世界轉生 (Isekai Tensei)
+  - 異世界轉移 (Isekai Teni)
+  - 現代魔法 (Modern Magic)
+  - VRMMO (Virtual Reality MMO)
+  - 宇宙歌劇 (Space Opera)
+  - 空想科學 (Speculative Science)
+  - 日常 (Slice of Life)
+  - 治癒 (Iyashikei/Healing)
+  - 鬱 (Utsuge/Depressing Game/Story)
+  - 百合 (Yuri)
+  - 薔薇 (Bara/Men's Love)
+  - 輕文學 (Light Literature)
+  - 純文學 (Pure Literature)
+  - 官能 (Erotic/R-18)
+
+  # Western Specific / Niche Subgenres
+  - Solarpunk (太陽龐克 - Optimistic Eco-future)
+  - Hopepunk (希望龐克 - Optimism as resistance)
+  - Atompunk (原子龐克 - Retro-futuristic 1950s)
+  - Dieselpunk (柴油龐克 - Retro-futuristic 1920s-40s)
+  - Biopunk (生物龐克 - Biotech focus)
+  - Clockpunk (鐘錶龐克 - Renaissance/Baroque technology)
+  - Nanopunk (奈米龐克 - Nanotech focus)
+  - Grimdark (黑暗奇幻 - Dystopian/Amoral)
+  - Noblebright (光明奇幻 - Optimistic/Heroic opposing Grimdark)
+  - Weird West (怪異西部 - Western + Supernatural)
+  - Space Western (太空西部 - Sci-fi frontier)
+  - Urban Fantasy (都市奇幻 - Supernatural in modern city)
+  - Gaslamp Fantasy (瓦斯燈奇幻 - Victorian/Edwardian fantasy)
+  - Flintlock Fantasy (火槍奇幻 - Gunpowder era fantasy)
+  - Wuxia (武俠 - Chinese Martial Arts in Western context)
+  - Xanxia (仙俠 - Chinese Cultivation in Western context)
+  - Progression Fantasy (升級流奇幻 - Western take on Cultivation/LitRPG)
+  - LitRPG (文學RPG - RPG mechanics in story)
+  - GameLit (遊戲文學 - Story in a game world)
+  - Alt-History (架空歷史)
+  - Space Opera (太空歌劇)
+  - Hard Sci-Fi (硬科幻)
+  - Soft Sci-Fi (軟科幻)
+  - Cyber Noir (賽博黑色電影風格)
+  - Cozy Mystery (溫馨推理)
+  - Nordic Noir (北歐暗黑推理)
+  - Techno-Thriller (科技驚悚)
+  - Psychological Horror (心理恐怖)
+  - Lovecraftian Horror (洛夫克拉夫特式恐怖)
+  - Splatterpunk (潑濺龐克 - Extreme Horror)
+  - Bizarro Fiction (怪誕小說)
+  - New Weird (新怪譚)
+  - Slipstream (滑流 - Crossing genre boundaries)
+  - Magical Realism (魔幻寫實)
+  - Portal Fantasy (傳送門奇幻 - Classic Isekai like Narnia)
+  - Planetary Romance (行星傳奇)
+  - Sword and Sorcery (劍與魔法)
+  - Sword and Planet (劍與行星)
+  - Dying Earth (垂死地球)
+  - Post-Apocalyptic (後啟示錄)
+  - Climate Fiction (Cli-Fi - 氣候小說)
+  - Feminist Sci-Fi (女性主義科幻)
+  - Afrofuturism (非洲未來主義)
+
+novel_styles:
+  # Narrative Perspective (敘事視角)
+  - Perspective:
+    - 第一人稱 (First Person - "I")
+    - 第三人稱全知 (Third Person Omniscient - "He/She", knows all)
+    - 第三人稱限知 (Third Person Limited - "He/She", limited to MC)
+    - 第二人稱 (Second Person - "You", rare)
+    - 意識流 (Stream of Consciousness)
+    - 多視角切換 (POV Switching)
+    - 旁白敍事 (Narrator Driven)
+
+  # Tone & Atmosphere (基調與氛圍)
+  - Tone:
+    - 輕鬆/日常 (Lighthearted/Slice of Life)
+    - 嚴肅/正劇 (Serious/Dramatic)
+    - 黑暗/壓抑 (Dark/Oppressive/Grimdark)
+    - 搞笑/沙雕 (Comedic/Crack/Meme-heavy)
+    - 溫馨/治癒 (Cozy/Healing)
+    - 悲劇/虐心 (Tragic/Angst)
+    - 恐怖/驚悚 (Horror/Thriller)
+    - 熱血/燃 (Passionate/Hype/Shounen-style)
+    - 懸疑/燒腦 (Mystery/Intellectual)
+    - 浪漫/唯美 (Romantic/Aesthetic)
+    - 現實/諷刺 (Realistic/Satirical)
+    - 荒誕/怪異 (Absurdist/Bizarre)
+    - 史詩/宏大 (Epic/Grand)
+    - 這種感覺 (Vibes-based)
+
+  # Pacing & Structure (節奏與結構)
+  - Pacing:
+    - 快節奏/爽文 (Fast Paced/Instant Gratification)
+    - 慢熱/種田 (Slow Burn/Slow Life/Farming)
+    - 單元劇 (Episodic/Arc-based)
+    - 主線流 (Linear Plot Driven)
+    - 群像劇 (Ensemble Cast)
+    - 無限流 (Infinite Loop/Mission-based)
+    - 公路文 (Road Trip/Adventure focused)
+    - 學院流 (Academy/School Arc)
+    - 戰鬥流 (Battle/Action heavy)
+    - 日常流 (Dialogue/Interaction heavy)
+
+  # Character Focus (角色聚焦)
+  - Focus:
+    - 大男主/大女主 (Male/Female Lead Centric)
+    - 雙男主/雙女主 (Dual Leads)
+    - 群像 (Ensemble/Multiple Protagonists)
+    - 反派視角 (Villain POV)
+    - 配角逆襲 (Side Character Rise)
+    - 幕後流 (Behind the Scenes/Mastermind)
+    - 無敵流 (Overpowered MC)
+    - 成長流 (Growth/Progression)
+    - 智鬥流 (Mind Games/Smart MC)
+    - 苟道 (Cautious/Hidden Strength)
+
+  # Writing Style & Prose (文風與筆觸)
+  - Prose:
+    - 小白文 (Simple/Plain/Accessible)
+    - 文青風 (Literary/Flowery/Pretentious)
+    - 翻譯腔 (Translation Style - Westernized syntax in CN)
+    - 古風 (Classical/Archaic - typical in Wuxia/Xianxia)
+    - 輕小說風 (Light Novel Style - Dialogue heavy, distinctive tone)
+    - 吐槽風 (Roast/Meta-commentary style)
+    - 意識流 (Abstract/Psychological)
+    - 硬核 (Hardcore/Technical/Info-dump heavy)
+    - 細膩 (Detailed/Emotional)
+    - 粗獷 (Rough/Direct)
+    - 粗獷 (Rough/Direct)
+    - 華麗 (Ornate/Baroque)
+
+famous_authors_styles:
+  # Chinese Traditional / Wuxia / Literature
+  - 金庸 (Jin Yong):
+    - Style: Rich, semi-classical prose, masterful storytelling, deep cultural integration.
+    - Focus: Heroism, national identity, intricate plot structures, romanticism.
+  - 古龍 (Gu Long):
+    - Style: Concise, fragmented sentences (one line per paragraph), poetic, atmospheric.
+    - Focus: Psychological depth, existentialism, mystery, friendship and betrayal.
+  - 莫言 (Mo Yan):
+    - Style: Hallucinatory realism, passionate language, vivid/grotesque imagery.
+    - Focus: Rural life, history, myth, human nature's complexity.
+  - 余華 (Yu Hua):
+    - Style: Simple but profound, shifting from cold/cruel avant-garde to warm/humane realism.
+    - Focus: Suffering, resilience, irony, destiny of ordinary characters.
+  - 魯迅 (Lu Xun):
+    - Style: Sharp, satirical, incisive, often uses irony and metaphor.
+    - Focus: Social critique, national character, introspection.
+
+  # Japanese Literature
+  - 村上春樹 (Haruki Murakami):
+    - Style: Simple/smooth prose, surrealism blended with mundane life, western influence.
+    - Focus: Urban alienation, loneliness, magical realism, music, cats, mysterious women.
+  - 東野圭吾 (Keigo Higashino):
+    - Style: Precise, engineering-like logic, clear and organized, easy to read.
+    - Focus: Complex mysteries, social commentary, human nature's gray areas.
+  - 太宰治 (Osamu Dazai):
+    - Style: "I-Novel" (semi-autobiographical), raw honesty, self-deprecating humor.
+    - Focus: Alienation, existential dread, human disqualification, decadence.
+  - 川端康成 (Yasunari Kawabata):
+    - Style: Haiku-like prose, lyrical, impressionistic, beauty in sadness (Mono no aware).
+    - Focus: Nature, fleeting beauty, loneliness, traditional aesthetics.
+
+  # Western Classics / Genre Masters
+  - Ernest Hemingway:
+    - Style: Iceberg Theory (minimalism), short declarative sentences, brutal simplicity.
+    - Focus: Masculinity, war, nature, stoicism, "grace under pressure".
+  - Stephen King:
+    - Style: Conversational, "Constant Reader" engagement, realistic dialogue, slow-build suspense.
+    - Focus: Horror in the mundane, small-town dynamics, internal monologue, childhood trauma.
+  - J.R.R. Tolkien:
+    - Style: Archaic/mythic register, philological depth, lush descriptions, slow pacing.
+    - Focus: World-building, linguistic history, epic heroism, nature vs industry.
+  - Isaac Asimov:
+    - Style: Unadorned, functional, dialogue-driven exposition, "ideas-first".
+    - Focus: Logic, sociology, robotics, grand scale history (Psychohistory).
+  - George R.R. Martin:
+    - Style: POV-driven, gritty realism, immersive world-building, subverting tropes.
+    - Focus: Political intrigue, moral greyness, consequences of power.
+  - Agatha Christie:
+    - Style: Plot-driven, economical descriptions, red herrings, cozy yet sharp.
+    - Focus: The puzzle, psychology of crime, social manners.
+  # Expanded Western Fantasy
+  - Brandon Sanderson:
+    - Style: "Windowpane" prose (clear, invisible), hard magic systems, cinematic action.
+    - Focus: Magic rules, grand scope, mental health, optimistic heroism.
+  - Patrick Rothfuss:
+    - Style: Lyrical, poetic, meticulous word choice, "story within a story".
+    - Focus: The nature of stories, music, naming, tragedy.
+  - Ursula K. Le Guin:
+    - Style: Anthropological, precise, Taoist influence, quiet introversion.
+    - Focus: Social structures, gender, balance, subverting tropes.
+  - Terry Pratchett:
+    - Style: Satirical, footnotes, witty, philosophical humor, "anger" underneath.
+    - Focus: Social commentary, humanism, absurdity of life, boots theory.
+  - Neil Gaiman:
+    - Style: Dreamlike, fairy-tale mythic, dark whimsy, conversational.
+    - Focus: Myths in modern settings, gods, stories about stories.
+  - Robert Jordan:
+    - Style: Extremely descriptive (clothing/braids), expansive, slow pacing.
+    - Focus: Gender dynamics, prophecy, distinct cultures, epic scale.
+
+  # Expanded Sci-Fi
+  - Frank Herbert:
+    - Style: Dense, head-hopping (omniscient POV), ecological detail.
+    - Focus: Politics, religion, ecology, long-term human evolution.
+  - William Gibson:
+    - Style: Noir-like, dense technological slang, "high tech low life", sensory overload.
+    - Focus: Cybernetics, corporate power, street culture, AI.
+  - Philip K. Dick:
+    - Style: Paranoia-inducing, questioning reality, energetic but messy.
+    - Focus: What is human?, artificial reality, drugs, surveillance state.
+  - Ted Chiang:
+    - Style: Precise, philosophical, concept-driven, emotional logic.
+    - Focus: Linguistics, free will, nature of intelligence, ethical dilemmas.
+
+  # Prominent Web Novel Authors (CN/Western)
+  - 我吃西紅柿 (I Eat Tomatoes):
+    - Style: Grand scale, fast-paced leveling, simple but effective world-building.
+    - Focus: Cosmos-level progression, single love interest, brotherhood.
+  - 貓膩 (Mao Ni):
+    - Style: Literary flair, slower pacing, philosophical, focus on prose quality.
+    - Focus: Character growth, hypocrisy of society, emotional resonance.
+  - 唐家三少 (Tang Jia San Shao):
+    - Style: Accessible, steady updates, "positive energy", team-based combat.
+    - Focus: Friendship, hard work, standardized power systems.
+  - 辰東 (Chen Dong):
+    - Style: Epic scale, ancient mysteries, "digging pits" (mysteries), grand aesthetic.
+    - Focus: Ancient history, post-apocalyptic myth, desolate grandeur.
+  - 天蠶土豆 (Tian Can Tu Dou):
+    - Style: "Hot-blooded" (Shounen), rhythmic face-slapping, clear progression.
+    - Focus: Underdog rising, breaking off engagements, flame/alchemy themes.
+  - 蝴蝶藍 (Butterfly Blue):
+    - Style: Humorous, witty dialogue, ensemble cast focus, non-romantic.
+    - Focus: Esports, team dynamics, strategy, pure skill.
+  - Priest:
+    - Style: Elegant, sharp characterization, realistic human nature, "cold" humor.
+    - Focus: Social issues, complex relationships (Danmei), philosophical growth.
+  - 滾開 (Get Lost / Gun Kai):
+    - Style: Dark, horror elements, "Way of the Muscle" (physical power), weirdness.
+    - Focus: Survival in hostile worlds, upgrading body/bloodlines, ruthlessness.
+  - 江南 (Jiang Nan):
+    - Style: Melancholic, "second-year syndrome" (Chuunibyou) but emotional, cinematic.
+    - Focus: Youth, impossible love, dragons, lonely heroes.
+  - 二根 (Er Gen):
+    - Style: Humorous (especially early), shift to epic tragedy, Daoist philosophy.
+    - Focus: Cultivation of the mind/Dao, fate, karmic cycles.
+  - 憤怒的香蕉 (Angry Banana - My Son-in-Law):
+    - Style: Detailed historical research, psychological maneuvering, slow elaborate setup.
+    - Focus: Business warfare, logistics, shifting societal tides.
+  - 閨蜜之主 (Lord of the Mysteries - Cuttlefish):
+    - Style: World-building first, intricate power systems, SCP/Lovecraftian vibes.
+    - Focus: Mystery, role-playing (acting), horror/madness management.
+  - Pirateaba (The Wandering Inn):
+    - Style: Massive word counts, slice-of-life mixed with epic war, shifting POVs.
+    - Focus: Leveling system consequences, species psychology, organic world growth.
+  - Wildbow (Worm):
+    - Style: Gritty, creative power usage, relentless pacing (escalation).
+    - Focus: Moral ambiguity, trauma, rational creative combat.
+
+
+
+```

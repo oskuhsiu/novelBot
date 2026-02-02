@@ -1,0 +1,49 @@
+# World Atlas - 空間維度資料庫
+# 採用「樹狀嵌套結構」與「標籤索引」設計
+
+# 頂層區域/地圖
+regions:
+  - id: "REG_001"
+    name: ""
+    type: ""                 # Metropolis / Wilderness / Dungeon / etc.
+    description: ""
+    climate: ""
+    tags: []
+    
+    # 子地點/建築（嵌套結構）
+    locations:
+      - id: "LOC_101"
+        name: ""
+        type: ""             # Skyscraper / Village / Cave / etc.
+        description: ""
+        tags: []
+        
+        # 出入口設定
+        access_points:
+          - target: ""       # 目標地點 ID
+            type: ""         # Elevator / Door / Portal / etc.
+            requirement: ""  # 進入條件/權限
+            description: ""
+
+# 特殊區域（地城/密境）
+zones:
+  - id: "ZONE_001"
+    name: ""
+    parent_region: ""        # 所屬區域 ID
+    type: "Dungeon"          # Dungeon / Secret / Temporal / etc.
+    hazard_level: 0          # 危險等級 1-10
+    mechanics: ""            # 特殊機制說明
+    
+    # 興趣點/事件點
+    points_of_interest:
+      - name: ""
+        description: ""
+        event_trigger: ""    # 觸發條件
+
+# 全域傳送節點/路網
+transit_network:
+  - id: "TRANSIT_001"
+    type: ""                 # Maglev / Teleport / Airship / etc.
+    stops: []                # 連接的區域或地點 ID
+    schedule: ""             # 時刻表或限制
+    cost: ""                 # 使用代價

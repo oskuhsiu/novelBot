@@ -1,0 +1,87 @@
+# Item Compendium - 萬物圖鑑資料庫
+# 採用「組件化」架構，相容多種世界觀設定
+
+items:
+  # 交通/載具類
+  - id: "VEH_001"
+    name: ""
+    category: "Vehicle"
+    sub_type: ""             # Car / Spaceship / Mount / etc.
+    
+    description: ""
+    
+    # 運作邏輯
+    logic_module: ""         # Internal Combustion / Magic / Hybrid / etc.
+    
+    # 規格
+    specs:
+      capacity: ""           # 載客量
+      speed: ""              # 速度
+      range: ""              # 航程
+      special: ""            # 特殊功能
+    
+    # 使用條件
+    requirements: ""
+    
+    # 當前狀態（可追蹤損壞等）
+    condition: "良好"
+
+  # 武器/防具類
+  - id: "WEP_001"
+    name: ""
+    category: "Weapon"
+    sub_type: ""             # Sword / Gun / Staff / etc.
+    
+    rarity: ""               # Common / Uncommon / Rare / Epic / Legendary
+    
+    description: ""
+    
+    # 連結力量體系
+    logic_module: ""         # 連結 power_system 的 framework_id
+    
+    # 屬性
+    attributes:
+      damage_type: ""        # Physical / Magical / Hybrid
+      base_damage: ""
+      special_effect: ""
+    
+    # 耐久度
+    durability: "100%"
+
+  # 消耗品類
+  - id: "CONS_001"
+    name: ""
+    category: "Consumable"
+    sub_type: ""             # Potion / Food / Ammo / etc.
+    
+    description: ""
+    
+    effect: ""
+    duration: ""
+    side_effects: ""
+    
+    quantity: 1
+
+  # 特殊工具類
+  - id: "TOOL_001"
+    name: ""
+    category: "Special Tool"
+    sub_type: ""
+    
+    description: ""
+    
+    logic_module: ""
+    
+    # 使用限制
+    constraints: ""
+    
+    # 冷卻時間
+    cooldown: ""
+
+# 物品交易記錄（追蹤物品流向）
+transactions:
+  - item_id: ""
+    from_owner: ""           # 角色 ID 或 "WORLD"
+    to_owner: ""
+    chapter: 0
+    method: ""               # 購買 / 贈送 / 偷竊 / 掉落 / etc.

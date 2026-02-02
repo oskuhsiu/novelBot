@@ -1,0 +1,44 @@
+# Character Database - 角色資料庫
+# 採用「雙軌制」設計：base_profile（固定）與 current_state（動態）
+
+characters:
+  - id: "CHAR_001"
+    name: ""
+    role: "Protagonist"  # Protagonist / Antagonist / Supporting / Minor
+    
+    # [出場設定] - Skill 寫作時的「性格錨點」，不應隨意修改
+    base_profile:
+      identity: ""           # 身份描述
+      traits: []             # 性格關鍵字（3-5個形容詞）
+      appearance: ""         # 外觀特徵（包含視覺錨點）
+      core_desire: ""        # 核心慾望（他想要什麼？）
+      fear: ""               # 恐懼/弱點（他害怕什麼？）
+      speech_pattern: ""     # 說話方式/口頭禪
+      secret: ""             # 不為人知的秘密
+      skills:                # 技能樹
+        - name: ""
+          level: ""
+          description: ""
+    
+    # [動態狀態] - 隨劇情推進實時更新
+    current_state:
+      last_updated_chapter: 0
+      location: ""
+      health: "100%"
+      energy_level: "100%"
+      emotional_state: ""
+      inventory: []
+      active_goals: []
+      relationships: []      # 與其他角色的關係變化
+      
+    # 角色備註（供寫作參考）
+    notes: ""
+
+# 角色關係矩陣
+relationships:
+  - source_id: "CHAR_001"
+    target_id: "CHAR_002"
+    surface_relation: ""     # 表面關係
+    hidden_dynamic: ""       # 潛在衝突/真實關係
+    common_interest: ""      # 共同利益
+    tension: 0               # 緊張度 0-100

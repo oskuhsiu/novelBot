@@ -1,0 +1,72 @@
+# Novel Config - 專案核心設定檔
+# 所有 Skills 運作時必須先行讀取此設定檔
+
+meta:
+  project_id: "PROJECT_001"
+  project_name: "我的小說"
+  language: "zh-TW"
+  created_at: ""
+  
+engine_settings:
+  # 速度指針：決定一個章節要推進多少進度
+  # 1.0 = 一章完成一個細目
+  # 0.5 = 兩章完成一個細目
+  # 0.1 = 十章完成一個細目
+  pacing_pointer: 0.5
+  
+  # 每章字數範圍
+  words_per_chapter:
+    min: 3000
+    max: 5000
+    target: 4000
+  
+  # 劇情篇幅權重：決定各類內容的文字佔比
+  content_weights:
+    combat: 0.3           # 戰鬥描寫
+    dialogue: 0.25        # 對話
+    internal_monologue: 0.15  # 內心獨白
+    scenery_desc: 0.15    # 環境描寫
+    world_building: 0.10  # 世界觀補充
+    action: 0.05          # 動作描寫
+
+style_profile:
+  # 小說類型
+  genre: ""
+  
+  # 敘事視角
+  # 選項：第一人稱 / 第三人稱全知 / 第三人稱受限
+  perspective: "第三人稱受限"
+  
+  # 文字語氣/溫度
+  tone: ""
+  
+  # 參考作家風格（用於模仿筆風）
+  reference_authors: []
+  
+  # 獲獎獎項（用於提升 AI 寫作品質的暗示）
+  awards: []
+  
+  # 語言規則
+  linguistic_rules: []
+  
+  # 風格指南（詳細的寫作指引）
+  guide: []
+
+# 情感監控設定
+emotion_settings:
+  # 是否啟用情感監控
+  enabled: true
+  # 高壓閾值（0-100）
+  high_tension_threshold: 70
+  # 低壓閾值（0-100）
+  low_tension_threshold: 30
+  # 連續高壓章節上限
+  max_consecutive_high: 3
+  # 連續低壓章節上限
+  max_consecutive_low: 2
+  # 緩衝模式：suggest=建議, force=強制調整
+  buffer_mode: "suggest"
+
+world_rules:
+  # 世界觀的核心規則/物理法則
+  - ""

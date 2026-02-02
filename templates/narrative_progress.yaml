@@ -1,0 +1,28 @@
+# Narrative Progress - 劇情進度追蹤
+# 記錄當前寫作進度與大綱結構
+
+progress:
+  current_chapter: 1
+  current_beat_id: ""
+  total_chapters: 0
+  total_beats: 0
+  words_written: 0
+
+# 大綱與細目
+outline:
+  - chapter_id: 1
+    title: ""
+    summary: ""
+    beats:
+      - id: "B1_1"
+        summary: ""
+        weight_hint: null  # 局部權重覆蓋，如 "scenery_desc: 0.4"
+        status: "pending"  # pending / in_progress / completed
+    is_completed: false
+
+# 已完成的細目記錄
+completed_beats:
+  - beat_id: ""
+    chapter_id: 0
+    completed_at: ""
+    word_count: 0

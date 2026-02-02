@@ -1,0 +1,40 @@
+# Emotion Log - 情感波段記錄
+# 追蹤各章情感強度與張力曲線
+
+# 各章情感分析記錄
+chapters:
+  - chapter_id: 0
+    tension_score: 0
+    primary_emotion: ""
+    elements:
+      combat_density: 0.0
+      dialogue_tension: 0.0
+      internal_intensity: 0.0
+      fear_elements: 0.0
+      romance_elements: 0.0
+      suspense_elements: 0.0
+    analyzed_at: ""
+
+# 整體分析統計
+analysis:
+  average_tension: 0
+  max_tension: 0
+  min_tension: 0
+  standard_deviation: 0
+  high_tension_chapters: []
+  low_tension_chapters: []
+
+# 連續計數器
+consecutive_tracking:
+  current_high_streak: 0
+  current_low_streak: 0
+  max_high_streak: 0
+  max_low_streak: 0
+
+# 系統生成的緩衝建議
+buffer_suggestions:
+  - chapter_id: 0
+    suggestion_type: ""
+    description: ""
+    suggested_weights: {}
+    applied: false

@@ -1,0 +1,79 @@
+# Power System - 力量與法則資料庫
+# 定義世界的「物理邊界」與「代價平衡」
+
+# 力量體系定義
+frameworks:
+  - id: "PWR_001"
+    name: ""
+    
+    # 能量來源
+    energy_source: ""
+    
+    # 基礎邏輯/運作原理
+    base_logic: ""
+    
+    # 等級劃分
+    tiers:
+      - level: 1
+        name: ""
+        description: ""
+        typical_abilities: []
+    
+    # 體系限制與代價
+    limitations: []
+    
+    # 修煉/升級條件
+    advancement:
+      - from_level: 1
+        to_level: 2
+        requirements: []
+        risks: []
+
+# 功法/技能/法術
+abilities:
+  - id: "SKILL_001"
+    name: ""
+    framework_id: ""         # 所屬體系
+    tier: ""                 # 低位 / 中位 / 高位 / 絕頂
+    
+    # 執行過程（供 Scene Writer 參考，可根據 pacing 展開）
+    execution:
+      - step: 1
+        description: ""
+    
+    # 使用代價
+    cost: ""
+    
+    # 冷卻時間
+    cooldown: ""
+    
+    # 視覺效果描述
+    visual_effects: ""
+    
+    # 副作用/風險
+    side_effects: ""
+    
+    # 克制/被克制
+    counters: []
+    countered_by: []
+
+# 法寶/神器
+artifacts:
+  - id: "ART_001"
+    name: ""
+    type: ""                 # Weapon / Defense / Utility / etc.
+    framework_id: ""         # 關聯體系
+    
+    description: ""
+    
+    # 被動效果
+    passive_effects: []
+    
+    # 主動技能
+    active_abilities: []
+    
+    # 使用條件
+    requirements: ""
+    
+    # 歷史/來源
+    origin: ""
