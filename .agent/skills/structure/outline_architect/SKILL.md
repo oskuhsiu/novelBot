@@ -66,6 +66,51 @@ Arc 2: 試煉
 
 ## 執行步驟
 
+### Step 0: 結構檢查（新增 Arc/SubArc 前必做）
+
+> [!IMPORTANT]
+> **在生成任何新的 Arc 或 SubArc 之前，必須先分析已有結構！**
+
+```yaml
+結構檢查流程:
+  1. 讀取 narrative_progress.yaml:
+     - 檢查是否已有 arcs[] 陣列
+     - 統計已完成/進行中的 arc 數量
+     
+  2. 若已有 arcs 結構:
+     分析已有內容:
+       - 主題發展脈絡：各 arc 的核心主題演變
+       - 角色發展軌跡：主要角色的成長歷程
+       - 伏筆追蹤：
+         - 已埋設的伏筆（from lore_bank.yaml）
+         - 已回收的伏筆
+         - 待回收的伏筆
+       - 最後 arc/subarc 的狀態：
+         - 結束時的劇情位置
+         - 懸而未決的衝突
+         - 角色當前狀態
+         
+     彙整連貫性要點:
+       structure_context:
+         last_arc_summary: "最後一個 arc 的摘要"
+         last_subarc_ending: "最後一個 subarc 的結尾狀態"
+         pending_foreshadowing: ["待回收伏筆列表"]
+         character_trajectories:
+           - character_id: "CHAR_001"
+             current_state: "當前發展階段"
+             next_growth_opportunity: "下一步成長方向"
+         thematic_progression: "主題發展方向"
+         
+  3. 若無 arcs 結構:
+     - 直接進入 Step 1 生成全新結構
+     
+  4. 生成新內容時的約束:
+     - 新 Arc 必須銜接 last_arc_summary
+     - 新 SubArc 必須延續 last_subarc_ending
+     - 必須安排回收 pending_foreshadowing 中的伏筆
+     - 角色行為必須符合 character_trajectories
+```
+
 ### Step 1: 讀取設定
 ```yaml
 # 從 config/novel_config.yaml 讀取

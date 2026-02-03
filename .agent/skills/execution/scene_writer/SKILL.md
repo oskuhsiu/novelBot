@@ -32,6 +32,17 @@ description: 正文生成器 - 根據節拍指令撰寫正文，遵循風格指�
 
 4. **內容分配**（從 weight_balancer 計算結果）
 
+5. **連貫性上下文**（從 nvChapter Step 1.5 傳入）：
+   - `continuity_context.current_subarc_summary`：當前次網摘要
+   - `continuity_context.previous_chapters_in_subarc`：同一次網已有章節摘要
+   - `continuity_context.previous_subarc_ending`：上一次網結尾
+   - **`continuity_context.arc_boundary`**：跨 Arc 資訊（若適用）
+     - `is_new_arc`：是否為新 Arc 的第一章
+     - `previous_arc_ending`：前一卷的結尾摘要
+
+6. **劇情導引**（可選，從參數傳入）：
+   - `direction`：使用者指定的劇情走向
+
 ## 輸出
 
 正文段落，寫入 `output/chapters/chapter_XX.md`
@@ -57,6 +68,21 @@ description: 正文生成器 - 根據節拍指令撰寫正文，遵循風格指�
 【出場角色】：{{characters_info}}
 【前情】：{{previous_context}}
 
+## 連貫性上下文（必讀）
+
+【當前次網摘要】：{{current_subarc_summary}}
+【同一次網前章摘要】：
+{{previous_chapters_in_subarc}}
+
+【上一次網結尾】：
+{{previous_subarc_ending}}
+
+## 劇情導引（若有）
+{{direction}}
+
+> 若有 direction，正文內容必須朝指定方向發展。
+> 第一個節拍必須銜接前章結尾，確保讀者無縫閱讀。
+
 ## 本節拍要求
 【事件】：{{action}}
 【情緒轉折】：{{emotion_shift}}
@@ -80,6 +106,8 @@ description: 正文生成器 - 根據節拍指令撰寫正文，遵循風格指�
 3. 對話要符合角色性格
 4. 動作要有動詞力量
 5. 適時穿插不同類型的內容
+6. **銜接前章**：若有前章內容，需自然銜接
+7. **依循導引**：若有 direction，確保劇情朝該方向發展
 
 目標字數：{{target_words}} 字
 

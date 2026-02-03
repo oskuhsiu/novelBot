@@ -11,15 +11,25 @@ description: 章節拆解師 - 將章節大綱拆解為具體的場景節拍 (Be
 
 ## 輸入
 
-1. 從 `templates/narrative_progress.yaml` 讀取：
+1. 從 `config/narrative_progress.yaml` 讀取：
    - 當前章節的 `summary`
    - 上一章的結尾狀態
 
-2. 從 `templates/novel_config.yaml` 讀取：
+2. 從 `config/novel_config.yaml` 讀取：
    - `engine_settings.pacing_pointer`
    - `engine_settings.content_weights`
 
 3. 從角色和世界資料庫讀取相關資訊
+
+4. **連貫性上下文**（從 nvChapter Step 1.5 傳入）：
+   - `continuity_context.current_subarc_summary`：當前次網摘要
+   - `continuity_context.previous_chapters_in_subarc`：同一次網已有章節
+   - `continuity_context.previous_subarc_ending`：上一次網結尾
+   - **優先使用 `completed_chapters[].ending_summary`**（快速讀取）
+   - **若 `arc_boundary.is_new_arc == true`**，則包含 `previous_arc_ending`
+
+5. **劇情導引**（可選，從參數傳入）：
+   - `direction`：使用者指定的劇情走向
 
 ## 輸出
 
@@ -50,6 +60,18 @@ description: 章節拆解師 - 將章節大綱拆解為具體的場景節拍 (Be
 【參與角色】：{{available_characters}}
 【可用場景】：{{available_locations}}
 
+## 連貫性上下文（必讀）
+
+【當前次網摘要】：{{current_subarc_summary}}
+【同一次網前章】：{{previous_chapters_in_subarc}}
+【上一次網結尾】：{{previous_subarc_ending}}
+
+## 劇情導引（若有）
+{{direction}}
+
+> 若有 direction，節拍設計必須以此為主軸，確保本章劇情朝指定方向發展。
+> 若有前章，第一個節拍必須銜接前章結尾。
+
 ## 節拍設計
 
 對於每個節拍，請輸出：
@@ -66,7 +88,7 @@ description: 章節拆解師 - 將章節大綱拆解為具體的場景節拍 (Be
 6. **信息揭露**：這個節拍揭露什麼資訊（可選）
 7. **鉤子 (Hook)**：這個節拍結尾留下什麼懸念
 
-確保節拍之間有邏輯連接。
+確保節拍之間有邏輯連接，且與前章/前次網內容銜接。
 ```
 
 ### Step 3: 設定權重暗示
