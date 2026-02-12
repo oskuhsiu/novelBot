@@ -32,6 +32,9 @@ engine_settings:
 style_profile:
   # 小說類型
   genre: ""
+
+  # [NEW] 核心劇情套路 (若未指定，系統將自動從 trope_library 選擇)
+  main_plot_trope: ""  # e.g. "PLT_001"
   
   # 敘事視角
   # 選項：第一人稱 / 第三人稱全知 / 第三人稱受限
@@ -67,6 +70,61 @@ emotion_settings:
   # 緩衝模式：suggest=建議, force=強制調整
   buffer_mode: "suggest"
 
+# 主題追蹤設定（新增）
+# 讓每個場景都與核心主題產生回響，避免「為了發生而發生」
+theme_settings:
+  # 是否啟用主題追蹤
+  enabled: true
+  
+  # 主要主題（故事的核心問題）
+  primary_theme: ""
+  # 範例："權力是否必然腐蝕人性"、"愛與自由能否共存"
+  
+  # 次要主題
+  secondary_themes: []
+  # 範例：["救贖的代價", "信任與背叛"]
+  
+  # 主題意象（反覆出現的象徵物）
+  theme_motifs:
+    - symbol: ""
+      meaning: ""
+      max_usage_per_arc: 3  # 避免過度使用
+    # 範例：
+    # - symbol: "火焰"
+    #   meaning: "毀滅與重生"
+    # - symbol: "鏡子"
+    #   meaning: "自我認知與虛偽"
+  
+  # 主題發展弧線（在不同階段如何呈現主題）
+  theme_arc:
+    opening: ""      # 提出問題
+    development: ""  # 質疑與探索
+    crisis: ""       # 最黑暗時刻
+    resolution: ""   # 答案或留白
+  # 範例：
+  # opening: "提出問題：權力是否必然腐蝕？"
+  # development: "角色在權力與良知間掙扎"
+  # crisis: "連純潔者也被迫做出灰色選擇"
+  # resolution: "發現是恐懼而非權力本身在腐蝕"
+
+# 動態風格設定（新增）
+# 根據劇情階段自動調整寫作風格
+style_dynamics:
+  # 是否啟用動態調整
+  enabled: false
+  
+  # 階段覆蓋：在特定條件下改變風格
+  stage_overrides: []
+  # 範例：
+  # - trigger: "arc >= 5"
+  #   changes:
+  #     tone: "逐漸沉重"
+  #     prose: "加入文青描寫"
+  # - trigger: "emotion_log.consecutive_high >= 2"
+  #   changes:
+  #     tone: "插入喘息段落"
+
 world_rules:
   # 世界觀的核心規則/物理法則
   - ""
+

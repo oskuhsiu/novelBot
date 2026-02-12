@@ -1,3 +1,8 @@
+---
+name: identity_validator
+description: 角色立場鑑定器 - 根據派系調整對話風格
+---
+
 # Identity Validator
 
 角色立場鑑定器 - 根據派系調整對話風格。

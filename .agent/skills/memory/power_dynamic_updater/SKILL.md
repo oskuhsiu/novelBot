@@ -1,3 +1,8 @@
+---
+name: power_dynamic_updater
+description: 權力博弈監測 - 自動更新勢力間的緊張值
+---
+
 # Power Dynamic Updater
 
 權力博弈監測 - 自動更新勢力間的緊張值。

@@ -1,0 +1,13 @@
+# Archive Index - 冷儲存索引目錄 (Template)
+# 此檔案位於 Hot Storage，用於檢索 Cold Storage 中的資料。
+# 當 AI 發現劇情涉及以下條目時，應主動讀取對應的 path 檔案。
+
+characters: []
+  # - id: "CHAR_XXX"
+  #   name: "範例角色 (Example)"
+  #   summary: "第一卷的路人，死於戰鬥。"
+  #   path: "memory/archive/characters_archive.yaml"
+
+items: []
+logic_events: []
+locations: []

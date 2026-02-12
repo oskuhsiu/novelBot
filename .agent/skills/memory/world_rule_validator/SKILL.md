@@ -1,3 +1,8 @@
+---
+name: world_rule_validator
+description: 世界規則驗證器 - 建立/驗證世界物理邏輯
+---
+
 # World Rule Validator
 
 世界規則驗證器 - 建立/驗證世界物理邏輯。

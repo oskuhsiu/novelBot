@@ -93,7 +93,8 @@ projects/{base_name}_{version}/
 使用 `skill_faction_forge` 創建 2-4 個勢力
 
 ### Step 10: 重新規劃大綱
-使用 `skill_outline_architect` 規劃全書結構，基於 `target_chapters` 設計各卷和章節分配
+使用 `skill_outline_architect` 規劃全書結構，基於 `target_chapters` 設計各卷和章節分配。
+（注意：各 Arc 的 SubArc 數量應在指定範圍內隨機變動，勿固定中位數）
 
 ### Step 11: 生成初始道具
 使用 `skill_item_smith` 為主角生成初始裝備

@@ -1,3 +1,8 @@
+---
+name: dungeon_generator
+description: 地城構造師 - 自動生成密境/副本的房間結構
+---
+
 # Dungeon Generator
 
 地城構造師 - 自動生成密境/副本的房間結構。

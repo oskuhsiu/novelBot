@@ -65,6 +65,12 @@ description: 維護記憶與設定檔同步
   - meta.words_written: 累加字數
   - meta.last_updated: 今日日期
   - completed_chapters: 標記完成
+
+> [!CAUTION]
+> **資料完整性警告**
+> 更新 `narrative_progress.yaml` 時，**絕對不可** 刪除或修改未涉及的 `arcs` 和 `subarcs` 結構。
+> 1. 禁止重寫整個檔案，以免因 Context 限制而截斷後續大綱。
+> 2. 請使用 `replace_file_content` 或 `multi_replace_file_content` 針對特定欄位進行更新。
 ```
 
 ### Step 4: 更新角色資料庫（mode=full）
@@ -158,7 +164,43 @@ description: 維護記憶與設定檔同步
     - 轉移/丟失
 ```
 
-### Step 9: 輸出維護報告
+### Step 9: 冷熱資料分層與歸檔 (Archiving)
+// turbo
+若 `mode=full`，執行以下歸檔邏輯，將不活躍的資料移入 `memory/archive/`：
+
+```yaml
+归檔規則 (The Archivist):
+  1. 角色 (Characters):
+     - 條件: (狀態為DEAD/MISSING/RETIRED 且 重要性<8) 或 (路人角色且超過1個Arc未出現)
+     - 動作: 
+       1. 移至 `memory/archive/characters_archive.yaml`
+       2. **更新索引**: 在 `memory/archive_index.yaml` 記錄 {id, name, summary, path}
+     - 保留: 原檔中刪除，僅在 Index 保留摘要。
+     
+  2. 物品 (Items):
+     - 條件: (狀態為CONSUMED/DESTROYED/LOST 且 等級<Rare)
+     - 動作:
+       1. 移至 `memory/archive/items_archive.yaml`
+       2. **更新索引**: 在 `memory/archive_index.yaml` 記錄 {id, name, path}
+     - 保留: 原檔中刪除。
+     
+  3. 歷史事件 (Lore):
+     - 條件: 屬於「上一個Arc」且狀態為 resolved/closed
+     - 動作: 
+       1. 移至 `memory/archive/arc_{N}_history.md`
+       2. **更新索引**: 在 `memory/archive_index.yaml` 記錄 {arc_id, summary_path}
+     
+  4. 地點/勢力 (Loc/Faction):
+     - 條件: 毀滅、併吞或劇情徹底離開該地圖
+     - 動作: 移至 `memory/archive/world_archive.yaml` 並更新索引。
+
+> [!TIP]
+> **索引機制 (The Catalog)**
+> 為了避免歸檔變成「死儲存」，所有移入 `archive/` 的資料，都必須在 `memory/archive_index.yaml` 中保留一條**輕量級索引**。
+> 當 AI 在規劃劇情時發現索引中的關鍵字（如「已故的張偉」），便可通過 `read_resource` 或 `view_file` 主動調取檔案。
+```
+
+### Step 10: 輸出維護報告
 // turbo
 顯示維護摘要：
 - 更新了哪些檔案

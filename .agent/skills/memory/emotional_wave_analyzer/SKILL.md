@@ -1,3 +1,8 @@
+---
+name: emotional_wave_analyzer
+description: 情感能量監測器 - 追蹤情感波段，自動調節張力節奏
+---
+
 # Emotional Wave Analyzer
 
 情感能量監測器 - 追蹤情感波段，自動調節張力節奏。

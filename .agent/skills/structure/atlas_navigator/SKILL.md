@@ -1,3 +1,8 @@
+---
+name: atlas_navigator
+description: 導航員 - 查詢世界地圖，驗證角色移動的可行性
+---
+
 # Atlas Navigator
 
 導航員 - 查詢世界地圖，驗證角色移動的可行性。

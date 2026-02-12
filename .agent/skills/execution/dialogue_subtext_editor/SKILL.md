@@ -1,3 +1,8 @@
+---
+name: dialogue_subtext_editor
+description: 對話潛台詞編輯器 - 重寫對話加入潛台詞
+---
+
 # Dialogue Subtext Editor
 
 對話潛台詞編輯器 - 重寫對話加入潛台詞。

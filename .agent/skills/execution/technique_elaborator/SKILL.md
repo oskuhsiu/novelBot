@@ -1,3 +1,8 @@
+---
+name: technique_elaborator
+description: 招式演繹器 - 根據速度指針展開技能描寫
+---
+
 # Technique Elaborator
 
 招式演繹器 - 根據速度指針展開技能描寫。

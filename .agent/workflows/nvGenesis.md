@@ -128,6 +128,48 @@ projects/{name}/
 使用 `skill_style_setter` 生成 `output/style_guide.md`
 - 若有簡述，參考 `synopsis_analysis.tone` 來設定風格
 
+### Step 3.5: 設定主題追蹤【新增】
+分析並設定 `novel_config.yaml` 中的 `theme_settings`：
+
+```yaml
+主題設定流程:
+  1. 分析簡述/類型，識別潛在主題：
+     - 主要主題（故事的核心問題）
+     - 次要主題（輔助探討的問題）
+     
+  2. 設計主題意象：
+     - 選擇 2-3 個象徵物
+     - 定義其在故事中的含義
+     
+  3. 規劃主題弧線：
+     - opening: 如何提出問題
+     - development: 如何探索
+     - crisis: 最黑暗時刻如何呈現
+     - resolution: 答案或留白
+```
+
+輸出示例：
+```yaml
+theme_settings:
+  enabled: true
+  primary_theme: "權力是否必然腐蝕人性"
+  secondary_themes: ["信任與背叛", "救贖的代價"]
+  theme_motifs:
+    - symbol: "火焰"
+      meaning: "毀滅與重生"
+    - symbol: "鏡子"
+      meaning: "自我認知"
+  theme_arc:
+    opening: "主角獲得力量，面臨第一次選擇"
+    development: "力量帶來便利，也帶來誘惑"
+    crisis: "主角被迫做出違背初衷的決定"
+    resolution: "發現是恐懼而非力量本身在腐蝕"
+```
+
+> [!TIP]
+> **主題讓故事有意義**
+> 沒有主題的故事只是事件的堆砌。主題設定讓每個場景都有回響。
+
 ### Step 4: 建構世界觀
 使用 `skill_world_builder` 生成初始世界觀，寫入 `world_atlas.yaml`
 - 若有簡述，參考 `synopsis_analysis.world_hints`
@@ -146,12 +188,20 @@ projects/{name}/
 ### Step 8: 規劃大綱
 使用 `skill_outline_architect` 規劃全書結構：
 - **若有簡述**：直接使用 `synopsis_analysis.arc_summaries` 和 subarcs
-- **否則**：根據 `{arcs}` 和 `{subarcs}` 生成
+- **否則**：根據 `{arcs}` 和 `{subarcs}` 生成（SubArc 數量應在範圍內隨機變動）
+- **整合主題弧**：確保大綱中的關鍵節點與 `theme_arc` 對應
 
 ### Step 9: 生成初始道具
 使用 `skill_item_smith` 為主角生成初始裝備，寫入 `item_compendium.yaml`
 
-### Step 10: 埋設角色秘密
+### Step 10: 初始化動態檔案【新增】
+// turbo
+創建 `memory/` 目錄下的動態追蹤檔案：
+- `motivation_map.yaml`（動機地圖模板）
+- `relationship_dynamics.yaml`（關係動態模板）
+- `archive_index.yaml`（冷儲存索引模板）
+
+### Step 11: 埋設角色秘密
 使用 `skill_character_secret_seeder` 為主要角色生成隱藏動機
 
 ### Step 11: 輸出確認

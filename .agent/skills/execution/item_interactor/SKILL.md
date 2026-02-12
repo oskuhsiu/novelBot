@@ -1,3 +1,8 @@
+---
+name: item_interactor
+description: 器具演繹器 - 根據速度指針決定道具描寫精度
+---
+
 # Item Interactor
 
 器具演繹器 - 根據速度指針決定道具描寫精度。

@@ -1,0 +1,743 @@
+# Trope Library - 套路庫
+# 用於快速構建角色性格、行為模式與劇情衝突
+# 包含 Archetype (原型), Dynamic (動態), Relationship (關係), Plot (劇情) 四大類
+
+tropes:
+  # ==========================================
+  # ARCHETYPE (角色原型) - 基礎性格與定位
+  # ==========================================
+  - id: "ARCH_001"
+    name: "The Reincarnated Sage"
+    name_zh: "轉生老怪"
+    category: "Archetype"
+    description: "轉生或穿越的強者，擁有前世的記憶與經驗，心智成熟，看破紅塵。"
+    traits: ["Calm", "Knowledgeable", "Arrogant", "Calculated"]
+    
+  - id: "ARCH_002"
+    name: "The Underdog"
+    name_zh: "廢柴/吊車尾"
+    category: "Archetype"
+    description: "天賦低微或被遭受打壓的底層角色，通常擁有堅韌的意志或隱藏的金手指。"
+    traits: ["Resilient", "Hardworking", "Determined", "Underestimated"]
+
+  - id: "ARCH_003"
+    name: "The Ice Queen"
+    name_zh: "高冷女神"
+    category: "Archetype"
+    description: "外表冷漠難以接近，實則內心可能有柔軟一面或強大的責任感。"
+    traits: ["Aloof", "Elegant", "Powerful", "Introverted"]
+
+  - id: "ARCH_004"
+    name: "The Loyal Fatty"
+    name_zh: "忠誠胖子"
+    category: "Archetype"
+    description: "主角的死黨，負責搞笑、情報收集或被救援，對主角絕對忠誠。"
+    traits: ["Loyal", "Humorous", "Gluttonous", "Gossip"]
+
+  - id: "ARCH_005"
+    name: "The Scheming Young Master"
+    name_zh: "腹黑大少"
+    category: "Archetype"
+    description: "擁有權勢背景，表面禮貌但內心陰險，習慣用權謀算計他人。"
+    traits: ["Deceptive", "Wealthy", "Manipulative", "Prideful"]
+
+  - id: "ARCH_006"
+    name: "The Righteous Paladin"
+    name_zh: "正道魁首"
+    category: "Archetype"
+    description: "堅持正義與規則，有時顯得迂腐，對邪惡勢力零容忍。"
+    traits: ["Righteous", "Rigid", "Honorable", "Judgmental"]
+
+  - id: "ARCH_007"
+    name: "The Rogue Cultivator"
+    name_zh: "散修/浪人"
+    category: "Archetype"
+    description: "無門無派，習慣獨來獨往，生存能力極強，唯利是圖或自由自在。"
+    traits: ["Independent", "Cunning", "Survivalist", "Opportunistic"]
+
+  - id: "ARCH_008"
+    name: "The Innocent Saintess"
+    name_zh: "清純聖女"
+    category: "Archetype"
+    description: "心地善良，不諳世事，往往擁有強大的治癒或輔助能力，是團體的精神支柱。"
+    traits: ["Innocent", "Kind", "Naive", "Selfless"]
+
+  - id: "ARCH_009"
+    name: "The Battle Maniac"
+    name_zh: "戰鬥狂人"
+    category: "Archetype"
+    description: "為了戰鬥而生，渴望挑戰強者，不在乎生死與利益，只求一戰。"
+    traits: ["Aggressive", "Fearless", "Obsessive", "Simple"]
+
+  - id: "ARCH_010"
+    name: "The Hidden Boss"
+    name_zh: "掃地僧/隱藏大佬"
+    category: "Archetype"
+    description: "偽裝成不起眼的普通人，實則是頂級強者，通常在關鍵時刻出手。"
+    traits: ["Humble", "Mysterious", "Overpowered", "Low-key"]
+
+  - id: "ARCH_011"
+    name: "The System Host"
+    name_zh: "系統宿主"
+    category: "Archetype"
+    description: "綁定系統的角色，行為邏輯往往被系統任務驅動，擁有數據化視角。"
+    traits: ["Objective", "Task-oriented", "Growth-focused", "Adaptable"]
+
+  - id: "ARCH_012"
+    name: "The Tragic Avenger"
+    name_zh: "復仇者"
+    category: "Archetype"
+    description: "背負深仇大恨，活著的唯一目的就是復仇，性格陰鬱極端。"
+    traits: ["Vengeful", "Cold", "Obsessive", "Ruthless"]
+
+  - id: "ARCH_013"
+    name: "The Tsundere Rival"
+    name_zh: "傲嬌對手"
+    category: "Archetype"
+    description: "視主角為對手，口頭上不饒人但行動上往往會幫助主角，死不承認關心。"
+    traits: ["Competitive", "Proud", "Secretly-caring", "Hot-headed"]
+
+  - id: "ARCH_014"
+    name: "The Calculating Merchant"
+    name_zh: "奸商/精明商人"
+    category: "Archetype"
+    description: "一切向錢看，即使是末日也能做成生意，消息靈通，無利不起早。"
+    traits: ["Greedy", "Observant", "Negotiator", "Neutral"]
+
+  - id: "ARCH_015"
+    name: "The Fallen Genius"
+    name_zh: "隕落天才"
+    category: "Archetype"
+    description: "曾經耀眼奪目但遭遇變故跌落神壇，飽受冷眼，渴望重回巔峰。"
+    traits: ["Bitter", "Experienced", "Resilient", "Cynical"]
+
+  # ==========================================
+  # DYNAMIC (動態行為) - 常用行為模式與反應
+  # ==========================================
+  - id: "DYN_001"
+    name: "Face Slapping"
+    name_zh: "打臉"
+    category: "Dynamic"
+    description: "先示弱或被對方輕視，隨後展現超強實力或背景，讓對方震驚與後悔。"
+    trigger: "被嘲諷、被輕視、被挑釁"
+    
+  - id: "DYN_002"
+    name: "Pig Eat Tiger"
+    name_zh: "扮豬吃老虎"
+    category: "Dynamic"
+    description: "故意隱藏實力，裝作弱小，誘使敵人放鬆警惕或暴露惡意，再一擊必殺。"
+    trigger: "遭遇強敵、需要低調行事"
+
+  - id: "DYN_003"
+    name: "Courting Death"
+    name_zh: "花式作死"
+    category: "Dynamic"
+    description: "因狂妄無知而主動挑釁主角或強者，無視警告，最終招致毀滅。"
+    trigger: "過度自信、依仗背景"
+
+  - id: "DYN_004"
+    name: "Moral Kidnapping"
+    name_zh: "道德綁架"
+    category: "Dynamic"
+    description: "利用輿論或道德高地逼迫他人（通常是主角）做出犧牲或讓步。"
+    trigger: "資源爭奪、公共場合"
+
+  - id: "DYN_005"
+    name: "Auction House Sniping"
+    name_zh: "拍賣場截胡"
+    category: "Dynamic"
+    description: "在拍賣會上以微弱優勢或特殊手段搶走他人勢在必得的物品，引發仇恨。"
+    trigger: "拍賣會場景、競價"
+
+  - id: "DYN_006"
+    name: "Gossip Diffusion"
+    name_zh: "路人解說"
+    category: "Dynamic"
+    description: "作為旁觀者，負責驚嘆、解說戰況、傳播小道消息，烘托主角強大。"
+    trigger: "公開戰鬥、重大事件"
+
+  - id: "DYN_007"
+    name: "Secret Observation"
+    name_zh: "暗中觀察"
+    category: "Dynamic"
+    description: "躲在幕後或遠處觀察局勢，分析情報，不輕易介入，通常為智囊或大佬。"
+    trigger: "複雜局勢、新人物登場"
+
+  - id: "DYN_008"
+    name: "Arrogant Young Master's Rant"
+    name_zh: "紈絝叫囂"
+    category: "Dynamic"
+    description: "搬出家族/宗門背景威脅對方，台詞通常是「你敢殺我？我是XXX的兒子！」"
+    trigger: "戰敗前夕、被壓制"
+
+  - id: "DYN_009"
+    name: "Self-Sacrifice"
+    name_zh: "自我犧牲"
+    category: "Dynamic"
+    description: "為保護重要的人或大局，主動選擇斷後或犧牲自己。"
+    trigger: "絕境、撤退戰"
+
+  - id: "DYN_010"
+    name: "Sudden Breakthrough"
+    name_zh: "臨陣突破"
+    category: "Dynamic"
+    description: "在生死壓力的戰鬥中突然領悟，實力大增並逆轉戰局。"
+    trigger: "極限戰鬥、瀕死狀態"
+
+  - id: "DYN_011"
+    name: "Misunderstanding Amplification"
+    name_zh: "迪化/腦補"
+    category: "Dynamic"
+    description: "過度解讀他人的普通行為，將其想像得深不可測或別有深意。"
+    trigger: "資訊不對稱、面對神秘角色"
+
+  - id: "DYN_012"
+    name: "Betrayal Reveal"
+    name_zh: "跳反/背刺"
+    category: "Dynamic"
+    description: "關鍵時刻突然倒戈，揭露間諜身份或因利益背叛隊友。"
+    trigger: "關鍵決戰、利益誘惑"
+
+  - id: "DYN_013"
+    name: "Bootlicking"
+    name_zh: "抱大腿"
+    category: "Dynamic"
+    description: "極力討好強者，尋求庇護或好處，毫無節操。"
+    trigger: "面對強者、生存危機"
+
+  - id: "DYN_014"
+    name: "Begging for Mercy"
+    name_zh: "跪地求饒"
+    category: "Dynamic"
+    description: "戰敗後立刻拋棄尊嚴，痛哭流涕請求饒恕。"
+    trigger: "徹底戰敗、生死存亡"
+
+  - id: "DYN_015"
+    name: "Last Stand"
+    name_zh: "最後的倔強"
+    category: "Dynamic"
+    description: "明知不敵也不退縮，燃燒生命進行最後一搏。"
+    trigger: "無法退讓的底線、守護"
+
+  # ==========================================
+  # RELATIONSHIP (關係模式) - 角色間的互動模板
+  # ==========================================
+  - id: "REL_001"
+    name: "Enemies to Lovers"
+    name_zh: "歡喜冤家"
+    category: "Relationship"
+    description: "從互相看不順眼、爭吵甚至敵對開始，逐漸被對方吸引，最終相愛。"
+    
+  - id: "REL_002"
+    name: "Master and Disciple"
+    name_zh: "師徒情深"
+    category: "Relationship"
+    description: "亦師亦父/亦母的關係，包含傳承、教導與守護，有時也包含禁忌的感情。"
+
+  - id: "REL_003"
+    name: "Fated Rivals"
+    name_zh: "宿敵"
+    category: "Relationship"
+    description: "互相競爭、互相認可，是彼此最強大的動力，往往惺惺相惜。"
+
+  - id: "REL_004"
+    name: "Childhood Friends"
+    name_zh: "青梅竹馬"
+    category: "Relationship"
+    description: "從小一起長大，擁有深厚的默契與回憶，通常面臨天降系的挑戰。"
+
+  - id: "REL_005"
+    name: "Contractual Bond"
+    name_zh: "契約關係"
+    category: "Relationship"
+    description: "因某種利益或魔法契約綁定在一起，同生共死，逐漸產生真感情。"
+
+  - id: "REL_006"
+    name: "Savior and Saved"
+    name_zh: "救贖者與被救者"
+    category: "Relationship"
+    description: "一方將另一方從絕望/死亡中拉回，產生強烈的依賴與感激。"
+
+  - id: "REL_007"
+    name: "Companions in Arms"
+    name_zh: "戰友"
+    category: "Relationship"
+    description: "在戰場上背靠背的信任，可以將性命託付給對方。"
+
+  - id: "REL_008"
+    name: "Puppet and Master"
+    name_zh: "傀儡與操控者"
+    category: "Relationship"
+    description: "一方即使不情願單完全被另一方掌控，涉及權力不對等與心理博弈。"
+
+  - id: "REL_009"
+    name: "Forbidden Love"
+    name_zh: "禁忌之戀"
+    category: "Relationship"
+    description: "身份地位懸殊、家族世仇或倫理法規不允許的戀情。"
+
+  - id: "REL_010"
+    name: "One-sided Crush"
+    name_zh: "單相思"
+    category: "Relationship"
+    description: "一方默默付出，另一方不知情或不接受，充滿酸澀與守護。"
+
+  # ==========================================
+  # PLOT (劇情單元) - 以角色為核心的劇情模塊
+  # ==========================================
+  # Core / Standard
+  - id: "PLT_001"
+    name: "Tournament Arc"
+    name_zh: "宗門大比/拍賣會"
+    category: "Plot"
+    description: "通過比賽展示實力、排名，引發衝突，獲取獎勵。"
+    tags: ["contest", "ranking", "action"]
+
+  - id: "PLT_002"
+    name: "Secret Realm Exploration"
+    name_zh: "秘境探險"
+    category: "Plot"
+    description: "進入封閉空間尋寶，遭遇陷阱、怪獸與其他競爭者的獵殺。"
+    tags: ["adventure", "treasure", "danger"]
+
+  - id: "PLT_003"
+    name: "Family Crisis"
+    name_zh: "家族危機"
+    category: "Plot"
+    description: "家族/組織面臨滅頂之災，需要主角力挽狂瀾。"
+    tags: ["drama", "stakes", "protective"]
+
+  - id: "PLT_004"
+    name: "Training Montage"
+    name_zh: "閉關修煉"
+    category: "Plot"
+    description: "一段時間的潛心修練，快速提升實力，準備迎接挑戰。"
+    tags: ["growth", "pacing", "preparation"]
+
+  - id: "PLT_005"
+    name: "Revenge Arc"
+    name_zh: "復仇行動"
+    category: "Plot"
+    description: "針對之前的仇人進行清算，通常伴隨著爽快的打臉與殺伐。"
+    tags: ["action", "catharsis", "dark"]
+
+  - id: "PLT_006"
+    name: "Item Acquisition"
+    name_zh: "奪寶"
+    category: "Plot"
+    description: "圍繞一件稀世珍寶的爭奪，引發多方混戰。"
+    tags: ["action", "greed", "conflict"]
+
+  - id: "PLT_007"
+    name: "Escort Mission"
+    name_zh: "護送任務"
+    category: "Plot"
+    description: "護送重要人物或物品到達目的地，途中遭遇連續截殺。"
+    tags: ["journey", "protection", "suspense"]
+
+  - id: "PLT_008"
+    name: "Identity Reveal"
+    name_zh: "身份曝光"
+    category: "Plot"
+    description: "主角一直在隱藏的驚人身份（如神醫、龍王）被迫或主動曝光，震驚全場。"
+    tags: ["drama", "shock", "social"]
+
+  - id: "PLT_009"
+    name: "Rescue Mission"
+    name_zh: "營救行動"
+    category: "Plot"
+    description: "潛入敵營救出被俘虜的夥伴，通常是單騎闖關。"
+    tags: ["action", "stealth", "heroic"]
+
+  - id: "PLT_010"
+    name: "Monster Siege"
+    name_zh: "獸潮攻城"
+    category: "Plot"
+    description: "大量怪物進攻據點，所有人共同防禦，展現群像戰鬥。"
+    tags: ["war", "scale", "cooperation"]
+
+  - id: "PLT_011"
+    name: "Political Marriage"
+    name_zh: "聯姻風波"
+    category: "Plot"
+    description: "被迫的婚約引發的衝突，通常伴隨著退婚或搶親。"
+    tags: ["romance", "drama", "politics"]
+
+  - id: "PLT_012"
+    name: "Old Man in Ring"
+    name_zh: "隨身老爺爺覺醒"
+    category: "Plot"
+    description: "金手指甦醒或升級，提供關鍵指導或力量。"
+    tags: ["growth", "mentor", "system"]
+
+  - id: "PLT_013"
+    name: "Cross-Server War"
+    name_zh: "跨界大戰/國戰"
+    category: "Plot"
+    description: "不同世界、國家或服務器之間的大規模戰爭。"
+    tags: ["epic", "war", "nationalism"]
+
+  - id: "PLT_014"
+    name: "Establish Faction"
+    name_zh: "開宗立派"
+    category: "Plot"
+    description: "主角建立自己的勢力，招兵買馬，制定規則。"
+    tags: ["management", "leadership", "growth"]
+
+  - id: "PLT_015"
+    name: "Accidental Intimacy"
+    name_zh: "意外親密"
+    category: "Plot"
+    description: "因受傷、中毒或環境原因（如狹窄空間、媚藥）導致的意外親密接觸。"
+    tags: ["romance", "comedy", "spicy"]
+
+  # Expansion Begins (Standard + Rare + Generic)
+  - id: "PLT_016"
+    name: "The Forgotten Ruins"
+    name_zh: "上古遺跡開啟"
+    category: "Plot"
+    description: "沉睡千年的遺跡突然現世，引發全大陸強者蜂擁而至。"
+    tags: ["adventure", "exploration", "history"]
+
+  - id: "PLT_017"
+    name: "Beast Taming Event"
+    name_zh: "神獸認主"
+    category: "Plot"
+    description: "遭遇受傷或幼年的強大神獸，建立靈魂連結。"
+    tags: ["collection", "pet", "growth"]
+
+  - id: "PLT_018"
+    name: "Alchemy Competition"
+    name_zh: "煉丹/鍛造大會"
+    category: "Plot"
+    description: "非戰鬥類型的技能比拼，主角展現驚人的副職業天賦。"
+    tags: ["profession", "contest", "skill"]
+
+  - id: "PLT_019"
+    name: "Undercover Infiltration"
+    name_zh: "臥底敵營"
+    category: "Plot"
+    description: "偽裝身份潛入敵對勢力內部，竊取情報或從內部瓦解。"
+    tags: ["spy", "suspense", "deception"]
+
+  - id: "PLT_020"
+    name: "Curse Removal"
+    name_zh: "驅除詛咒"
+    category: "Plot"
+    description: "主角或重要人物身中奇毒或詛咒，需尋找特定解藥或方法。"
+    tags: ["quest", "urgency", "mystery"]
+
+  - id: "PLT_021"
+    name: "Time Loop"
+    name_zh: "時間循環"
+    category: "Plot"
+    description: "被困在同一天或同一事件中，必須找到破局關鍵才能脫離。"
+    tags: ["puzzle", "mystery", "supernatural"]
+
+  - id: "PLT_022"
+    name: "Body Swap"
+    name_zh: "靈魂互換"
+    category: "Plot"
+    description: "與異性或敵人互換身體，引發一系列誤會與笑料。"
+    tags: ["comedy", "romance", "slice-of-life"]
+
+  - id: "PLT_023"
+    name: "Amnesia Arc"
+    name_zh: "失憶流落"
+    category: "Plot"
+    description: "受傷失憶流落到偏遠之地，體驗普通人生活，與當地人建立羈絆。"
+    tags: ["healing", "slice-of-life", "character"]
+
+  - id: "PLT_024"
+    name: "Doppleganger Crisis"
+    name_zh: "真假主角"
+    category: "Plot"
+    description: "出現冒充主角行惡的人，主角需自證清白並揪出冒牌貨。"
+    tags: ["mystery", "reputation", "conflict"]
+
+  - id: "PLT_025"
+    name: "Prophecy Fulfillment"
+    name_zh: "預言應驗"
+    category: "Plot"
+    description: "古老的預言開始顯現，主角發現自己是預言中的關鍵人物。"
+    tags: ["fate", "epic", "lore"]
+
+  - id: "PLT_026"
+    name: "Ghost Ship/Train"
+    name_zh: "幽靈載具"
+    category: "Plot"
+    description: "登上無法停止的交通工具，面臨靈異事件或無限殺戮。"
+    tags: ["horror", "thriller", "survival"]
+
+  - id: "PLT_027"
+    name: "Battle Royale"
+    name_zh: "大逃殺"
+    category: "Plot"
+    description: "被投入封閉區域，只能留下一人生存，人性面臨極大考驗。"
+    tags: ["survival", "dark", "psychological"]
+
+  - id: "PLT_028"
+    name: "Casino Showdown"
+    name_zh: "賭場風雲"
+    category: "Plot"
+    description: "在賭場中與反派進行高風險博弈，不僅比運氣更比心理與千術。"
+    tags: ["gambling", "mind-game", "tension"]
+
+  - id: "PLT_029"
+    name: "Festival Date"
+    name_zh: "節日慶典"
+    category: "Plot"
+    description: "在燈會、祭典等活動中放鬆，推進感情線，通常以煙火結束。"
+    tags: ["romance", "slice-of-life", "fluff"]
+
+  - id: "PLT_030"
+    name: "School Festival"
+    name_zh: "學園祭"
+    category: "Plot"
+    description: "校園題材必備，班級活動、話劇表演或鬼屋挑戰。"
+    tags: ["school", "comedy", "youth"]
+
+  - id: "PLT_031"
+    name: "Examination Arc"
+    name_zh: "入學/晉升考試"
+    category: "Plot"
+    description: "通過嚴苛的測試進入頂級學院或組織，結識同期夥伴。"
+    tags: ["school", "contest", "intro"]
+
+  - id: "PLT_032"
+    name: "Dungeon Break"
+    name_zh: "地下城爆發"
+    category: "Plot"
+    description: "現代都市出現傳送門，怪物湧出，主角展現實力守護街道。"
+    tags: ["urban", "action", "heroic"]
+
+  - id: "PLT_033"
+    name: "Streamer Event"
+    name_zh: "直播事故"
+    category: "Plot"
+    description: "主角在直播中意外遭遇超自然事件或展現驚人實力，全網爆紅。"
+    tags: ["modern", "social-media", "fame"]
+
+  - id: "PLT_034"
+    name: "Haunted House"
+    name_zh: "凶宅試睡"
+    category: "Plot"
+    description: "為賺錢或查案進入鬧鬼的房子，揭開背後的冤情。"
+    tags: ["horror", "mystery", "detective"]
+
+  - id: "PLT_035"
+    name: "Business War"
+    name_zh: "商戰博弈"
+    category: "Plot"
+    description: "利用商業手段收購、打壓對手，展現經濟頭腦。"
+    tags: ["business", "smart", "money"]
+
+  - id: "PLT_036"
+    name: "Courtroom Drama"
+    name_zh: "法庭辯論"
+    category: "Plot"
+    description: "在法律框架下為自己或他人辯護，用邏輯擊敗對手。"
+    tags: ["legal", "verbal", "smart"]
+
+  - id: "PLT_037"
+    name: "Medical Emergency"
+    name_zh: "緊急手術"
+    category: "Plot"
+    description: "在條件簡陋的情況下進行高難度手術，展現神醫技術。"
+    tags: ["medical", "skill", "tension"]
+
+  - id: "PLT_038"
+    name: "Cooking Duel"
+    name_zh: "食戟/廚藝對決"
+    category: "Plot"
+    description: "用料理決勝負，美食能帶來幻覺或特殊效果（爆衣）。"
+    tags: ["cooking", "contest", "reaction"]
+
+  - id: "PLT_039"
+    name: "Idol Debut"
+    name_zh: "偶像出道"
+    category: "Plot"
+    description: "組建團體，進行練習、路演，最終登上大舞台。"
+    tags: ["entertainment", "music", "growth"]
+
+  - id: "PLT_040"
+    name: "Detective Case"
+    name_zh: "密室殺人"
+    category: "Plot"
+    description: "經典的暴風雪山莊模式，全員嫌疑人，主角進行推理。"
+    tags: ["mystery", "logic", "suspense"]
+
+  - id: "PLT_041"
+    name: "Zombie Outbreak"
+    name_zh: "喪屍爆發"
+    category: "Plot"
+    description: "生化病毒洩漏，秩序崩壞，尋找安全屋與物資。"
+    tags: ["survival", "horror", "apocalypse"]
+
+  - id: "PLT_042"
+    name: "Tower Climbing"
+    name_zh: "爬塔"
+    category: "Plot"
+    description: "挑戰層層遞進的高塔，每層有不同規則與獎勵。"
+    tags: ["progression", "challenge", "variety"]
+
+  - id: "PLT_043"
+    name: "Divine Punishment"
+    name_zh: "天劫/天譴"
+    category: "Plot"
+    description: "逆天而行引發天地異象，需在雷火中存活並淬鍊自身。"
+    tags: ["cultivation", "crisis", "endurance"]
+
+  - id: "PLT_044"
+    name: "Dimension Travel"
+    name_zh: "位面穿梭"
+    category: "Plot"
+    description: "穿越到不同法則的世界（如低武到高武，或魔法到科技）。"
+    tags: ["isekai", "adventure", "adaptation"]
+
+  - id: "PLT_045"
+    name: "God Slayer"
+    name_zh: "弒神之戰"
+    category: "Plot"
+    description: "凡人挑戰神明，打破信仰枷鎖，爭取自由。"
+    tags: ["epic", "rebellion", "myth"]
+
+  - id: "PLT_046"
+    name: "Civil War"
+    name_zh: "宗門/國家內戰"
+    category: "Plot"
+    description: "組織內部派系分裂，不得不選邊站或自立門戶。"
+    tags: ["politics", "war", "betrayal"]
+
+  - id: "PLT_047"
+    name: "Inheritance Trial"
+    name_zh: "傳承試煉"
+    category: "Plot"
+    description: "接受古老強者的考驗，通常包含心性、智慧與力量三關。"
+    tags: ["trial", "puzzle", "reward"]
+
+  - id: "PLT_048"
+    name: "Demon Sealing"
+    name_zh: "封印魔物"
+    category: "Plot"
+    description: "遠古惡魔即將破封，主角需加固封印或將其徹底消滅。"
+    tags: ["heroic", "magic", "duty"]
+
+  - id: "PLT_049"
+    name: "Timeline Reset"
+    name_zh: "世界重啟"
+    category: "Plot"
+    description: "結局失敗，主角帶著記憶回到開始，誓要改變命運。"
+    tags: ["time-travel", "fix-it", "emotional"]
+
+  - id: "PLT_050"
+    name: "System Update"
+    name_zh: "系統升級維護"
+    category: "Plot"
+    description: "金手指暫時失效，主角必須依靠自身實力度過危機。"
+    tags: ["nerf", "tension", "growth"]
+
+  - id: "PLT_051"
+    name: "Marriage Contest"
+    name_zh: "比武招親"
+    category: "Plot"
+    description: "通過擂台賽贏得配偶（通常是強大勢力的聯姻）。"
+    tags: ["romance", "contest", "cliche"]
+  
+  - id: "PLT_052"
+    name: "Disciple Recruitment"
+    name_zh: "收徒大典"
+    category: "Plot"
+    description: "主角成為導師，挑選資質平庸但心性極佳的弟子悉心培養。"
+    tags: ["mentor", "slice-of-life", "legacy"]
+
+  - id: "PLT_053"
+    name: "Resource Scramble"
+    name_zh: "資源爭奪戰"
+    category: "Plot"
+    description: "靈脈/礦脈出現，引發多方勢力混戰搶地盤。"
+    tags: ["war", "strategy", "greed"]
+
+  - id: "PLT_054"
+    name: "Forbidden Technique"
+    name_zh: "修煉禁術"
+    category: "Plot"
+    description: "為求速成或報仇，修煉代價極大的禁忌功法，面臨反噬風險。"
+    tags: ["risk", "dark", "power"]
+
+  - id: "PLT_055"
+    name: "Enemy Alliance"
+    name_zh: "敵對聯手"
+    category: "Plot"
+    description: "面對共同的強大敵人，主角被迫與宿敵暫時聯手。"
+    tags: ["dynamic", "tension", "battle"]
+
+  - id: "PLT_056"
+    name: "World Integration"
+    name_zh: "世界融合"
+    category: "Plot"
+    description: "現實世界與遊戲/異界融合，規則重寫，全民升級。"
+    tags: ["system", "chaos", "change"]
+
+  - id: "PLT_057"
+    name: "Legendary Weapon Forming"
+    name_zh: "本命神兵練成"
+    category: "Plot"
+    description: "收集無數珍材，歷經九死一生，終於鑄造出專屬武器。"
+    tags: ["crafting", "milestone", "power"]
+
+  - id: "PLT_058"
+    name: "Slave Revolt"
+    name_zh: "奴隸起義"
+    category: "Plot"
+    description: "主角淪為奴隸，在礦坑或鬥獸場積蓄力量，最終帶領眾人反抗。"
+    tags: ["rebellion", "leadership", "grimdark"]
+
+  - id: "PLT_059"
+    name: "Space Exploration"
+    name_zh: "星際開荒"
+    category: "Plot"
+    description: "駕駛飛船探索未知星球，建立基地，對抗外星生物。"
+    tags: ["sci-fi", "exploration", "building"]
+
+  - id: "PLT_060"
+    name: "Cyber Warfare"
+    name_zh: "駭客攻防"
+    category: "Plot"
+    description: "在虛擬網絡中進行意識對決，爭奪數據控制權。"
+    tags: ["cyberpunk", "tech", "abstract"]
+
+  - id: "PLT_061"
+    name: "Traitor Investigation"
+    name_zh: "抓內鬼"
+    category: "Plot"
+    description: "組織內部情報洩漏，主角需在不打草驚蛇的情況下揪出叛徒。"
+    tags: ["mystery", "tension", "politics"]
+
+  - id: "PLT_062"
+    name: "Diplomatic Mission"
+    name_zh: "出使他國"
+    category: "Plot"
+    description: "代表勢力出訪，在宴會與會談中進行舌戰與暗鬥。"
+    tags: ["politics", "dialogue", "world-building"]
+
+  - id: "PLT_063"
+    name: "Academy Exchange"
+    name_zh: "學院交流戰"
+    category: "Plot"
+    description: "帶隊前往其他學院進行交流比拼，通常伴隨打臉與挖角。"
+    tags: ["school", "contest", "travel"]
+
+  - id: "PLT_064"
+    name: "Historical Reflection"
+    name_zh: "夢迴上古"
+    category: "Plot"
+    description: "通過夢境或陣法親歷上古大戰，了解歷史真相。"
+    tags: ["lore", "flashback", "epic"]
+
+  - id: "PLT_065"
+    name: "Final War Preparation"
+    name_zh: "決戰前夕"
+    category: "Plot"
+    description: "大戰前的寧靜，交代遺言，分配物資，最後的溫情。"
+    tags: ["emotional", "setup", "calm"]

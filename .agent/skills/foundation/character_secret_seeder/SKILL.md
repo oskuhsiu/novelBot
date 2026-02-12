@@ -1,3 +1,8 @@
+---
+name: character_secret_seeder
+description: 角色秘密種子器 - 生成角色的隱性動機
+---
+
 # Character Secret Seeder
 
 角色秘密種子器 - 生成角色的隱性動機。

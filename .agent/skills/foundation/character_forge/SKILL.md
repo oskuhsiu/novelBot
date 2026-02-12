@@ -63,6 +63,13 @@ description: 角色鑄造廠 - 生成有血有肉的角色，維護 base_profile
 6. 性格關鍵字：3 個形容詞
 7. 說話方式：口頭禪、慣用語氣、說話節奏
 8. 行為模式：面對壓力時的典型反應
+
+## 系統參數
+9. 重要性 (Importance): 1-10
+   - 10: 絕對主角
+   - 8-9: 核心配角 (除非完結不封存)
+   - 5-7: 重要配角 (活躍期後可歸檔)
+   - 1-4: 路人 (無戲份即歸檔)
 ```
 
 ### Step 3: 設計技能樹
@@ -106,7 +113,10 @@ description: 角色鑄造廠 - 生成有血有肉的角色，維護 base_profile
 characters:
   - id: "CHAR_001"
     name: "李玄 (Li Xuan)"
+  - id: "CHAR_001"
+    name: "李玄 (Li Xuan)"
     role: "Protagonist"
+    importance: 10
     
     base_profile:
       identity: "底層黑客，擁有舊時代金丹算法"

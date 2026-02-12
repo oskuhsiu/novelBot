@@ -122,24 +122,25 @@ engine_settings:
   pacing_pointer: {{global_pacing}} # 預設 0.5
 ```
 
-### Step 2: 選擇結構模型
+### Step 2: 選擇結構模型與劇情套路 (Trope Selection)
 ```
-根據 {{genre}} 和 arc 數量，分配結構節點：
+1. **讀取設定**：
+   - 檢查 `novel_config.yaml` 中的 `style_profile.main_plot_trope`。
+   - 若為空，讀取 `templates/trope_library.yaml` 中的 `category: Plot` 列表。
 
-【三幕式分配】（10 個 Arc 為例）
-- Arc 1-2：第一幕（開端）20%
-- Arc 3-7：第二幕（發展）50%
-- Arc 8-10：第三幕（結局）30%
+2. **自動選擇套路 (Auto-Selection)**：
+   - 若 `main_plot_trope` 為空：
+     - 分析 `genre` ({{genre}}) 與 `tags` 的關聯性。
+     - 選擇一個最匹配的 Plot Trope id。
+     - 若無明顯匹配，隨機選擇一個通用型套路 (如 PLT_001, PLT_002)。
+   - 若已有指定，則使用該 ID 對應的 description。
 
-【英雄旅程分配】（12 階段）
-映射到 Arc 數量，確保關鍵節點落在合適位置
-
-【關鍵節點】
-- 觸發事件：Arc 1 內
-- 第一幕結尾：Arc 2 結尾
-- 中點大轉折：約 Arc 5
-- 最黑暗時刻：約 Arc 8
-- 高潮：Arc 9-10
+3. **結構分配**：
+   - 將選擇的 Plot Trope 作為「核心敘事骨架」。
+   - 例如：若選中「復仇行動 (Revenge Arc)」，則：
+     - Arc 1-2: 仇恨種子與遭受迫害
+     - Arc 3-7: 積蓄力量與逐步反擊
+     - Arc 8-10: 最終復仇與釋然
 ```
 
 ### Step 3: 生成 Arc 大綱
@@ -148,13 +149,14 @@ engine_settings:
 請根據以下設定，規劃 {{arc_count}} 個 Arc：
 
 【類型】：{{genre}}
+【核心套路】：{{main_plot_trope_name}} - {{main_plot_trope_desc}}
 【主角核心慾望】：{{protagonist_desire}}
 【主角最大恐懼】：{{protagonist_fear}}
 
 對於每個 Arc，請輸出：
 1. **arc_id**：編號
 2. **title**：卷名（吸引力標題）
-3. **summary**：本卷核心主題（1-2 句）
+3. **summary**：本卷核心主題（1-2 句）。**必須呼應核心套路的發展階段**。
 4. **emotion_arc**：情感走向（如：緊張→釋然→震驚）
 5. **structure_role**：在整體結構中的功能
 6. **pacing_pointer**（可選）：若此卷需要特殊節奏，指定覆蓋值
@@ -164,7 +166,7 @@ engine_settings:
 ```
 對於 Arc {{arc_id}}：{{arc_title}}
 
-請生成 {{subarc_count}} 個 SubArc（依據 subarcs_per_arc 範圍）：
+請根據 subarcs_per_arc 範圍，隨機決定本卷的 SubArc 數量（請在範圍內隨機取值，不要固定使用中位數）：
 
 【Arc 摘要】：{{arc_summary}}
 【前一個 Arc 結尾】：{{previous_arc_ending}}

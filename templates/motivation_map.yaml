@@ -1,0 +1,81 @@
+# Motivation Map - 動機地圖
+# 由 motivation_engine skill 自動生成
+# 用於追蹤角色動機、衝突節點和關係張力
+
+generated_for_chapter: 0
+timestamp: ""
+
+# 角色動機列表
+character_motivations:
+  - character_id: "CHAR_001"
+    name: ""
+    
+    # 當前活躍動機
+    active_motivation:
+      desire: ""           # 當前最迫切想要達成的目標
+      intensity: 50        # 動機強度 0-100
+      urgency: "medium"    # low/medium/high/critical
+      
+    # 阻礙因素
+    blocking_factors:
+      - factor: ""
+        severity: "minor"  # minor/moderate/major/critical
+        
+    # 潛在行動
+    potential_actions:
+      - action: ""
+        likelihood: 0.5    # 採取此行動的可能性
+        requires: []       # 需要什麼條件
+        
+    # 情緒傾向
+    emotional_state:
+      primary: ""          # 主要情緒
+      secondary: ""        # 次要情緒
+      stability: 50        # 情緒穩定度 0-100
+      
+    # 與主題的共鳴（若啟用 theme_settings）
+    theme_resonance:
+      theme: ""
+      connection: ""
+
+# 衝突節點（多角色動機交叉時的爆發點）
+conflict_nodes:
+  - id: ""
+    type: ""               # goal_clash/value_clash/resource_competition/loyalty_conflict/trust_crisis
+    participants: []
+    
+    description: ""
+    
+    stakes:
+      if_winner_a: ""
+      if_winner_b: ""
+      
+    tension_level: 0       # 0-100
+    ready_to_trigger: false
+    
+    possible_outcomes:
+      - outcome: ""
+        probability: 0.5
+        consequence: ""
+
+# 關係張力追蹤
+relationship_tensions:
+  - source: ""
+    target: ""
+    current_tension: 0     # 0-100
+    threshold: 70          # 達到此值觸發事件
+    
+    underlying_issue: ""   # 深層問題
+    surface_status: ""     # 表面狀態
+    
+    potential_trigger: ""  # 什麼情況會引爆
+    
+    if_triggered:
+      confrontation_type: ""
+      possible_resolutions: []
+
+# 場景建議（基於動機分析）
+scene_suggestions: []
+  # - suggestion: ""
+  #   reason: ""
+  #   theme_fit: ""

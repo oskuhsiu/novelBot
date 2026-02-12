@@ -1,3 +1,8 @@
+---
+name: item_smith
+description: 器具鍛造師 - 根據風格自動生成道具
+---
+
 # Item Smith
 
 器具鍛造師 - 根據風格自動生成道具。

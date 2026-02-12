@@ -15,6 +15,11 @@ characters:
       fear: ""               # 恐懼/弱點（他害怕什麼？）
       speech_pattern: ""     # 說話方式/口頭禪
       secret: ""             # 不為人知的秘密
+      
+      # [NEW] 角色套路配置 (Reference to trope_library.yaml)
+      tropes:                # 該角色啟用的套路 ID 列表
+        - "ARCH_001"         # Example: The Reincarnated Sage
+      
       skills:                # 技能樹
         - name: ""
           level: ""
