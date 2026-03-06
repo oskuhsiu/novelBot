@@ -134,8 +134,13 @@ closed_foreshadowing:
 - 標記為已關閉
 ```
 
-### Step 4: 寫入 lore_bank.yaml
-將提取的資訊結構化後寫入
+### Step 4: 寫入 lore_bank.yaml + ChromaDB（雙寫）
+將提取的資訊結構化後：
+1. 寫入 `memory/lore_bank.yaml`（傳統格式，向後兼容）
+2. 同步寫入 ChromaDB `lore_bank` collection：
+```bash
+.venv/bin/python tools/lore_update.py --proj {proj} event --id "{id}" --cat "{category}" --ch {chapter_num} --char "{char_id}" --name "{event_name}" --status "{status}" --doc "{document}"
+```
 
 ## 壓縮原則
 

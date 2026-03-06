@@ -86,7 +86,7 @@ source_structure:
 // turbo
 讀取目標專案的設定檔：
 - `config/novel_config.yaml` - 風格與世界觀
-- `config/character_db.yaml` - 角色庫
+- 角色資料庫（SQLite, via `char_query.py --proj {proj} list` + `get`）
 - `config/faction_registry.yaml` - 勢力登記
 - `config/world_atlas.yaml` - 世界地圖
 - `config/power_system.yaml` - 力量體系
@@ -146,7 +146,7 @@ output_format:
 ### Step 8: 寫入大綱
 // turbo
 將生成的大綱寫入：
-- `config/narrative_progress.yaml` - 追加新章節
+- `config/story_outline.yaml` - 追加新章節
 - 或輸出到獨立檔案 `output/mirror_outline.yaml`
 
 ### Step 9: 輸出報告
@@ -174,4 +174,4 @@ output_format:
 
 ## 輸出
 
-生成的大綱存放於 `output/mirror_outline.yaml` 或直接整合至 `narrative_progress.yaml`。
+生成的大綱存放於 `output/mirror_outline.yaml` 或直接整合至 `story_outline.yaml`。

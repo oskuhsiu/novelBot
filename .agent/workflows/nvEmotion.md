@@ -136,16 +136,22 @@ L=低壓 M=中等 H=高壓 !=警告
 ```
 
 ### Step 7: 自動修復（可選）
-若 `fix=true`，更新 `narrative_progress.yaml`：
+若 `fix=true`，更新相關大綱/進度檔案。
 
-```yaml
-chapter_XX:
-  emotion_adjustment:
-    original_weights: {...}
-    adjusted_weights: {...}
-    reason: "緩衝連續高壓"
+### Step 8: 儲存結果
+
+使用 emotion_query CLI 寫入情感記錄（SQLite）：
+```bash
+# 寫入各章分析結果
+.venv/bin/python tools/emotion_query.py --proj {proj} add {chapter_id} --tension {score} --emotion "{primary_emotion}" --elements '{...}' --note "..."
+
+# 更新緩衝建議
+.venv/bin/python tools/emotion_query.py --proj {proj} set-suggestions --json '[...]'
+
+# 更新連續計數
+.venv/bin/python tools/emotion_query.py --proj {proj} set-consecutive --json '{...}'
 ```
 
 ## 輸出
 
-分析結果存放於 `memory/emotion_log.yaml`。
+分析結果存放於 SQLite `data/novel.db` 的 `emotion_chapters` 表。

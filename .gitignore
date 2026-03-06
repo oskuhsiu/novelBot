@@ -1,1 +1,4 @@
 .codex/
+.claude*.zip
+Claude.md
+.claude/settings.local.json

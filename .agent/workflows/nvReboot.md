@@ -49,13 +49,14 @@ projects/{base_name}_{version}/
 │   ├── faction_registry.yaml  ← 重新生成
 │   ├── power_system.yaml      ← 重新生成
 │   ├── item_compendium.yaml   ← 重新生成
-│   └── narrative_progress.yaml ← 重新生成
+│   ├── narrative_progress.yaml ← 重新生成
+│   └── story_outline.yaml     ← 重新生成
 ├── output/
 │   ├── chapters/
 │   └── style_guide.md         ← 重新生成
 └── memory/
-    ├── lore_bank.yaml         ← 空白初始化
-    └── emotion_log.yaml       ← 空白初始化
+    ├── emotion_log.yaml       ← 空白初始化
+    └── vector_db/             ← 刪除舊的讓 ChromaDB 重建
 ```
 
 ### Step 3: 複製並更新設定檔
@@ -89,15 +90,23 @@ projects/{base_name}_{version}/
 - 1 個主要反派
 - 2-3 個配角
 
+寫入 `character_db.yaml`，然後執行遷移寫入 SQLite：
+```bash
+.venv/bin/python tools/migrate_db.py --proj {new_alias} char
+```
+
 ### Step 9: 重新建立勢力
 使用 `skill_faction_forge` 創建 2-4 個勢力
 
 ### Step 10: 重新規劃大綱
-使用 `skill_outline_architect` 規劃全書結構，基於 `target_chapters` 設計各卷和章節分配。
+使用 `skill_outline_architect` 規劃全書結構，寫入 `config/story_outline.yaml`，基於 `target_chapters` 設計各卷和章節分配。
 （注意：各 Arc 的 SubArc 數量應在指定範圍內隨機變動，勿固定中位數）
 
 ### Step 11: 生成初始道具
-使用 `skill_item_smith` 為主角生成初始裝備
+使用 `skill_item_smith` 為主角生成初始裝備，寫入 `item_compendium.yaml`，然後遷移至 SQLite：
+```bash
+.venv/bin/python tools/migrate_db.py --proj {new_alias} item
+```
 
 ### Step 12: 埋設角色秘密
 使用 `skill_character_secret_seeder` 為主要角色生成隱藏動機

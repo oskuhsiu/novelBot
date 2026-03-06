@@ -59,18 +59,20 @@
 projects/{name}/
 ├── config/
 │   ├── novel_config.yaml      # 核心設定
-│   ├── character_db.yaml      # 角色資料庫
+│   ├── character_db.yaml      # 角色資料庫 (YAML 備份)
 │   ├── world_atlas.yaml       # 世界觀地圖
 │   ├── faction_registry.yaml  # 勢力登記
 │   ├── power_system.yaml      # 力量體系
-│   ├── item_compendium.yaml   # 物品目錄
+│   ├── item_compendium.yaml   # 物品目錄 (YAML 備份)
 │   └── narrative_progress.yaml # 進度追蹤
+├── data/
+│   └── novel.db               # SQLite (角色/情感/物品/交易)
 ├── output/
 │   ├── chapters/              # 章節輸出
 │   └── style_guide.md         # 風格指南
 └── memory/
-    ├── lore_bank.yaml         # 長期記憶
-    └── emotion_log.yaml       # 情感波段記錄
+    ├── lore_bank.yaml         # 長期記憶 (YAML 備份)
+    └── emotion_log.yaml       # 情感波段記錄 (YAML 備份)
 ```
 
 ## 核心配置參數
@@ -164,33 +166,43 @@ words_per_chapter:
 
 這確保角色在成長的同時保持核心性格一致。
 
-## 記憶系統
+## 資料存取架構
 
-### 長期記憶 (lore_bank.yaml)
-- 已發生事件（不可變）
-- 關係變動記錄
-- 伏筆追蹤
+高頻存取的資料使用 SQLite（`data/novel.db`）+ CLI 按需查詢，避免全量載入浪費 context：
 
-### 情感記憶 (emotion_log.yaml)
-- 各章情感強度
-- 張力曲線追蹤
-- 自動緩衝建議
+| 資料 | 儲存 | CLI 工具 | 查詢模式 |
+|------|------|---------|---------|
+| 角色 | SQLite | `char_query.py` | `list` 摘要 + `get` 按需載入 |
+| 情感 | SQLite | `emotion_query.py` | `recent` 最近 N 章 + `analysis` 統計 |
+| 物品 | SQLite | `item_query.py` | `list` 摘要 + `get` 單一道具 |
+| 交易 | SQLite | `item_query.py` | `balance` 餘額 + `tx-recent` 最近紀錄 |
+| 嗶嗶帳本 | SQLite | `item_query.py` | `bibi-pending` 未結清項目 |
+| 長期記憶 | ChromaDB | `lore_query.py` | 語意搜尋 |
 
-### 短期記憶 (status_snapshot)
-- 當前場景狀態
-- 角色即時狀態
-- 物品位置
+YAML 檔案保留作為備份和創建時的初始寫入格式。
+
+### 記憶層級
+
+- **長期記憶** (ChromaDB lore_bank) — 已發生事件、關係變動、伏筆追蹤
+- **情感記憶** (SQLite emotion) — 各章情感強度、張力曲線、緩衝建議
+- **短期記憶** (status_snapshot) — 當前場景狀態、角色即時狀態、物品位置
 
 ## 目錄結構
 
 ```
 novel_bot2/
-├── .agent/workflows/   # 16 個 Workflows
-├── .agent/skills/      # 32 個 Skills
+├── .claude/skills/     # Skills (A/B/C 類)
 │   ├── foundation/     # 基石類 (7)
 │   ├── structure/      # 結構類 (8)
 │   ├── execution/      # 執行類 (8)
-│   └── memory/         # 記憶類 (9)
+│   ├── memory/         # 記憶類 (9)
+│   └── nv*/            # Workflow Skills
+├── tools/              # CLI 工具
+│   ├── char_query.py   # 角色查詢
+│   ├── emotion_query.py # 情感查詢
+│   ├── item_query.py   # 物品/交易查詢
+│   ├── lore_query.py   # ChromaDB 查詢
+│   └── migrate_db.py   # YAML → SQLite 遷移
 ├── templates/          # 設定檔模板
 ├── docs/               # 詳細文檔
 └── projects/           # 專案資料夾

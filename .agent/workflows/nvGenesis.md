@@ -101,12 +101,13 @@ projects/{name}/
 │   ├── faction_registry.yaml
 │   ├── power_system.yaml
 │   ├── item_compendium.yaml
-│   └── narrative_progress.yaml
+│   ├── narrative_progress.yaml
+│   ├── outline_index.yaml
+│   └── outline/
 ├── output/
 │   ├── chapters/
 │   └── style_guide.md
 └── memory/
-    ├── lore_bank.yaml
     └── emotion_log.yaml
 ```
 
@@ -182,17 +183,25 @@ theme_settings:
 - 若有簡述，參考 `synopsis_analysis.character_hints`
 - 否則預設創建：1 主角 + 1 反派 + 2-3 配角
 
+寫入 `character_db.yaml`，然後執行遷移寫入 SQLite：
+```bash
+.venv/bin/python tools/migrate_db.py --proj {alias} char
+```
+
 ### Step 7: 建立勢力
 使用 `skill_faction_forge` 創建 2-4 個勢力
 
 ### Step 8: 規劃大綱
-使用 `skill_outline_architect` 規劃全書結構：
+使用 `skill_outline_architect` 規劃全書結構，寫入 `config/outline_index.yaml` 和 `config/outline/arc_{N}.yaml`：
 - **若有簡述**：直接使用 `synopsis_analysis.arc_summaries` 和 subarcs
 - **否則**：根據 `{arcs}` 和 `{subarcs}` 生成（SubArc 數量應在範圍內隨機變動）
 - **整合主題弧**：確保大綱中的關鍵節點與 `theme_arc` 對應
 
 ### Step 9: 生成初始道具
-使用 `skill_item_smith` 為主角生成初始裝備，寫入 `item_compendium.yaml`
+使用 `skill_item_smith` 為主角生成初始裝備，寫入 `item_compendium.yaml`，然後遷移至 SQLite：
+```bash
+.venv/bin/python tools/migrate_db.py --proj {alias} item
+```
 
 ### Step 10: 初始化動態檔案【新增】
 // turbo
