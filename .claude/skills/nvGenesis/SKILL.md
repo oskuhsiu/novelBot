@@ -132,7 +132,10 @@ description: 建立新小說專案，初始化世界觀、角色與大綱
 
 ## Step 4: 建構世界觀
 
-讀取 `{{REPO_ROOT}}/.claude/skills/foundation/world_builder/SKILL.md` 並遵循其指令生成世界觀，寫入 `{{PROJECT_DIR}}/config/world_atlas.yaml`。
+讀取 `{{REPO_ROOT}}/.claude/skills/foundation/world_builder/SKILL.md` 並遵循其指令生成世界觀，直接寫入 SQLite 資料庫：
+```bash
+cd {{REPO_ROOT}} && .venv/bin/python tools/atlas_query.py --proj {{ALIAS}} add --json '{"id":"REG_001","name":"...","region_type":"...","summary":"...","description":"...","climate":"...","locations":[...]}'
+```
 
 ## Step 5: 設計力量體系
 
@@ -144,14 +147,22 @@ description: 建立新小說專案，初始化世界觀、角色與大綱
 - 若有簡述，參考分析結果中的 character_hints
 - 否則預設創建：1 主角 + 1 反派 + 2-3 配角
 
-寫入 `{{PROJECT_DIR}}/config/character_db.yaml`，然後執行遷移寫入 SQLite：
+直接寫入 SQLite 資料庫（不寫 YAML）。對每個角色執行：
 ```bash
-cd {{REPO_ROOT}} && .venv/bin/python tools/migrate_db.py --proj {{ALIAS}} char
+cd {{REPO_ROOT}} && .venv/bin/python tools/char_query.py --proj {{ALIAS}} add --json '{"id":"...","name":"...","role":"...","type":"character","identity":"...","base_profile":{...},"current_state":{...}}'
+```
+角色間的關係也直接寫入：
+```bash
+cd {{REPO_ROOT}} && .venv/bin/python tools/char_query.py --proj {{ALIAS}} add-rel SOURCE_ID TARGET_ID --surface "關係" --tension 50
 ```
 
 ## Step 7: 建立勢力
 
-讀取 `{{REPO_ROOT}}/.claude/skills/foundation/faction_forge/SKILL.md` 並遵循其指令創建 2-4 個勢力，寫入 `{{PROJECT_DIR}}/config/faction_registry.yaml`。
+讀取 `{{REPO_ROOT}}/.claude/skills/foundation/faction_forge/SKILL.md` 並遵循其指令創建 2-4 個勢力，直接寫入 SQLite 資料庫：
+```bash
+cd {{REPO_ROOT}} && .venv/bin/python tools/faction_query.py --proj {{ALIAS}} add --json '{"id":"FAC_001","name":"...","tier":"...","type":"...","philosophy":"...","description":"...",...}'
+cd {{REPO_ROOT}} && .venv/bin/python tools/faction_query.py --proj {{ALIAS}} add-rel FAC_001 FAC_002 --status "Hostile" --tension 80
+```
 
 ## Step 8: 規劃大綱
 
@@ -163,15 +174,15 @@ cd {{REPO_ROOT}} && .venv/bin/python tools/migrate_db.py --proj {{ALIAS}} char
 
 ## Step 9: 生成初始道具
 
-讀取 `{{REPO_ROOT}}/.claude/skills/foundation/item_smith/SKILL.md` 並遵循其指令為主角生成初始裝備，寫入 `{{PROJECT_DIR}}/config/item_compendium.yaml`，然後遷移至 SQLite：
+讀取 `{{REPO_ROOT}}/.claude/skills/foundation/item_smith/SKILL.md` 並遵循其指令為主角生成初始裝備，直接寫入 SQLite 資料庫（不寫 YAML）：
 ```bash
-cd {{REPO_ROOT}} && .venv/bin/python tools/migrate_db.py --proj {{ALIAS}} item
+cd {{REPO_ROOT}} && .venv/bin/python tools/item_query.py --proj {{ALIAS}} add --json '{"id":"...","name":"...","category":"...","description":"...","holder":"CHAR_001","obtained_chapter":0}'
 ```
 
 ## Step 10: 初始化動態檔案
 
 創建 `{{PROJECT_DIR}}/memory/` 下的動態追蹤檔案：
-- emotion_log.yaml（空白模板） — 情感記錄實際使用 SQLite，此 YAML 僅為備份
+- emotion_log.yaml（空白模板） — 情感記錄實際使用 SQLite
 - motivation_map.yaml（動機地圖模板）
 - relationship_dynamics.yaml（關係動態模板）
 - archive_index.yaml（冷儲存索引模板）

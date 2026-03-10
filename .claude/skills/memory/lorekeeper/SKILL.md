@@ -137,7 +137,8 @@ closed_foreshadowing:
 ### Step 4: 寫入 ChromaDB
 將提取的資訊結構化後，寫入 ChromaDB `lore_bank` collection：
 ```bash
-.venv/bin/python tools/lore_update.py --proj {proj} event --id "{id}" --cat "{category}" --ch {chapter_num} --char "{char_id}" --name "{event_name}" --status "{status}" --doc "{document}"
+.venv/bin/python tools/lore_update.py --proj {proj} event --id "{id}" --cat "{category}" --ch {chapter_num} --name "{event_name}" --status "{status}" --doc "{document}"
+# --char "{char_id}" 為選填，僅在事件有明確關聯角色時才加上
 ```
 
 ## 壓縮原則

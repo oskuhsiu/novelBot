@@ -49,7 +49,7 @@ dungeon_settings:
 
 ### Step 1: 讀取區域設定
 
-從 `world_atlas.yaml` 獲取密境基本資訊：
+從 `SQLite 世界地圖資料庫 (via atlas_query.py)` 獲取密境基本資訊：
 
 ```yaml
 zone_input:
@@ -158,7 +158,7 @@ boss_room:
 
 ### Step 5: 寫入世界地圖
 
-擴展 `world_atlas.yaml`：
+擴展 `SQLite 世界地圖資料庫 (via atlas_query.py)`：
 
 ```yaml
 write_to:

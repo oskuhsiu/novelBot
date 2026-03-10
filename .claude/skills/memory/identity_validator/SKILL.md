@@ -34,7 +34,7 @@ character_faction_check:
 
 ### Step 2: 讀取派系語言風格
 
-從 `faction_registry.yaml` 獲取：
+從 SQLite 資料庫獲取（`faction_query.py --proj {proj} get FAC_001`）：
 
 ```yaml
 faction_speech_patterns:

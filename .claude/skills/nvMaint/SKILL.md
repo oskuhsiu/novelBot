@@ -49,7 +49,8 @@ description: 維護記憶與設定檔同步
 寫入 ChromaDB `lore_bank` collection。更新項目：events, relationship_changes, open/closed foreshadowing, world_facts, item_status, permanent_changes。
 
 ```bash
-cd {{REPO_ROOT}} && .venv/bin/python tools/lore_update.py --proj {{PROJ}} event --id "{id}" --cat "{category}" --ch {chapter} --char "{char_id}" --name "{name}" --status "{status}" --doc "{document}"
+cd {{REPO_ROOT}} && .venv/bin/python tools/lore_update.py --proj {{PROJ}} event --id "{id}" --cat "{category}" --ch {chapter} --name "{name}" --status "{status}" --doc "{document}"
+# --char "{char_id}" 為選填，僅在事件有明確關聯角色時才加上
 ```
 
 允許的 category: `global_memory`, `character_memory`, `mystery`, `event`, `world_fact`, `relationship_change`, `foreshadowing`, `item_status`, `permanent_change`
@@ -97,11 +98,33 @@ cd {{REPO_ROOT}} && .venv/bin/python tools/char_query.py --proj {{PROJ}} update-
 
 ## Step 5: 更新世界地圖（full only）
 
-更新 `{{PROJECT_DIR}}/config/world_atlas.yaml`。新區域讀取 `{{REPO_ROOT}}/.claude/skills/foundation/world_builder/SKILL.md`。
+使用 CLI 更新世界地圖資料庫（SQLite）。新區域讀取 `{{REPO_ROOT}}/.claude/skills/foundation/world_builder/SKILL.md`。
+```bash
+# 查詢現有區域
+cd {{REPO_ROOT}} && .venv/bin/python tools/atlas_query.py --proj {{PROJ}} list
+# 新增區域
+cd {{REPO_ROOT}} && .venv/bin/python tools/atlas_query.py --proj {{PROJ}} add --json '{"id":"REG_NEW","name":"...","region_type":"...","summary":"...","description":"...","locations":[...]}'
+# 更新屬性
+cd {{REPO_ROOT}} && .venv/bin/python tools/atlas_query.py --proj {{PROJ}} update-field REG_001 climate "..."
+```
 
 ## Step 6: 更新勢力登記（full only）
 
-更新 `{{PROJECT_DIR}}/config/faction_registry.yaml`。新勢力讀取 `{{REPO_ROOT}}/.claude/skills/foundation/faction_forge/SKILL.md`。
+使用 CLI 更新勢力資料庫（SQLite）。新勢力讀取 `{{REPO_ROOT}}/.claude/skills/foundation/faction_forge/SKILL.md`。
+
+```bash
+# 查詢現有勢力
+cd {{REPO_ROOT}} && .venv/bin/python tools/faction_query.py --proj {{PROJ}} list
+cd {{REPO_ROOT}} && .venv/bin/python tools/faction_query.py --proj {{PROJ}} relations
+# 新增勢力
+cd {{REPO_ROOT}} && .venv/bin/python tools/faction_query.py --proj {{PROJ}} add --json '{"id":"...","name":"...","tier":"...","type":"...","philosophy":"...","description":"..."}'
+# 更新 tension
+cd {{REPO_ROOT}} && .venv/bin/python tools/faction_query.py --proj {{PROJ}} update-tension FAC_001 FAC_002 85
+# 更新勢力屬性
+cd {{REPO_ROOT}} && .venv/bin/python tools/faction_query.py --proj {{PROJ}} update-field FAC_001 notable_members '["CHAR_001","CHAR_003"]'
+# 新增關係
+cd {{REPO_ROOT}} && .venv/bin/python tools/faction_query.py --proj {{PROJ}} add-rel FAC_001 FAC_NEW --status "Neutral" --tension 30
+```
 
 讀取 `{{REPO_ROOT}}/.claude/skills/memory/power_dynamic_updater/SKILL.md` 分析勢力緊張度。
 

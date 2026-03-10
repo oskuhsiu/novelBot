@@ -7,7 +7,7 @@ description: 角色鑄造廠 - 生成有血有肉的角色，維護 base_profile
 
 ## 功能概述
 
-此 Skill 負責創造角色並寫入 `character_db.yaml`。每個角色採用「雙軌制」設計：
+此 Skill 負責創造角色並寫入 SQLite 資料庫。每個角色採用「雙軌制」設計：
 - **base_profile**：性格錨點，固定不變
 - **current_state**：動態狀態，隨劇情更新
 
@@ -26,14 +26,14 @@ description: 角色鑄造廠 - 生成有血有肉的角色，維護 base_profile
 
 ## 輸出
 
-更新 `templates/character_db.yaml`，新增角色條目
+透過 CLI 寫入 SQLite 資料庫，新增角色條目
 
 ## 執行步驟
 
 ### Step 1: 讀取上下文
 ```
 讀取 templates/novel_config.yaml 的 style_profile
-讀取 templates/world_atlas.yaml 了解世界背景
+讀取 SQLite 世界地圖資料庫 (via atlas_query.py) 了解世界背景
 讀取 templates/power_system.yaml 了解可用技能（如有）
 ```
 
@@ -104,45 +104,40 @@ description: 角色鑄造廠 - 生成有血有肉的角色，維護 base_profile
 - 當前目標：故事開始時想要達成什麼
 ```
 
-### Step 5: 寫入 character_db.yaml
-結構化後寫入資料庫
+### Step 5: 寫入 SQLite 資料庫
 
-## 角色資料範例
+使用 CLI 將每個角色直接寫入資料庫：
+```bash
+.venv/bin/python tools/char_query.py --proj {proj} add --json '{
+  "id": "CHAR_001",
+  "name": "李玄 (Li Xuan)",
+  "role": "Protagonist",
+  "type": "character",
+  "identity": "底層黑客，擁有舊時代金丹算法",
+  "base_profile": {
+    "traits": ["冷靜", "偏執", "技術高手"],
+    "appearance": "磨損的長風衣，胸口有符箓紋路，左眼為電子義眼",
+    "core_desire": "修復妹妹的意識備份",
+    "fear": "失去僅存的人性，變成純粹的機器",
+    "speech_pattern": "少話，習慣用技術術語作比喻",
+    "secret": "妹妹的意識備份中藏有上一代的禁忌代碼",
+    "skills": [{"name": "離線劍意", "level": "中位", "description": "斷開網絡連接，將劍意壓縮至實體"}]
+  },
+  "current_state": {
+    "last_updated_chapter": 1,
+    "location": "第108層聽劍閣露台",
+    "health": "95%",
+    "energy_level": "80%",
+    "emotional_state": "警覺",
+    "inventory": ["加密硬盤", "折疊義體飛劍", "低階修復貼片x3"],
+    "active_goals": ["完成黑市交易", "躲避執法隊"]
+  }
+}'
+```
 
-```yaml
-characters:
-  - id: "CHAR_001"
-    name: "李玄 (Li Xuan)"
-  - id: "CHAR_001"
-    name: "李玄 (Li Xuan)"
-    role: "Protagonist"
-    importance: 10
-    
-    base_profile:
-      identity: "底層黑客，擁有舊時代金丹算法"
-      traits: ["冷靜", "偏執", "技術高手"]
-      appearance: "磨損的長風衣，胸口有符箓紋路，左眼為電子義眼"
-      core_desire: "修復妹妹的意識備份"
-      fear: "失去僅存的人性，變成純粹的機器"
-      speech_pattern: "少話，習慣用技術術語作比喻"
-      secret: "妹妹的意識備份中藏有上一代的禁忌代碼"
-      skills:
-        - name: "離線劍意"
-          level: "中位"
-          description: "斷開網絡連接，將劍意壓縮至實體"
-    
-    current_state:
-      last_updated_chapter: 1
-      location: "第108層聽劍閣露台"
-      health: "95%"
-      energy_level: "80%"
-      emotional_state: "警覺"
-      inventory: ["加密硬盤", "折疊義體飛劍", "低階修復貼片x3"]
-      active_goals: ["完成黑市交易", "躲避執法隊"]
-      relationships:
-        - target_id: "CHAR_002"
-          relation: "追捕者"
-          attitude: -70
+使用 CLI 寫入角色間的關係：
+```bash
+.venv/bin/python tools/char_query.py --proj {proj} add-rel CHAR_001 CHAR_002 --surface "追捕者" --tension 70
 ```
 
 ## 特殊模式

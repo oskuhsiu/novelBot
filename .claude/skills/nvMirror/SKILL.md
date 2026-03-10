@@ -93,8 +93,8 @@ description: 架構逆向與重鑄，借用外部劇情骨架
 讀取目標專案的設定檔：
 - `{{PROJECT_DIR}}/config/novel_config.yaml`
 - 角色資料庫（SQLite）：`cd {{REPO_ROOT}} && .venv/bin/python tools/char_query.py --proj {{PROJ}} list` + 按需 `get`
-- `{{PROJECT_DIR}}/config/faction_registry.yaml`
-- `{{PROJECT_DIR}}/config/world_atlas.yaml`
+- 勢力資料庫（SQLite）：`cd {{REPO_ROOT}} && .venv/bin/python tools/faction_query.py --proj {{PROJ}} list` + 按需 `get` / `relations`
+- 世界地圖資料庫（SQLite）：`cd {{REPO_ROOT}} && .venv/bin/python tools/atlas_query.py --proj {{PROJ}} list` + 按需 `get`
 - `{{PROJECT_DIR}}/config/power_system.yaml`
 
 ## Step 4: 語義映射 (Map)

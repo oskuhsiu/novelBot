@@ -81,9 +81,3 @@ description: 寫一章
 ✅ 第 {N} 章完成 | {title} | {words} 字 / {min}-{max} | 維護：✅ | 審查：{結果}
 ```
 
-### Step 5: 完成信號
-// turbo
-呼叫 `/nvComplete` 觸發 PostToolUse hook。
-
-> [!CAUTION]
-> 必須在所有工作完成後才執行。這是 nvChapter 的最後一步。

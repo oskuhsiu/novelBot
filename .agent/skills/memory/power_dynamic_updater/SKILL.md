@@ -9,7 +9,7 @@ description: 權力博弈監測 - 自動更新勢力間的緊張值
 
 ## 功能說明
 
-監測劇情中影響勢力關係的事件，自動調整 `faction_registry.yaml` 中的 `tension` 值。
+監測劇情中影響勢力關係的事件，自動調整 `SQLite 勢力資料庫` 中的 `tension` 值。
 
 ## 觸發條件
 
@@ -98,21 +98,12 @@ threshold_triggers:
 
 ### Step 4: 更新資料庫
 
-寫入 `faction_registry.yaml`：
-
-```yaml
-relations:
-  - target_id: "FAC_002"
-    status: "Hostile"
-    tension: 100
-    last_updated: "chapter_15"
-    history:
-      - chapter: 13
-        event: "siege_failed"
-        change: +15
-      - chapter: 15
-        event: "leader_death"
-        change: +20
+使用 CLI 更新勢力關係：
+```bash
+# 更新 tension
+.venv/bin/python tools/faction_query.py --proj {proj} update-tension FAC_001 FAC_002 100
+# 新增/更新關係（含歷史記錄）
+.venv/bin/python tools/faction_query.py --proj {proj} add-rel FAC_001 FAC_002 --status "Hostile" --tension 100 --history "chapter_13: siege_failed (+15); chapter_15: leader_death (+20)"
 ```
 
 ### Step 5: 觸發後續
@@ -156,5 +147,5 @@ triggered_actions:
 ## 連動機制
 
 1. **nvChapter 結束時**：自動分析本章的勢力影響
-2. **nvMaint 執行時**：更新 faction_registry.yaml
+2. **nvMaint 執行時**：更新 SQLite 勢力資料庫
 3. **chaos_engine**：高緊張度時可能觸發

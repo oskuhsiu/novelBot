@@ -169,6 +169,32 @@ def cmd_update_rel(db: CharacterDB, args):
     print(f"OK: {args.source_id} -> {args.target_id} updated")
 
 
+def cmd_add(db: CharacterDB, args):
+    data = json.loads(args.json)
+    char_id = data.pop("id")
+    name = data.pop("name")
+    role = data.pop("role", "Minor")
+    char_type = data.pop("type", "character")
+    identity = data.pop("identity", "")
+    base_profile = data.pop("base_profile", {})
+    current_state = data.pop("current_state", {})
+    notes = data.pop("notes", "")
+    db.upsert_character(char_id, name, role, char_type, identity,
+                        base_profile, current_state, notes)
+    print(f"OK: {char_id} ({name}) added")
+
+
+def cmd_add_rel(db: CharacterDB, args):
+    db.upsert_relationship(
+        args.source_id, args.target_id,
+        surface_relation=args.surface or "",
+        hidden_dynamic=args.hidden or "",
+        common_interest=args.common or "",
+        tension=args.tension or 0,
+    )
+    print(f"OK: {args.source_id} -> {args.target_id} added")
+
+
 def cmd_stats(db: CharacterDB, args):
     s = db.stats()
     print(f"  project: {s['project']}")
@@ -228,6 +254,19 @@ def main():
     p_ur.add_argument("--common", type=str, help="共同利益")
     p_ur.add_argument("--tension", type=int, help="緊張度 0-100")
 
+    # add
+    p_add = subparsers.add_parser("add", help="新增角色")
+    p_add.add_argument("--json", required=True, help="JSON 字串（必含 id, name）")
+
+    # add-rel
+    p_ar = subparsers.add_parser("add-rel", help="新增關係")
+    p_ar.add_argument("source_id", help="來源角色 ID")
+    p_ar.add_argument("target_id", help="目標角色 ID")
+    p_ar.add_argument("--surface", type=str, help="表面關係")
+    p_ar.add_argument("--hidden", type=str, help="潛在關係")
+    p_ar.add_argument("--common", type=str, help="共同利益")
+    p_ar.add_argument("--tension", type=int, help="緊張度 0-100")
+
     # stats
     subparsers.add_parser("stats", help="統計")
 
@@ -248,6 +287,8 @@ def main():
             "update-state": cmd_update_state,
             "update-field": cmd_update_field,
             "update-rel": cmd_update_rel,
+            "add": cmd_add,
+            "add-rel": cmd_add_rel,
             "stats": cmd_stats,
         }
         commands[args.command](db, args)

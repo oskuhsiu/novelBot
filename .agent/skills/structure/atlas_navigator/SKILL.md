@@ -9,7 +9,7 @@ description: 導航員 - 查詢世界地圖，驗證角色移動的可行性
 
 ## 功能說明
 
-當劇情需要角色移動時，此 Skill 負責查詢 `world_atlas.yaml` 中的 `access_points`，確保移動邏輯合理。
+當劇情需要角色移動時，此 Skill 負責查詢 `SQLite 世界地圖資料庫 (via atlas_query.py)` 中的 `access_points`，確保移動邏輯合理。
 
 ## 使用情境
 
@@ -30,7 +30,7 @@ input:
 
 ### Step 2: 查詢路徑
 
-從 `world_atlas.yaml` 查詢 `access_points`：
+從 `SQLite 世界地圖資料庫 (via atlas_query.py)` 查詢 `access_points`：
 
 ```yaml
 access_check:

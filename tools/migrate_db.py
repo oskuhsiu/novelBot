@@ -8,6 +8,8 @@ migrate_db.py — 統一資料遷移腳本
   - char:     character_db.yaml → SQLite (novel.db)
   - emotion:  emotion_log.yaml → SQLite (novel.db)
   - item:     item_compendium.yaml → SQLite (novel.db)
+  - faction:  faction_registry.yaml → SQLite (novel.db)
+  - atlas:    world_atlas.yaml → SQLite (novel.db)
   - all:      以上全部
 
 使用方式:
@@ -698,6 +700,265 @@ def migrate_items(project_folder: str, dry_run: bool = False, verify: bool = Fal
 
 
 # ════════════════════════════════════════════════════════════
+#  Faction Registry 遷移
+# ════════════════════════════════════════════════════════════
+
+def parse_faction_registry(yaml_path: str) -> dict:
+    """
+    解析 faction_registry.yaml，回傳
+    {"factions": [...], "relations": [...], "events": [...]}
+    """
+    with open(yaml_path, "r", encoding="utf-8") as f:
+        data = yaml.safe_load(f)
+
+    if not data:
+        return {"factions": [], "relations": [], "events": []}
+
+    factions = []
+    for fac in data.get("factions", []) or []:
+        fac_id = fac.get("id", "")
+        name = fac.get("name", "")
+        tier = fac.get("tier", "")
+        faction_type = fac.get("type", "")
+        philosophy = fac.get("philosophy", "")
+        description = fac.get("description", "")
+
+        # 剩餘欄位放 properties
+        known_keys = {"id", "name", "tier", "type", "philosophy", "description"}
+        properties = {k: v for k, v in fac.items() if k not in known_keys}
+
+        factions.append({
+            "id": fac_id, "name": name, "tier": tier,
+            "type": faction_type, "philosophy": philosophy,
+            "description": description, "properties": properties,
+        })
+
+    relations = []
+    for rel in data.get("relations", []) or []:
+        source_id = rel.get("source_id", "")
+        target_id = rel.get("target_id", "")
+        status = rel.get("status", "Neutral")
+        tension = rel.get("tension", 0)
+
+        known_keys = {"source_id", "target_id", "status", "tension"}
+        properties = {k: v for k, v in rel.items() if k not in known_keys}
+
+        relations.append({
+            "source_id": source_id, "target_id": target_id,
+            "status": status, "tension": tension, "properties": properties,
+        })
+
+    events = []
+    for evt in data.get("current_events", []) or []:
+        event_id = evt.get("event_id", "")
+        affected = evt.get("affected_factions", [])
+        description = evt.get("description", "")
+        impact = evt.get("impact", "")
+
+        known_keys = {"event_id", "affected_factions", "description", "impact"}
+        properties = {k: v for k, v in evt.items() if k not in known_keys}
+
+        events.append({
+            "event_id": event_id, "affected_factions": affected,
+            "description": description, "impact": impact, "properties": properties,
+        })
+
+    return {"factions": factions, "relations": relations, "events": events}
+
+
+def migrate_factions(project_folder: str, dry_run: bool = False, verify: bool = False):
+    yaml_path = os.path.join(PROJECT_ROOT, project_folder, "config", "faction_registry.yaml")
+    if not os.path.exists(yaml_path):
+        print(f"  skip: {yaml_path} not found")
+        return
+
+    print(f"\n  [faction] {yaml_path}")
+    parsed = parse_faction_registry(yaml_path)
+    facs = parsed["factions"]
+    rels = parsed["relations"]
+    evts = parsed["events"]
+    print(f"    factions: {len(facs)}, relations: {len(rels)}, events: {len(evts)}")
+
+    if dry_run:
+        print("    (dry-run)")
+        for f in facs[:5]:
+            print(f"      {f['id']:12s} [{f['tier']:2s}] {f['name']}")
+        if len(facs) > 5:
+            print(f"      ... and {len(facs) - 5} more")
+        return
+
+    from tools.faction_db import FactionDB
+    db = FactionDB(project_folder)
+    try:
+        if verify:
+            db_count = db.count()
+            print(f"    YAML: {len(facs)}, DB: {db_count}")
+            if db_count == len(facs):
+                print("    OK: counts match")
+            else:
+                print(f"    MISMATCH: diff={db_count - len(facs)}")
+            for f in facs[:3]:
+                found = db.get_faction(f["id"])
+                status = "found" if found else "MISSING"
+                print(f"      {f['id']}: {status}")
+            return
+
+        for f in facs:
+            db.upsert_faction(
+                f["id"], f["name"], f["tier"], f["type"],
+                f["philosophy"], f["description"], f["properties"],
+            )
+        for r in rels:
+            db.upsert_relation(
+                r["source_id"], r["target_id"],
+                r["status"], r["tension"], r["properties"],
+            )
+        for e in evts:
+            db.upsert_event(
+                e["event_id"], e["affected_factions"],
+                e["description"], e["impact"], e["properties"],
+            )
+        s = db.stats()
+        print(f"    OK: {s['total_factions']} factions, {s['total_relations']} relations, {s['total_events']} events -> {db.db_path}")
+    finally:
+        db.close()
+
+
+# ════════════════════════════════════════════════════════════
+#  World Atlas 遷移
+# ════════════════════════════════════════════════════════════
+
+def parse_world_atlas(yaml_path: str) -> list[dict]:
+    """
+    解析 world_atlas.yaml，回傳 list of regions/zones/transit entries。
+    每個 region 的 locations 存在 properties JSON 中。
+    """
+    with open(yaml_path, "r", encoding="utf-8") as f:
+        data = yaml.safe_load(f)
+
+    if not data:
+        return []
+
+    entries = []
+
+    # regions（含嵌套 locations）
+    for reg in data.get("regions", []) or []:
+        reg_id = reg.get("id", "")
+        name = reg.get("name", "")
+        reg_type = reg.get("type", "region")
+        description = reg.get("description", "")
+
+        known_keys = {"id", "name", "type"}
+        properties = {k: v for k, v in reg.items() if k not in known_keys}
+
+        entries.append({
+            "id": reg_id, "name": name,
+            "region_type": reg_type, "parent_id": "",
+            "summary": description[:100] if description else "",
+            "properties": properties,
+        })
+
+    # zones
+    for zone in data.get("zones", []) or []:
+        zone_id = zone.get("id", "")
+        name = zone.get("name", "")
+        zone_type = zone.get("type", "zone")
+        parent = zone.get("parent_region", "")
+
+        known_keys = {"id", "name", "type", "parent_region"}
+        properties = {k: v for k, v in zone.items() if k not in known_keys}
+
+        entries.append({
+            "id": zone_id, "name": name,
+            "region_type": zone_type, "parent_id": parent,
+            "summary": zone.get("mechanics", "")[:100],
+            "properties": properties,
+        })
+
+    # transit_network (可能是 dict 或 list)
+    transit_data = data.get("transit_network", None)
+    if isinstance(transit_data, dict):
+        # 整個 transit_network 存為單一 entry
+        entries.append({
+            "id": "TRANSIT_NETWORK", "name": "transit_network",
+            "region_type": "transit", "parent_id": "",
+            "summary": f"connections: {len(transit_data.get('connections', []))}",
+            "properties": transit_data,
+        })
+    elif isinstance(transit_data, list):
+        for transit in transit_data:
+            if not isinstance(transit, dict):
+                continue
+            transit_id = transit.get("id", "")
+            transit_type = transit.get("type", "transit")
+            name = transit_type
+
+            known_keys = {"id", "type"}
+            properties = {k: v for k, v in transit.items() if k not in known_keys}
+
+            entries.append({
+                "id": transit_id, "name": name,
+                "region_type": "transit", "parent_id": "",
+                "summary": f"stops: {transit.get('stops', [])}",
+                "properties": properties,
+            })
+
+    return entries
+
+
+def migrate_atlas(project_folder: str, dry_run: bool = False, verify: bool = False):
+    yaml_path = os.path.join(PROJECT_ROOT, project_folder, "config", "world_atlas.yaml")
+    if not os.path.exists(yaml_path):
+        print(f"  skip: {yaml_path} not found")
+        return
+
+    print(f"\n  [atlas] {yaml_path}")
+    entries = parse_world_atlas(yaml_path)
+    print(f"    entries: {len(entries)}")
+
+    types = {}
+    for e in entries:
+        t = e["region_type"]
+        types[t] = types.get(t, 0) + 1
+    for t, cnt in sorted(types.items()):
+        print(f"      {t}: {cnt}")
+
+    if dry_run:
+        print("    (dry-run)")
+        for e in entries[:5]:
+            print(f"      {e['id']:12s} [{e['region_type']:10s}] {e['name']}")
+        if len(entries) > 5:
+            print(f"      ... and {len(entries) - 5} more")
+        return
+
+    from tools.atlas_db import AtlasDB
+    db = AtlasDB(project_folder)
+    try:
+        if verify:
+            db_count = db.count()
+            print(f"    YAML: {len(entries)}, DB: {db_count}")
+            if db_count == len(entries):
+                print("    OK: counts match")
+            else:
+                print(f"    MISMATCH: diff={db_count - len(entries)}")
+            for e in entries[:3]:
+                found = db.get_region(e["id"])
+                status = "found" if found else "MISSING"
+                print(f"      {e['id']}: {status}")
+            return
+
+        for e in entries:
+            db.upsert_region(
+                e["id"], e["name"], e["region_type"],
+                e["parent_id"], e["summary"], e["properties"],
+            )
+        s = db.stats()
+        print(f"    OK: {s['total_entries']} entries -> {db.db_path}")
+    finally:
+        db.close()
+
+
+# ════════════════════════════════════════════════════════════
 #  主程式
 # ════════════════════════════════════════════════════════════
 
@@ -715,6 +976,10 @@ def migrate_project(project_folder: str, targets: list[str],
         migrate_emotions(project_folder, dry_run=dry_run, verify=verify)
     if "item" in targets or "all" in targets:
         migrate_items(project_folder, dry_run=dry_run, verify=verify)
+    if "faction" in targets or "all" in targets:
+        migrate_factions(project_folder, dry_run=dry_run, verify=verify)
+    if "atlas" in targets or "all" in targets:
+        migrate_atlas(project_folder, dry_run=dry_run, verify=verify)
 
 
 def get_all_projects() -> list[str]:
@@ -731,7 +996,9 @@ def get_all_projects() -> list[str]:
             or os.path.exists(os.path.join(proj_dir, "config", "character_db.yaml"))
             or os.path.exists(os.path.join(proj_dir, "memory", "emotion_log.yaml"))
             or os.path.exists(os.path.join(proj_dir, "config", "emotion_log.yaml"))
-            or os.path.exists(os.path.join(proj_dir, "config", "item_compendium.yaml"))):
+            or os.path.exists(os.path.join(proj_dir, "config", "item_compendium.yaml"))
+            or os.path.exists(os.path.join(proj_dir, "config", "faction_registry.yaml"))
+            or os.path.exists(os.path.join(proj_dir, "config", "world_atlas.yaml"))):
             projects.add(name)
     return sorted(projects)
 
@@ -739,13 +1006,13 @@ def get_all_projects() -> list[str]:
 def main():
     parser = argparse.ArgumentParser(
         description="統一資料遷移腳本 (YAML -> ChromaDB/SQLite)",
-        epilog="targets: lore, char, emotion, item, all",
+        epilog="targets: lore, char, emotion, item, faction, atlas, all",
     )
     parser.add_argument("--proj", type=str, help="專案名稱或別名")
     parser.add_argument("--all-projects", action="store_true", help="遷移所有專案")
     parser.add_argument("--dry-run", action="store_true", help="預覽模式")
     parser.add_argument("--verify", action="store_true", help="驗證已遷移的資料")
-    parser.add_argument("targets", nargs="+", choices=["lore", "char", "emotion", "item", "all"],
+    parser.add_argument("targets", nargs="+", choices=["lore", "char", "emotion", "item", "faction", "atlas", "all"],
                         help="遷移目標")
     args = parser.parse_args()
 

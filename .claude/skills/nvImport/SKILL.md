@@ -86,20 +86,28 @@ description: 從既有內容導入並繼續寫作
 
 ## Step 4: 提取角色
 
-從文本中識別角色（名稱、出場頻率、性格推測、關係推測），寫入 `{{PROJECT_DIR}}/config/character_db.yaml`，然後執行遷移寫入 SQLite：
+從文本中識別角色（名稱、出場頻率、性格推測、關係推測），直接寫入 SQLite 資料庫（不寫 YAML）：
 ```bash
-cd {{REPO_ROOT}} && .venv/bin/python tools/migrate_db.py --proj {{PROJ}} char
+cd {{REPO_ROOT}} && .venv/bin/python tools/char_query.py --proj {{PROJ}} add --json '{"id":"CHAR_001","name":"...","role":"Protagonist","type":"character","identity":"...","base_profile":{...},"current_state":{...}}'
+```
+角色間的關係也直接寫入：
+```bash
+cd {{REPO_ROOT}} && .venv/bin/python tools/char_query.py --proj {{PROJ}} add-rel SOURCE_ID TARGET_ID --surface "關係" --tension 50
 ```
 
 ## Step 5: 提取場景
 
-識別地點和場景（名稱、描述、出現章節），寫入 `{{PROJECT_DIR}}/config/world_atlas.yaml`。
+識別地點和場景（名稱、描述、出現章節），直接寫入 SQLite 資料庫：
+```bash
+cd {{REPO_ROOT}} && .venv/bin/python tools/atlas_query.py --proj {{PROJ}} add --json '{"id":"REG_001","name":"...","region_type":"...","summary":"...","description":"...","locations":[...]}'
+```
 
 ## Step 6: 建立記憶庫
 
 提取已發生事件（關鍵事件、關係變動、物品交換），寫入 ChromaDB：
 ```bash
-cd {{REPO_ROOT}} && .venv/bin/python tools/lore_update.py --proj {{PROJ}} event --id "{id}" --cat "{category}" --ch {chapter} --char "{char_id}" --name "{name}" --status "{status}" --doc "{document}"
+cd {{REPO_ROOT}} && .venv/bin/python tools/lore_update.py --proj {{PROJ}} event --id "{id}" --cat "{category}" --ch {chapter} --name "{name}" --status "{status}" --doc "{document}"
+# --char "{char_id}" 為選填，僅在事件有明確關聯角色時才加上
 ```
 
 ## Step 7: 分析風格

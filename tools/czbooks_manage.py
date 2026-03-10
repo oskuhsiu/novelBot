@@ -572,7 +572,7 @@ def main():
     p_up.add_argument("--proj", required=True)
     p_up.add_argument("--novel-id", help="直接指定 novel_id")
     p_up.add_argument("--range", required=True, dest="range_str", help="章節範圍")
-    p_up.add_argument("--state", default="draft", choices=["draft", "post"])
+    p_up.add_argument("--state", default="post", choices=["draft", "post"])
     p_up.add_argument("--dry", action="store_true", help="只顯示，不執行")
 
     # --- update ---
@@ -580,7 +580,7 @@ def main():
     p_upd.add_argument("--proj", required=True)
     p_upd.add_argument("--novel-id", help="直接指定 novel_id")
     p_upd.add_argument("--range", required=True, dest="range_str", help="章節範圍")
-    p_upd.add_argument("--state", default="draft", choices=["draft", "post"])
+    p_upd.add_argument("--state", default="post", choices=["draft", "post"])
     p_upd.add_argument("--dry", action="store_true", help="只顯示，不執行")
 
     args = parser.parse_args()

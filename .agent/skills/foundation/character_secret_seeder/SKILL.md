@@ -71,18 +71,15 @@ character_secrets:
 
 ### Step 4: 寫入角色資料庫
 
-擴展 `character_db.yaml`，增加隱藏區塊：
-
-```yaml
-CHAR_001:
-  base_profile: {...}
-  current_state: {...}
-  
-  # 這個區塊不用於對外展示
-  hidden_profile:
-    secrets: [...]
-    true_motivation: "..."
-    secret_relationships: [...]
+透過 CLI 將秘密寫入角色的 `base_profile` 中：
+```bash
+.venv/bin/python tools/char_query.py --proj {proj} update-field CHAR_001 hidden_profile --json '{"secrets":[...],"true_motivation":"...","secret_relationships":[...]}'
+```
+注意：`update-field` 更新的是 `current_state` 下的欄位。秘密應寫入 `base_profile`，因此使用 `add` 指令重新寫入完整資料（upsert）：
+```bash
+.venv/bin/python tools/char_query.py --proj {proj} get CHAR_001
+# 取得現有資料後，在 base_profile 中加入 hidden_profile，再用 add 覆寫
+.venv/bin/python tools/char_query.py --proj {proj} add --json '{"id":"CHAR_001","name":"...","role":"...","type":"character","identity":"...","base_profile":{...含 hidden_profile...},"current_state":{...}}'
 ```
 
 ## 輸出格式
@@ -107,6 +104,6 @@ CHAR_001:
 義眼有後門可被遠程控制
 → 揭露時機：危機時刻
 ───────────────────────────
-已寫入：character_db.yaml
-（hidden_profile 區塊）
+已寫入：SQLite 資料庫
+（base_profile.hidden_profile 區塊）
 ```

@@ -43,7 +43,8 @@ description: 維護記憶與設定檔同步
 
 寫入 ChromaDB（與 YAML 同步）:
   - 對每筆新記錄，執行:
-    .venv/bin/python tools/lore_update.py --proj {proj} event --id "{id}" --cat "{category}" --ch {chapter} --char "{char_id}" --name "{name}" --status "{status}" --doc "{document}"
+    .venv/bin/python tools/lore_update.py --proj {proj} event --id "{id}" --cat "{category}" --ch {chapter} --name "{name}" --status "{status}" --doc "{document}"
+    # --char "{char_id}" 為選填，僅在事件有明確關聯角色時才加上
 ```
 
 > [!TIP]
