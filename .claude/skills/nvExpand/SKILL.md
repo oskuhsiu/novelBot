@@ -112,6 +112,12 @@ description: 將字數不足的章節擴寫至目標字數
 
 驗證：不違反 ChromaDB lore/角色資料庫、角色行為一致、上下章銜接連貫。
 
+### Step 6.5: 去 AI 痕跡（nvHumanize）
+
+讀取 `.claude/skills/nvHumanize/SKILL.md` 並遵循其指令處理擴寫完的正文（Context 去重：已在 context 中的檔案禁止重複 Read）。
+
+處理後重新計算字數，若 `< min` → 補足；若 `> max` → 精簡。
+
 ### Step 7: 寫入檔案
 // turbo
 
