@@ -33,7 +33,6 @@ import os
 import chromadb
 from chromadb.config import Settings
 
-# 關閉 ChromaDB 遙測 (PostHog)
 CHROMA_SETTINGS = Settings(anonymized_telemetry=False)
 
 # 預設的專案根目錄

@@ -52,10 +52,12 @@ sys.path.insert(0, ROOT_DIR)
 from tools.faction_db import FactionDB
 
 
-def fmt_json(obj, compact: bool = False) -> str:
-    if compact:
-        return json.dumps(obj, ensure_ascii=False, separators=(",", ":"))
-    return json.dumps(obj, ensure_ascii=False, indent=2)
+_PRETTY = False
+
+def fmt_json(obj) -> str:
+    if _PRETTY:
+        return json.dumps(obj, ensure_ascii=False, indent=2)
+    return json.dumps(obj, ensure_ascii=False, separators=(",", ":"))
 
 
 def cmd_list(db: FactionDB, args):
@@ -67,11 +69,11 @@ def cmd_list(db: FactionDB, args):
         print(f"  {f['id']:12s} [{f['tier']:2s}] [{f['type']:12s}] {f['name']}  {f['philosophy']}")
 
 
-def cmd_get(db: FactionDB, args):
+def _cmd_get_impl(args, getter):
     ids = args.faction_id.split(",")
     for fid in ids:
         fid = fid.strip()
-        fac = db.get_faction(fid)
+        fac = getter(fid)
         if not fac:
             print(f"not found: {fid}")
             continue
@@ -82,20 +84,37 @@ def cmd_get(db: FactionDB, args):
             print()
 
 
-def cmd_relations(db: FactionDB, args):
+def cmd_get(db: FactionDB, args):
+    _cmd_get_impl(args, db.get_faction)
+
+
+def cmd_get_public(db: FactionDB, args):
+    _cmd_get_impl(args, db.get_faction_public)
+
+
+def _cmd_relations_impl(args, getter):
     faction_id = getattr(args, "faction_id", None)
-    rels = db.get_relations(faction_id)
+    rels = getter(faction_id)
     if not rels:
         print("(no relations)")
         return
+    base_exclude = {"source_id", "target_id", "status", "tension"}
     for r in rels:
         print(f"  {r['source_id']} -> {r['target_id']}  status={r['status']}  tension={r['tension']}")
-        props = {k: v for k, v in r.items() if k not in ("source_id", "target_id", "status", "tension")}
+        props = {k: v for k, v in r.items() if k not in base_exclude}
         if props:
             for k, v in props.items():
                 val = str(v)[:100] if isinstance(v, str) else str(v)
                 print(f"    {k}: {val}")
         print()
+
+
+def cmd_relations(db: FactionDB, args):
+    _cmd_relations_impl(args, db.get_relations)
+
+
+def cmd_relations_public(db: FactionDB, args):
+    _cmd_relations_impl(args, db.get_relations_public)
 
 
 def cmd_events(db: FactionDB, args):
@@ -190,6 +209,7 @@ def cmd_stats(db: FactionDB, args):
 def main():
     parser = argparse.ArgumentParser(description="勢力資料庫查詢 CLI")
     parser.add_argument("--proj", required=True, type=str, help="專案名稱或代號")
+    parser.add_argument("--pretty", action="store_true", help="JSON 美化輸出（預設 compact）")
     subparsers = parser.add_subparsers(dest="command")
 
     # list
@@ -199,9 +219,17 @@ def main():
     p_get = subparsers.add_parser("get", help="取得完整勢力資料（逗號分隔多勢力）")
     p_get.add_argument("faction_id", help="勢力 ID（可逗號分隔）")
 
+    # get-public
+    p_gp = subparsers.add_parser("get-public", help="取得勢力資料（過濾 secret_dealings）")
+    p_gp.add_argument("faction_id", help="勢力 ID（可逗號分隔）")
+
     # relations
     p_rel = subparsers.add_parser("relations", help="查詢關係")
     p_rel.add_argument("faction_id", nargs="?", help="勢力 ID（不填列出全部）")
+
+    # relations-public
+    p_relp = subparsers.add_parser("relations-public", help="查詢關係（過濾 secret_dealings）")
+    p_relp.add_argument("faction_id", nargs="?", help="勢力 ID（不填列出全部）")
 
     # events
     subparsers.add_parser("events", help="查詢勢力事件")
@@ -248,12 +276,17 @@ def main():
         parser.print_help()
         sys.exit(1)
 
+    global _PRETTY
+    _PRETTY = args.pretty
+
     db = FactionDB(args.proj)
     try:
         commands = {
             "list": cmd_list,
             "get": cmd_get,
+            "get-public": cmd_get_public,
             "relations": cmd_relations,
+            "relations-public": cmd_relations_public,
             "events": cmd_events,
             "search": cmd_search,
             "add": cmd_add,

@@ -68,6 +68,42 @@ def cmd_event(args, folder):
     )
     print(f"✅ 事件 {args.id} ({args.name}) 已成功寫入/更新至 ChromaDB。")
 
+def cmd_batch_event(args, folder):
+    """批次寫入多筆 lore events，共用同一個 ChromaDB client。"""
+    import json as _json
+    try:
+        events = _json.loads(args.json)
+    except _json.JSONDecodeError as e:
+        print(f"❌ JSON 解析失敗: {e}")
+        sys.exit(1)
+
+    if not isinstance(events, list) or len(events) == 0:
+        print("❌ --json 必須是非空的 JSON 陣列")
+        sys.exit(1)
+
+    lv = LoreVector(folder)  # 共用單一 client
+    ok, fail = 0, 0
+    for evt in events:
+        eid = evt.get("id")
+        if not all([eid, evt.get("cat"), evt.get("name"), evt.get("doc")]):
+            print(f"⚠️  跳過不完整事件: {eid or '(no id)'}")
+            fail += 1
+            continue
+        metadata = {
+            "category": evt["cat"],
+            "event_name": evt["name"],
+            "status": evt.get("status", "active"),
+        }
+        if evt.get("ch") is not None:
+            metadata["chapter_ref"] = evt["ch"]
+        if evt.get("char"):
+            metadata["character_id"] = evt["char"]
+        lv.add_event(event_id=eid, document=evt["doc"], metadata=metadata)
+        ok += 1
+
+    print(f"✅ batch-event 完成: {ok} 筆成功" + (f", {fail} 筆跳過" if fail else ""))
+
+
 def cmd_delete(args, folder):
     if args.ch is None and args.id is None:
         print("錯誤：刪除指令缺少必填參數 (--ch 或 --id)")
@@ -106,6 +142,10 @@ def main():
     parser_event.add_argument("--char", type=str, help="相關角色 ID (character_id，選填)")
     parser_event.add_argument("--doc", type=str, help="事件內容文件 (document)")
 
+    # 子指令：batch-event
+    parser_batch = subparsers.add_parser("batch-event", help="批次寫入多筆事件 (LoreVector)")
+    parser_batch.add_argument("--json", required=True, type=str, help='JSON 陣列，每筆需含 id/cat/name/doc，選填 ch/char/status')
+
     # 子指令：delete
     parser_delete = subparsers.add_parser("delete", help="刪除特定章節或ID的事件 (LoreVector)")
     parser_delete.add_argument("--ch", type=int, help="要刪除其相關事件的章節編號 (chapter_ref)")
@@ -126,6 +166,8 @@ def main():
         cmd_chapter(args, folder)
     elif args.command == "event":
         cmd_event(args, folder)
+    elif args.command == "batch-event":
+        cmd_batch_event(args, folder)
     elif args.command == "delete":
         cmd_delete(args, folder)
 

@@ -44,6 +44,13 @@ sys.path.insert(0, ROOT_DIR)
 
 from tools.emotion_db import EmotionDB
 
+_PRETTY = False
+
+def fmt_json(obj) -> str:
+    if _PRETTY:
+        return json.dumps(obj, ensure_ascii=False, indent=2)
+    return json.dumps(obj, ensure_ascii=False, separators=(",", ":"))
+
 
 def cmd_recent(db: EmotionDB, args):
     n = getattr(args, "n", 5) or 5
@@ -60,7 +67,7 @@ def cmd_get(db: EmotionDB, args):
     if not ch:
         print(f"not found: ch.{args.chapter_id}")
         return
-    print(json.dumps(ch, ensure_ascii=False, indent=2))
+    print(fmt_json(ch))
 
 
 def cmd_range(db: EmotionDB, args):
@@ -134,6 +141,7 @@ def cmd_stats(db: EmotionDB, args):
 def main():
     parser = argparse.ArgumentParser(description="情感記錄查詢 CLI")
     parser.add_argument("--proj", required=True, type=str, help="專案名稱或代號")
+    parser.add_argument("--pretty", action="store_true", help="JSON 美化輸出（預設 compact）")
     subparsers = parser.add_subparsers(dest="command")
 
     # recent
@@ -178,6 +186,9 @@ def main():
     if not args.command:
         parser.print_help()
         sys.exit(1)
+
+    global _PRETTY
+    _PRETTY = args.pretty
 
     db = EmotionDB(args.proj)
     try:

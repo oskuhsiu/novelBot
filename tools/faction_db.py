@@ -151,6 +151,23 @@ class FactionDB:
             for r in rows
         ]
 
+    def get_faction_public(self, faction_id: str) -> dict | None:
+        """取得勢力資料，過濾 secret_dealings/secrets/notes 等隱藏欄位"""
+        fac = self.get_faction(faction_id)
+        if not fac:
+            return None
+        for key in ("secret_dealings", "secrets", "notes"):
+            fac.pop(key, None)
+        return fac
+
+    def get_relations_public(self, faction_id: str | None = None) -> list[dict]:
+        """取得關係，過濾 properties 中的 secret_dealings"""
+        rels = self.get_relations(faction_id)
+        return [
+            {k: v for k, v in r.items() if k != "secret_dealings"}
+            for r in rels
+        ]
+
     def search(self, keyword: str) -> list[dict]:
         """搜尋勢力名稱或描述"""
         pattern = f"%{keyword}%"

@@ -10,15 +10,14 @@ description: 將字數不足的章節擴寫至目標字數
 
 > [!CAUTION]
 > **絕對禁令**
-> 1. **字數不達標 = 未完成 = 禁止進入下一步**。`words_per_chapter.min` 是硬性下限。
-> 2. **禁止將小說本文輸出在對話文字中**。正文唯二的目的地是「變數」和透過工具「寫入硬碟」。
+> 1. **禁止將小說本文輸出在對話文字中**。正文唯二的目的地是「變數」和透過工具「寫入硬碟」。
 
 ## 參數
 
-| 參數 | 必填 | 說明 | 範例 |
+| 參數 | 必填 | 說明 | 預設 |
 |------|------|------|------|
-| `proj` | ✅ | 專案名稱 | `proj=霓虹劍仙` |
-| `chapter` | ✅ | 章節號碼 | `chapter=5` |
+| `proj` | ✅ | 專案名稱 | — |
+| `chapter` | ✅ | 章節號碼 | — |
 
 ## 使用範例
 
@@ -35,6 +34,26 @@ description: 將字數不足的章節擴寫至目標字數
 
 ---
 
+## 執行模式：Main Context (B 類)
+
+直接在當前 session 執行，不啟動 sub-agent。
+
+### 初始化
+1. `REPO_ROOT` = 當前工作目錄
+2. 從 `projects/project_registry.yaml` 解析 `proj` → `PROJECT_DIR`
+3. 將下方所有 `{{...}}` 替換為實際值後，依序執行各 Step
+
+> [!IMPORTANT]
+> **Sub-agent 環境規則**：若本 SKILL.md 在 sub-agent 內被讀取執行，無法使用 Skill tool。所有 `/nvStyleBank` 調用改為「Read `{{REPO_ROOT}}/.claude/skills/nvStyleBank/SKILL.md` 並按其指令執行」。Skill 結果不是本流程的最終輸出，取得風格範本後必須繼續執行後續步驟。
+
+## CLI Placeholder
+
+以下為 CLI 命令縮寫。`{{...}}` = 初始化/本表定義的固定值；`{...}` = 執行時動態替換。`{{REPO_ROOT}}`/`{{PROJ}}`/`{{PROJECT_DIR}}` 定義見上方初始化 section。**先解析 `{{PROJ}}`，再展開其他 Placeholder。**
+
+| Placeholder | 展開為 |
+|-------------|--------|
+| `{{CHAR}}` | `.venv/bin/python tools/char_query.py --proj {{PROJ}}` |
+
 ## 執行步驟
 
 ### Step 0: 載入專案設定
@@ -42,40 +61,26 @@ description: 將字數不足的章節擴寫至目標字數
 
 > [!IMPORTANT]
 > **Context 去重（強制）— 適用於本 Skill 所有步驟**
-> 讀取前先檢查 context 中是否已存在（由 nvChapter、nvDraft 等載入）。
-> **已在 context** → 直接複用，**禁止重複 Read**。
+> nvDraft 已載入 novel_config、narrative_progress、outline、角色資料庫、ChromaDB 章節摘要。
+> **這些全部直接複用，禁止重複 Read/查詢。**
+> 僅讀取 context 中**確實不存在**的：`{{PROJECT_DIR}}/output/style_guide.md`（若存在且未讀取過）。
+> **獨立執行時**（非 nvDraft 後續）：角色資料必須用 `{{CHAR}} get-public {IDS}`、`{{CHAR}} relations-public {ID}` 載入。
+> **presence 缺失處理**：若角色 base_profile 無 `presence` 欄位，從 `appearance` + `traits` 推斷一句臨時 presence 用於本次寫作，並在完成確認中提示用 `{{CHAR}} update-field` 補填。
 
-載入設定（僅讀取 context 中尚未存在的）：
-- `config/novel_config.yaml` — words_per_chapter (min/max/target)、content_weights、style_profile
-- `config/narrative_progress.yaml` — 當前進度
-- `config/outline_index.yaml` + `config/outline/arc_{current_arc}.yaml` — 大綱
-- 角色資料庫：`char_query.py --proj {proj} list` / `get {IDS}`
-- `output/style_guide.md`（若存在）
+從 context 中已有的 `novel_config.yaml` 提取 words_per_chapter (min/max/target)、content_weights、style_profile。
 
 ```
 ⚙️ 字數要求：{min} - {max}（目標 {target}） | 擴寫目標：第 {chapter} 章
 ```
 
-### Step 1: 字數檢測
-// turbo
-
-> [!CAUTION]
-> **Context 去重（再次強調）**
-> `chapter_{chapter}.md` 很可能剛由 nvDraft 寫入，**已在 context 中**。
-> 已在 context → **禁止 Read**，直接用 context 中的版本。
-
-使用 `word_counter` 技能計算字數（參見 `.claude/skills/execution/word_counter/SKILL.md`）。
-
-若字數已在 min ~ max 範圍 → 報告達標並結束。
-
-### Step 2: 載入上下文
+### Step 1: 載入上下文
 // turbo
 **回顧**：當前 SubArc 摘要 + 上一章全文（context 中已有則複用）
 **前瞻**：下一章內容（草稿→讀全文取前 1-2 事件；正文→讀前 2000 字；不存在→無約束）
 
 開頭必須銜接上一章結尾，結尾必須銜接下一章開頭（若存在）。
 
-### Step 3: 擬定擴寫計畫
+### Step 2: 擬定擴寫計畫
 
 | 內容類型 | 模式 | 策略 |
 |----------|------|------|
@@ -88,44 +93,106 @@ description: 將字數不足的章節擴寫至目標字數
 📊 模式：{模式} | 目標：{target} 字 | 當前：{current} 字 | 規劃：{planned} 字 ({scene_count} 場景)
 ```
 
-### Step 4: 分段擴寫
+### Step 3: 分段擴寫
 
 > [!CAUTION]
 > **禁止**一次生成整章。必須分段寫作，每段寫完後計算累計字數。
 
-依 Step 3 場景分配逐場景生成。若累計 + 剩餘規劃 < target → 擴充或追加場景。
+依 Step 2 場景分配逐場景生成。若累計 + 剩餘規劃 < target → 擴充或追加場景。
 
 擴寫原則：展開事件過程、深化互動對話、補充環境感官描寫、挖掘內心活動。遵守 content_weights 和 style_profile。禁止灌水、重複描述、新增草稿外劇情線。
 
+**風格錨定（每場景生成前強制執行）：**
+1. 判斷本場景的類型（dialogue / tension / emotion / combat / comedy / slice_of_life / suspense）
+2. 若本章**首個場景**且 context 中尚無風格範本 → 使用 Skill tool 呼叫 `/nvStyleBank`：
+   ```
+   Skill: nvStyleBank
+   args: "proj={{PROJ}} scene={場景類型} {專案genre} {本場景emotion} format=brief"
+   ```
+   將回傳的範本片段存入 context 變數 `STYLE_ANCHORS`，後續場景複用。
+   - 收到 `[STYLE_BANK_EMPTY]` 或以 `[NO_MATCH` 開頭的回傳 → 退回使用 style_guide.md 的示範段落（舊機制）
+   - 收到帶 `UNMATCHED` 的結果 → 仍使用回傳的範本（最接近的），並記錄缺失 tags 到 `MISSING_STYLE_TAGS`
+3. 從 `STYLE_ANCHORS` 中選取最接近**本場景**類型的範本片段
+4. 在心中重述：**旁白人格**（1 句）+ **本場景的 voice/emotion** + **錨定範本片段**
+5. 以該片段的語感、節奏、句式作為本場景的寫作基準，然後開始生成
+
+> **章節完成後**：若 `MISSING_STYLE_TAGS` 非空，在完成訊息末尾附加：
+> `建議補充風格範本：/nvStyleBankBuilder tags={MISSING_STYLE_TAGS}`
+
+**寫作質感（強制）：**
+
+正面原則：
+- 句長自然交錯，用短句破節奏，不要連續等長句
+- 對話後用動作、沉默、場景反應推進，不必每句跟心理解釋
+- 比喻用一次就夠，同段不重複「彷彿」「宛如」「猶如」
+- 段落結尾多樣化：動作、對話、感官、留白皆可，不要句句收在感悟
+- 語氣詞（啊、嘛、呢、吧）在對話和內心戲中自然使用，正式敘述保持書面語
+- 轉場直接切，用空行或動作帶入，不用「與此同時」「就在這時」
+- 精確數字只用在能產生效果的地方（角色吐槽、炫技），**嚴禁**用數據填充敘述和氛圍。「速度提升了百分之二十三點七」→「快了一截」；「溫度降至零下十四點二度」→「冷得骨頭都在喊疼」；「距離目標還有一千三百四十二米」→「還有一大段路」。百分比、小數點、精確到個位的統計數字在正文中**極少出現**——每千字最多 1 個精確數字，超過即為數據灌水
+
+角色是活的（強制）：
+1. 入場用存在感：角色在本章**首次出場**時，用 presence（在做什麼）和 appearance（視覺）帶入，不用 traits 自我介紹。同章後續場景角色已建立，不必重複入場。「她蹲在牆角磨刀」而非「性格剛烈的她」
+2. 性格從行動長出來：traits 是傾向不是劇本，讀者透過角色做的事和說的話感覺到性格，不是被旁白告知
+3. 不是每場都要表演：同一角色不必每個場景都展示招牌特質。current_state.emotional_state 調節表現——焦慮時話少，放鬆時才嘴賤
+4. 允許意外：角色偶爾做出「不太像自己」的反應反而更真實，前提是有情境支撐
+5. 內心戲用感受不用標籤：「胃抽了一下」而非「他感到恐懼」；「手指攥緊杯子」而非「她內心深處感到不安」
+
+禁令（硬性）：
+1. 禁「心中一震」「瞳孔微縮」「下意識地」「心中暗道」「內心深處」— 用具體動作或對話替代內心反應公式
+2. 禁格言式/懸念式結尾 —「然而他不知道的是」「真正的危險才剛開始」「這一切，才剛剛開始」
+3. 禁連續四字詞組堆疊（≤2 組）、禁三段式平行排比
+4. 每千字破折號 ≤2 個
+5. 禁主觀形容詞灌水：專業的、強大的、完善的、高效的、卓越的 — 換成具體描述或刪除
+6. 禁「性格旁白」——「一向/素來/從來/向來 + 性格形容詞 + 的他/她」每章至多 1 次（刻意對比），第 2 次起全面禁止
+7. 禁正文中引用章節編號——「第82章時」「上一章提到」「前幾章」。回溯事件用敘事方式：「那天晚上」「上次在山洞裡」「他還記得老周說過的話」
+
+**資訊邊界（強制）：**
+- 角色只能使用、談論、思考「截至本章此刻已在正文中揭露」的資訊
+- 資料庫中的 secret/hidden_profile/hidden_dynamic/未登場角色 禁止進入對白和內心戲
+- 資料庫資料只可用於：語氣風格、穩定性格、當前狀態 current_state
+- 若無法回答「這角色怎麼知道的」→ 不能寫
+- forbidden 資訊若需鋪墊，只能用外在線索、異常感、模糊直覺
+
+**情緒驅動（強制）：**
+- 擴寫前先讀取草稿中每個事件的 `emotion:` 行——這是該段落的情緒基調，**優先於**章節級 `emotion_objective`
+- 同一章的不同段落情緒可以（且應該）不同：前段悲、中段苦、後段爽是正常的
+- 擴寫每個事件時，筆觸、節奏、用詞、意象都要匹配**該事件的 `emotion:`**，不是整章統一一個情緒
+- 情緒轉換處（相鄰事件情緒不同）：用場景切換、動作、環境變化自然過渡，不要硬跳也不要模糊掉情緒差異
+- 若草稿事件缺少 `emotion:` 行（舊草稿），擴寫前先根據事件內容自行判斷該段情緒，在心中補上再寫
+
+**聲音驅動（強制）：**
+- 擴寫前先讀取草稿的「聲音指導（章節預設）」區塊作為基礎聲音
+- 擴寫每個事件/場景時，檢查該事件是否有 `voice:` 覆蓋行：
+  - 有 → 用覆蓋值取代對應的預設欄位，未覆蓋的欄位仍用章節預設
+  - 無 → 使用章節預設
+- 擴寫不是「把事件講完整」，是「用該場景指定的聲音和情緒講這段故事」
+- 對話密度和語氣須匹配**該場景的** dialogue_texture（嘴炮場允許廢話和語助詞，正式場精簡）
+- 相鄰場景聲音不同時，用空行、動作或環境切換自然過渡，不要硬跳
+- 遵循 style_guide.md（若存在）和 novel_config.yaml 的 style_profile.guide
+
+**Execution Skills 參考（最小版接入）：**
+- 對話密集場景：遵循 dialogue_director 的角色聲音區分、潛台詞、動態穿插原則
+- 感官/環境場景：遵循 sensory_amplifier 的具體感官細節原則
+- 戰鬥場景：遵循 scene_writer 的戰鬥場景處理指引（動詞力量、招式分解、穿插戰術思考）
+（不需要呼叫這些 skill，直接在擴寫時參考其核心原則）
+
+**品質自檢（每場景完成後）：**
+1. 辨識度：蓋掉角色名，還聽得出這是這部作品嗎？
+2. prose 有效性：若只剩事件摘要，是否幾乎沒損失？若是，代表 prose 沒做事，須加強
+3. 笑點來源（搞笑場景）：笑點來自語氣/節奏/角色聲音，還是只來自事件本身？
+4. 人味：這段讀起來像 AI 寫的嗎？若像，用上方正面原則改寫
+5. 聲音切換：相鄰場景若有不同 voice 設定，轉換是否自然？是否突兀？
+
 結尾銜接：參照前瞻上下文，確保角色位置/狀態與下一章吻合。
 
-### Step 5: 字數校驗（硬性閘門）
+### Step 4: 寫入檔案
 // turbo
 
-> [!CAUTION]
-> **HARD GATE — 不可跳過**
-> - `< min` → 回到 Step 4 擴充（最多 3 次）
-> - `> max` → 精簡過渡和重複
-> - `min ≤ count ≤ max` → ✅ 通過
+覆寫 `{{PROJECT_DIR}}/output/chapters/chapter_{chapter}.md`。正文直接寫入，對話只輸出路徑和字數。
 
-### Step 6: 一致性驗證
+> nvExpand 不做任何維護操作，由 nvChapter/nvBatch 的後續流程處理。
 
-驗證：不違反 ChromaDB lore/角色資料庫、角色行為一致、上下章銜接連貫。
-
-### Step 6.5: 去 AI 痕跡（nvHumanize）
-
-讀取 `.claude/skills/nvHumanize/SKILL.md` 並遵循其指令處理擴寫完的正文（Context 去重：已在 context 中的檔案禁止重複 Read）。
-
-處理後重新計算字數，若 `< min` → 補足；若 `> max` → 精簡。
-
-### Step 7: 寫入檔案
-// turbo
-
-覆寫 `output/chapters/chapter_{chapter}.md`。正文直接寫入，對話只輸出路徑和字數。
-
-> nvExpand 不做任何維護操作，由 nvChapter/nvBatch 的 sub-agent 處理。
-
-### Step 8: 完成確認
+### Step 5: 完成確認
 // turbo
 ```
 ✅ 第 {chapter} 章擴寫完成 | 標題：{title} | {before}→{after} 字 ({ratio}x) | 目標 {min}-{max}
@@ -138,5 +205,3 @@ description: 將字數不足的章節擴寫至目標字數
 | 錯誤 | 處理 |
 |------|------|
 | 章節不存在 | 停止，提示先 /nvDraft |
-| 字數不達標 | 回 Step 4，最多 3 次 |
-| 角色不一致 | 標記並修正 |

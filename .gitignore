@@ -1,4 +1,15 @@
+AGENT.md
+Claude.md
+.czbooks_cookie
+/*.md
+!README.md
+
+.agent/rules.md
 .codex/
 .claude*.zip
-Claude.md
 .claude/settings.local.json
+.claude/skills/codex
+.claude/skills/codex-info
+.claude/skills/gemini
+.gemini/
+tools/__pycache__

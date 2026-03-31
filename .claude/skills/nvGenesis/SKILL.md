@@ -53,12 +53,28 @@ description: 建立新小說專案，初始化世界觀、角色與大綱
 2. 驗證必填參數（`name`、`alias`）
 3. 組合路徑：`PROJECT_DIR = {REPO_ROOT}/projects/{name}`
 3. 若 `source=file`，確認檔案路徑存在
-4. 啟動 Agent tool：
+4. **風格錨定預檢**（在啟動 sub-agent 前執行）：
+   使用 Skill tool 呼叫 `/nvStyleBank`，確認全域 DB 有可用範本（**不帶 proj**，因為專案尚未註冊）：
+   ```
+   Skill: nvStyleBank
+   args: "genre={type} n=3 format=brief"
+   ```
+   - 正常回傳（首行為 `[MATCHED`） → 繼續步驟 5
+   - 收到 `[STYLE_BANK_EMPTY]` 或 `[NO_MATCH` 開頭 → **中斷**，輸出以下訊息後結束（不啟動 sub-agent）：
+     ```
+     風格範本庫缺乏本專案所需的範本，無法完成風格錨定。請先執行：
+
+     /nvStyleBankBuilder genre={type}
+     /nvStyleBankBuilder author={從type推斷的代表作家}
+
+     完成後重新執行 /nvGenesis 即可繼續。
+     ```
+5. 啟動 Agent tool：
    - `subagent_type`: `general-purpose`
    - `run_in_background`: `false`
    - `prompt`: 將下方「Agent Prompt」的變數替換為實際值
-5. 接收 sub-agent 回傳的建立報告
-6. 輸出結果給用戶
+6. 接收 sub-agent 回傳的建立報告
+7. 輸出結果給用戶
 
 ---
 
@@ -119,9 +135,34 @@ description: 建立新小說專案，初始化世界觀、角色與大綱
 
 若指定 preset，載入預設值覆蓋。
 
+### 計時制判斷
+根據 genre/type 自動判斷計時制，寫入 novel_config.yaml 的 `world_rules` 或 `style_profile.guide`：
+- **中式古風/仙俠/武俠/歷史架空**等以古代中國為背景 → 使用**時辰制**（一天 12 時辰）
+- **其他所有題材**（現代、科幻、西幻、都市等）→ 使用**小時制**（一天 24 小時）
+- 寫法範例：`time_system: "時辰（一天12時辰，一時辰=2小時）"` 或 `time_system: "小時（一天24小時）"`
+- 此規則僅在此處設定，寫作 skill 依 novel_config 內的設定執行即可
+
 ## Step 3: 生成風格指南
 
 讀取 `{{REPO_ROOT}}/.claude/skills/foundation/style_setter/SKILL.md` 並遵循其指令生成 `{{PROJECT_DIR}}/output/style_guide.md`。
+
+## Step 3a: 風格錨定（建立專案配對）
+
+Dispatcher 已確認全域 style_bank.db 有可用範本。此步驟為專案建立初始 `style_anchors.yaml`。
+
+1. 從剛生成的 `novel_config.yaml` 提取 genre、style_profile 的 tone/prose
+2. 用 CLI 查詢全域 DB：
+   ```bash
+   cd {{REPO_ROOT}} && .venv/bin/python tools/style_bank_query.py search --tags "genre值,tone值,prose值" --mode any --n 5
+   ```
+3. 從結果中挑選最適合的 3-5 段，將其 id、tags、style_note 寫入 `{{PROJECT_DIR}}/config/style_anchors.yaml`：
+   ```yaml
+   anchors:
+     - passage_id: {id}
+       tags_matched: [{相關tags}]
+       style_note: "{style_note}"
+   ```
+4. 若查詢無結果（不應發生，dispatcher 已預檢）→ 回報警告，繼續後續步驟。
 
 ## Step 3.5: 設定主題追蹤
 

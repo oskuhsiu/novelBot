@@ -114,8 +114,8 @@ def cmd_chapters_recent(args):
     for ch in chapters:
         print(f"  第 {ch['chapter_id']} 章: {ch['title']} ({ch['word_count']}字)")
         summary = ch["ending_summary"]
-        # 如果是列出多章前情提要，為節省 token 稍微截斷超長 summary
-        if len(summary) > 120:
+        # --full 時輸出完整摘要，否則截斷至 120 字節省 token
+        if not getattr(args, 'full', False) and len(summary) > 120:
             summary = summary[:120] + "..."
         print(f"    {summary}")
         print()
@@ -225,6 +225,7 @@ def main():
     p_chs.add_argument("query", nargs="?", help="搜尋文字（不填則列最近 N 章）")
     p_chs.add_argument("--n", type=int, default=5, help="返回數量 (預設 5)")
     p_chs.add_argument("--recent", type=int, help="最近 N 章")
+    p_chs.add_argument("--full", action="store_true", help="輸出完整摘要（不截斷）")
 
     # lore-by-chapter <id>
     p_lbc = subparsers.add_parser("lore-by-chapter", help="按章節列出 lore")

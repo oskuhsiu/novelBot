@@ -121,6 +121,15 @@ identity_validation:
       - "過度解釋"
 ```
 
+## 驗證維度
+
+```yaml
+presence_usage:
+  description: "對話場景中角色是否有物理存在感"
+  check: "角色是否只有聲音沒有身體？是否有穿插 presence 來源的動作？"
+  fix: "從角色 presence 取習慣動作穿插在對話間隙"
+```
+
 ## 與 Dialogue Director 的連動
 
 在生成對話前：

@@ -59,7 +59,8 @@ description: 邏輯審查員 - 檢查新寫內容與已有設定是否衝突
 ## 2. 角色行為
 對照 character_db.base_profile，檢查：
 □ 角色說話方式是否符合 speech_pattern？
-□ 行為是否符合 traits 描述的性格？
+□ 行為是否符合 traits 的性格傾向？（traits 是傾向非劇本，emotional_state 驅動的偏離需有情境支撐）
+□ 角色性格是否由旁白直接宣告而非行動展示？（若是 → Warning）
 □ 能力是否超出技能範圍？
 
 ## 3. 能力限制

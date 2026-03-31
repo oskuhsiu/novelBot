@@ -157,6 +157,31 @@ class CharacterDB:
             for r in rows
         ]
 
+    def get_character_public(self, char_id: str) -> dict | None:
+        """取得角色資料，過濾 base_profile 中的 secret/hidden_profile/hidden_skills 和 notes"""
+        ch = self.get_character(char_id)
+        if not ch:
+            return None
+        ch["base_profile"] = {
+            k: v for k, v in ch.get("base_profile", {}).items()
+            if k not in ("secret", "hidden_profile", "hidden_skills")
+        }
+        ch.pop("notes", None)
+        return ch
+
+    def get_relationships_public(self, char_id: str | None = None) -> list[dict]:
+        """只回傳 surface_relation + tension，過濾 hidden_dynamic + common_interest"""
+        rels = self.get_relationships(char_id)
+        return [
+            {
+                "source_id": r["source_id"],
+                "target_id": r["target_id"],
+                "surface_relation": r["surface_relation"],
+                "tension": r["tension"],
+            }
+            for r in rels
+        ]
+
     def search(self, keyword: str) -> list[dict]:
         """搜尋角色名稱或身份描述"""
         pattern = f"%{keyword}%"

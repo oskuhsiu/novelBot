@@ -33,17 +33,5 @@ arcs:
         is_completed: false
     is_completed: false
 
-# 章節完成記錄（獨立於 Arc 結構，便於快速查詢）
-completed_chapters:
-  - chapter_id: 0
-    subarc_id: ""
-    arc_id: 0
-    title: ""
-    word_count: 0
-    completed_at: ""
-    # ⬇️ 章節結尾摘要 - 每章寫完後自動填入
-    ending_summary: ""  # 本章結尾的關鍵狀態與懸念
-    ending_state:
-      location: ""  # 主要角色當前位置
-      key_characters: []  # 在場角色
-      unresolved: ""  # 未解決的懸念/衝突
+# 章節完成記錄已遷移至 ChromaDB，不再存於此檔案
+# 查詢: .venv/bin/python tools/lore_query.py --proj {alias} chapters

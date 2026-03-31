@@ -52,10 +52,12 @@ sys.path.insert(0, ROOT_DIR)
 from tools.char_db import CharacterDB
 
 
-def fmt_json(obj, compact: bool = False) -> str:
-    if compact:
-        return json.dumps(obj, ensure_ascii=False, separators=(",", ":"))
-    return json.dumps(obj, ensure_ascii=False, indent=2)
+_PRETTY = False
+
+def fmt_json(obj) -> str:
+    if _PRETTY:
+        return json.dumps(obj, ensure_ascii=False, indent=2)
+    return json.dumps(obj, ensure_ascii=False, separators=(",", ":"))
 
 
 def cmd_list(db: CharacterDB, args):
@@ -78,11 +80,11 @@ def cmd_list(db: CharacterDB, args):
             print(f"  {c['id']:16s} [{c['role']:12s}] {c['name']}")
 
 
-def cmd_get(db: CharacterDB, args):
+def _cmd_get_impl(args, getter):
     ids = args.char_id.split(",")
     for char_id in ids:
         char_id = char_id.strip()
-        ch = db.get_character(char_id)
+        ch = getter(char_id)
         if not ch:
             print(f"not found: {char_id}")
             continue
@@ -91,6 +93,14 @@ def cmd_get(db: CharacterDB, args):
         print(fmt_json(ch))
         if len(ids) > 1:
             print()
+
+
+def cmd_get(db: CharacterDB, args):
+    _cmd_get_impl(args, db.get_character)
+
+
+def cmd_get_public(db: CharacterDB, args):
+    _cmd_get_impl(args, db.get_character_public)
 
 
 def cmd_get_state(db: CharacterDB, args):
@@ -119,18 +129,26 @@ def cmd_get_base(db: CharacterDB, args):
         print(fmt_json(base))
 
 
-def cmd_relations(db: CharacterDB, args):
+def _cmd_relations_impl(args, getter, show_hidden=True):
     char_id = getattr(args, "char_id", None)
-    rels = db.get_relationships(char_id)
+    rels = getter(char_id)
     if not rels:
         print("(no relationships)")
         return
     for r in rels:
         print(f"  {r['source_id']} -> {r['target_id']}  tension={r['tension']}")
         print(f"    surface: {r['surface_relation']}")
-        if r["hidden_dynamic"]:
+        if show_hidden and r.get("hidden_dynamic"):
             print(f"    hidden:  {r['hidden_dynamic'][:100]}")
         print()
+
+
+def cmd_relations(db: CharacterDB, args):
+    _cmd_relations_impl(args, db.get_relationships)
+
+
+def cmd_relations_public(db: CharacterDB, args):
+    _cmd_relations_impl(args, db.get_relationships_public, show_hidden=False)
 
 
 def cmd_search(db: CharacterDB, args):
@@ -208,6 +226,7 @@ def cmd_stats(db: CharacterDB, args):
 def main():
     parser = argparse.ArgumentParser(description="角色資料庫查詢 CLI")
     parser.add_argument("--proj", required=True, type=str, help="專案名稱或代號")
+    parser.add_argument("--pretty", action="store_true", help="JSON 美化輸出（預設 compact）")
     subparsers = parser.add_subparsers(dest="command")
 
     # list
@@ -217,6 +236,10 @@ def main():
     # get
     p_get = subparsers.add_parser("get", help="取得完整角色資料（支援逗號分隔多角色）")
     p_get.add_argument("char_id", help="角色 ID（可逗號分隔）")
+
+    # get-public
+    p_gp = subparsers.add_parser("get-public", help="取得角色資料（過濾 secret/hidden）")
+    p_gp.add_argument("char_id", help="角色 ID（可逗號分隔）")
 
     # get-state
     p_gs = subparsers.add_parser("get-state", help="只取 current_state")
@@ -229,6 +252,10 @@ def main():
     # relations
     p_rel = subparsers.add_parser("relations", help="查詢關係")
     p_rel.add_argument("char_id", nargs="?", help="角色 ID（不填列出全部）")
+
+    # relations-public
+    p_relp = subparsers.add_parser("relations-public", help="查詢關係（過濾 hidden_dynamic/common_interest）")
+    p_relp.add_argument("char_id", nargs="?", help="角色 ID（不填列出全部）")
 
     # search
     p_search = subparsers.add_parser("search", help="搜尋角色")
@@ -275,14 +302,19 @@ def main():
         parser.print_help()
         sys.exit(1)
 
+    global _PRETTY
+    _PRETTY = args.pretty
+
     db = CharacterDB(args.proj)
     try:
         commands = {
             "list": cmd_list,
             "get": cmd_get,
+            "get-public": cmd_get_public,
             "get-state": cmd_get_state,
             "get-base": cmd_get_base,
             "relations": cmd_relations,
+            "relations-public": cmd_relations_public,
             "search": cmd_search,
             "update-state": cmd_update_state,
             "update-field": cmd_update_field,

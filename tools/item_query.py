@@ -70,10 +70,12 @@ sys.path.insert(0, ROOT_DIR)
 from tools.item_db import ItemDB
 
 
-def fmt_json(obj, compact: bool = False) -> str:
-    if compact:
-        return json.dumps(obj, ensure_ascii=False, separators=(",", ":"))
-    return json.dumps(obj, ensure_ascii=False, indent=2)
+_PRETTY = False
+
+def fmt_json(obj) -> str:
+    if _PRETTY:
+        return json.dumps(obj, ensure_ascii=False, indent=2)
+    return json.dumps(obj, ensure_ascii=False, separators=(",", ":"))
 
 
 def cmd_list(db: ItemDB, args):
@@ -248,6 +250,7 @@ def cmd_stats(db: ItemDB, args):
 def main():
     parser = argparse.ArgumentParser(description="物品/交易查詢 CLI")
     parser.add_argument("--proj", required=True, type=str, help="專案名稱或代號")
+    parser.add_argument("--pretty", action="store_true", help="JSON 美化輸出（預設 compact）")
     subparsers = parser.add_subparsers(dest="command")
 
     # list
@@ -329,6 +332,9 @@ def main():
     if not args.command:
         parser.print_help()
         sys.exit(1)
+
+    global _PRETTY
+    _PRETTY = args.pretty
 
     db = ItemDB(args.proj)
     try:
