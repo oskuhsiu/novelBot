@@ -101,6 +101,11 @@ description: 生成新章節的情節草稿（精簡骨架，可搭配 /nvExpand
 有 `direction` → 使用之。無 → 依 SubArc 自然推進。注入 `pacing_pointer` 指導。
 聲音指導須參考 style_guide.md 的風格定位（narrator personality、dialogue density、rhythm），確保草稿的聲音方向與專案風格一致。
 
+**資源精度**：從 `novel_config.yaml` 的 `style_profile.resource_precision` 決定草稿中資源數字寫法（預設 `relative`）：
+- `strict`：所有資源精確到個位
+- `relative`：≥ 主角同階精確（「純淨魂核×5」），低一階模糊（「十幾枚」），低兩階可省略
+- `relaxed`：僅劇情關鍵資源寫具體數字
+
 **風格錨定（強制）：** 決定聲音指導前，使用 Skill tool 呼叫 `/nvStyleBank` 取得真人範本：
 ```
 Skill: nvStyleBank
@@ -160,6 +165,10 @@ args: "proj={{PROJ}} {專案genre} {本章emotion_objective} n=2 format=brief"
 - scene_energy: {high/low/chaotic/chill}
 - dialogue_texture: {嘴炮/正式/碎念/沉默為主/混戰}
 - emotion_objective: {整章的主要情緒目標}
+
+## 角色語音速記
+（本章出場角色的語音特徵，從 base_profile.speech_pattern + body_language 提取，expand 時嚴格參照）
+- {角色名}: {speech_pattern 摘要} / 對話節拍: {body_language 中最適合穿插對話的 1 個動作}
 ```
 
 #### 5c: 寫入

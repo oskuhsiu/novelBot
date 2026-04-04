@@ -125,18 +125,27 @@ nvScheduler 已啟動
 for round = next_round to rounds:
   for phase in [nvBatch, nvAudit]（若 next_phase 指定則從該 phase 開始）:
 
-    1. 前置檢查：pause
-       - `test -f {TMPDIR}/claude_scheduler_{proj}.pause`
-       - 若存在 → 輸出「⏸ {proj} 排程已暫停（Round {round} {phase} 前）。說 resume 繼續。」
-       - 使用 AskUserQuestion 等待使用者回應
-       - 收到 resume 指令後：`rm -f {TMPDIR}/claude_scheduler_{proj}.pause`，繼續
-
-    2. 前置檢查：5h usage
-       - 讀取 `/private/tmp/claude_rate_limits.json`（由 statusline script 寫入）
-       - 解析 `.five_hour.used_percentage`
-       - 若 >= limit → 建立 pause 旗標，輸出「5h usage {N}% >= {limit}%，排程暫停。說 resume 繼續」
-       - 使用 AskUserQuestion 等待 → 收到 resume 後刪除 pause 旗標，繼續
-       - 若檔案不存在或無法解析 → 繼續
+    1. 前置檢查：pause + 5h usage（合併為單一 Python 呼叫，避免多次 Bash approval）
+       ```bash
+       python3 -c "
+       import json,os,tempfile
+       tmp=tempfile.gettempdir()
+       pf=os.path.join(tmp,'claude_scheduler_{proj}.pause')
+       result={'paused':os.path.isfile(pf),'usage':None}
+       try:
+        d=json.load(open('/private/tmp/claude_rate_limits.json'))
+        result['usage']=d.get('five_hour',{}).get('used_percentage')
+       except: pass
+       print(json.dumps(result))
+       "
+       ```
+       - 解析輸出 JSON：
+         - 若 `paused == true` → 輸出「⏸ {proj} 排程已暫停（Round {round} {phase} 前）。說 resume 繼續。」
+           - 使用 AskUserQuestion 等待使用者回應
+           - 收到 resume 指令後：`rm -f {TMPDIR}/claude_scheduler_{proj}.pause`，繼續
+         - 若 `usage >= limit` → 建立 pause 旗標，輸出「5h usage {N}% >= {limit}%，排程暫停。說 resume 繼續」
+           - 使用 AskUserQuestion 等待 → 收到 resume 後刪除 pause 旗標，繼續
+         - 若 `usage == null` → 繼續（檔案不存在或無法解析）
 
     3. 更新狀態檔：running = {phase}
 

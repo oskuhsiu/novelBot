@@ -121,6 +121,15 @@ mkdir -p {{PROJECT_DIR}}/reviews
 - **數量/距離錯誤**：兵力資源不一致、旅行時間不合理
 - **內部邏輯自洽**：同一段落中推理/計算、術語定義前後一致？數字推導每步成立？
 
+### 資源數字精度容差
+
+審查前讀取 `novel_config.yaml` 的 `style_profile.resource_precision`（預設 `relative`）：
+- **strict**：所有資源數量偏差 → Critical
+- **relative**：低於主角當前等階一階的資源，±5 不計 Warning；低兩階以上不審查數量
+- **relaxed**：僅審查劇情關鍵資源（涉及交易/賭注/生死門檻），其餘不審查數量
+
+> 主角當前等階從 `char_query.py get` 的 `current_state` 判斷。此容差適用於 Cat 2、Cat 3、Cat 6。
+
 ### 🔴 Cat 2: 吃書偵測 【light ✅ | full ✅】
 
 **⚡ 批次查詢流程**（減少 API turn）：
@@ -170,12 +179,22 @@ mkdir -p {{PROJECT_DIR}}/reviews
 
 **4a: 錯字** — 錯別字、同音異形字、漏字多字、標點誤用
 
-**4b: AI 寫作痕跡** — 讀取 `{{REPO_ROOT}}/.claude/skills/nvHumanize/patterns.md`（15 組模式），逐段比對：
+**4b: AI 寫作痕跡** — 讀取 `{{REPO_ROOT}}/.claude/skills/nvHumanize/patterns.md`（19 組模式），逐段比對：
 - P1 修飾堆疊、P2 贅詞填充、P3 公式開頭/轉場、P4 情感/反應公式
-- P5 過度平行、P7 的字連綴、P10 破折號成癮（每千字 ≤2）
+- P5 過度平行、P7 的字連綴、P10 破折號成癮（確有必要或明顯更好時才用，每千字仍 ≤2）
 - P11 比喻輪替、P12 對話後必解釋、P14 懸念金句結尾
 - P15 角色性格旁白（每章至多 1 次，第 2 次起 → Warning）
+- P16「不是X是Y」句式濫用（每千字 ≤1 次，同段連續 → Warning）
+- P17 短句斷裂假張力（500 字內 2+ 個單字獨立段落 → Warning）
+- P18 旁白替讀者翻譯（「不是在X，是在說Y」→ Warning）
+- P19 面板/系統數據灌水（非決策性精確數值 → Warning）
 - 命中 → ⚠️ Warning，附原文引用 + 改寫建議
+
+**4b-density: AI 感密度統計**（light + full 均執行）— 對每章統計：
+- 「不是…是…」出現次數 / 千字（閾值 ≤1.0，超過 → Warning）
+- 精確數字（百分比、小數、面板格式數據塊）出現次數 / 千字（閾值 ≤2.0，超過 → Warning）
+- 完整面板格式輸出（【...】數據塊）次數 / 章（閾值 ≤3，超過 → Warning）
+- 統計結果附在報告末尾，格式：`📊 AI感密度：不是X是Y {n}/千字 | 精確數字 {n}/千字 | 面板塊 {n}/章`
 
 **⚡ Grep 並行**：所有模式 × 所有章節的 Grep 在**同一個 API turn** 內並行發出。例如 4 個模式 × 3 章 = 12 個 Grep tool call 一次發出。
 

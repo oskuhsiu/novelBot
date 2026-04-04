@@ -53,7 +53,17 @@ description: 建立新小說專案，初始化世界觀、角色與大綱
 2. 驗證必填參數（`name`、`alias`）
 3. 組合路徑：`PROJECT_DIR = {REPO_ROOT}/projects/{name}`
 3. 若 `source=file`，確認檔案路徑存在
-4. **風格錨定預檢**（在啟動 sub-agent 前執行）：
+4. **資源精度詢問**（在啟動 sub-agent 前）：
+   使用 AskUserQuestion 詢問：
+   ```
+   資源數字精度？
+   - strict：所有資源精確到個位
+   - relative（預設）：≥ 主角同階精確，低一階模糊，低兩階可省略
+   - relaxed：僅關鍵資源精確，其餘模糊
+   直接 Enter 選 relative
+   ```
+   將回答存為 `{{RESOURCE_PRECISION}}`（空/無效 → `relative`）
+5. **風格錨定預檢**（在啟動 sub-agent 前執行）：
    使用 Skill tool 呼叫 `/nvStyleBank`，確認全域 DB 有可用範本（**不帶 proj**，因為專案尚未註冊）：
    ```
    Skill: nvStyleBank
@@ -69,12 +79,12 @@ description: 建立新小說專案，初始化世界觀、角色與大綱
 
      完成後重新執行 /nvGenesis 即可繼續。
      ```
-5. 啟動 Agent tool：
+6. 啟動 Agent tool：
    - `subagent_type`: `general-purpose`
    - `run_in_background`: `false`
-   - `prompt`: 將下方「Agent Prompt」的變數替換為實際值
-6. 接收 sub-agent 回傳的建立報告
-7. 輸出結果給用戶
+   - `prompt`: 將下方「Agent Prompt」的變數替換為實際值（含 `{{RESOURCE_PRECISION}}`）
+7. 接收 sub-agent 回傳的建立報告
+8. 輸出結果給用戶
 
 ---
 
@@ -99,6 +109,7 @@ description: 建立新小說專案，初始化世界觀、角色與大綱
 - 大綱數量：{{ARCS}}（預設 10）
 - 每卷細目數：{{SUBARCS}}（預設 5~10）
 - 專案路徑：{{PROJECT_DIR}}
+- 資源精度：{{RESOURCE_PRECISION}}（strict/relative/relaxed）
 - 專案根目錄：{{REPO_ROOT}}
 - 模板路徑：{{REPO_ROOT}}/templates/
 
@@ -135,6 +146,9 @@ description: 建立新小說專案，初始化世界觀、角色與大綱
 
 若指定 preset，載入預設值覆蓋。
 
+### 資源精度設定
+將 `style_profile.resource_precision` 設為 `{{RESOURCE_PRECISION}}`。
+
 ### 計時制判斷
 根據 genre/type 自動判斷計時制，寫入 novel_config.yaml 的 `world_rules` 或 `style_profile.guide`：
 - **中式古風/仙俠/武俠/歷史架空**等以古代中國為背景 → 使用**時辰制**（一天 12 時辰）
@@ -145,6 +159,19 @@ description: 建立新小說專案，初始化世界觀、角色與大綱
 ## Step 3: 生成風格指南
 
 讀取 `{{REPO_ROOT}}/.claude/skills/foundation/style_setter/SKILL.md` 並遵循其指令生成 `{{PROJECT_DIR}}/output/style_guide.md`。
+
+生成完成後，在 style_guide.md 的「寫作規範」區塊末尾追加「資源數字精度」小節。根據 `{{RESOURCE_PRECISION}}` 值寫入對應規則：
+
+- **strict**：「所有資源精確到個位數，不論階級高低。」
+- **relative**：
+  ```
+  ### 資源數字精度（relative 模式）
+  以主角當前等階為基準：
+  - ≥ 同階資源 → 精確到個位（「純淨魂核二階×5」）
+  - 低一階資源 → 模糊量級（「十幾枚」「二十多顆」）
+  - 低兩階以上 → 可省略或一筆帶過（「消耗了些低階材料」）
+  ```
+- **relaxed**：「僅劇情關鍵資源精確（涉及交易、賭注、生死門檻），其餘一律模糊。」
 
 ## Step 3a: 風格錨定（建立專案配對）
 

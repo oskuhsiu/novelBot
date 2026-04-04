@@ -87,12 +87,20 @@ prompt: 你是 Gemini 審查 Teammate。用 Bash 執行（foreground）：
 
 1. **先檢查通知**：檢查 context 中是否已有所有 Teammate 的 `<task-notification>`（status=completed）
 2. **若全部到齊** → `test -f` 確認檔案存在，直接讀取
-3. **若未完成** → 用**單一 Bash call** 的 while 迴圈等待（`timeout: 300000`）：
+3. **若未完成** → 用**單一 Bash call** 的 Python 等待（`timeout: 300000`）：
+   > ⚠️ **禁止使用 bash for/while 迴圈、`break`、`exit`** — 會觸發 user approve prompt。一律用 Python。
 ```bash
-seq 1 12 | while read _n; do test -f "{codex_file}" && test -f "{gemini_file}" && echo "READY" && exit 0; sleep 15; done; echo "TIMEOUT"
+python3 -c "
+import time,os,sys
+for _ in range(12):
+    if all(os.path.isfile(f) for f in sys.argv[1:]):
+        print('READY')
+        break
+    time.sleep(15)
+" "{codex_file}" "{gemini_file}"
 ```
-> 只等待實際派出的 assist 對應的檔案。若只有 codex 則只檢查 codex 檔案。
-> 結果為 `READY` → 讀取檔案；`TIMEOUT` → 用已到齊的繼續，未到齊標記「逾時未回」
+> 只檢查實際派出的 assist 對應的檔案。若只有 codex 則只檢查 codex 檔案。
+> 輸出 `READY` → 讀取檔案；無輸出 → 用已到齊的繼續，未到齊標記「逾時未回」
 4. **超時** → 用已到齊的繼續，未到齊標記「逾時未回」
 
 ### 統整

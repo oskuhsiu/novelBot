@@ -55,6 +55,12 @@ style_profile:
   # 風格指南（詳細的寫作指引）
   guide: []
 
+  # 資源數字精度（寫作與審查共用）
+  # strict   — 所有資源精確到個位，不論階級
+  # relative — ≥ 主角同階精確，低一階模糊量級（十幾、二十多），低兩階以上可省略（預設）
+  # relaxed  — 僅劇情關鍵資源精確，其餘一律模糊
+  resource_precision: "relative"
+
 # 情感監控設定
 emotion_settings:
   # 是否啟用情感監控
