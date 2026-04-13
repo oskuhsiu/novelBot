@@ -172,11 +172,11 @@ consistency_report:
 ## 與其他 Skill 的關聯
 
 - **讀取**：
-  - `skill_status_monitor`（場景狀態）
+  - `char_query.py get-state` CLI（角色當前狀態）
 - **協作**：
-  - `skill_logic_auditor`（互補檢查）
+  - `memory/logic_auditor`（互補檢查）
 - **輸出到**：
-  - `skill_scene_writer`（銜接建議）
+  - `execution/scene_writer`（銜接建議）
 
 ## 注意事項
 

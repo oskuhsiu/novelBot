@@ -82,85 +82,16 @@ turning_point:
 
 ## 輸出
 
-使用 CLI 更新角色資料庫中的關係：
+使用 CLI 更新角色資料庫中的關係（SQLite 為唯一來源，不再寫 YAML）：
 ```bash
-.venv/bin/python tools/char_query.py --proj {proj} update-rel {SOURCE_ID} {TARGET_ID} --surface "..." --hidden "..." --tension N
+.venv/bin/python tools/char_query.py --proj {{PROJ}} update-rel {SOURCE_ID} {TARGET_ID} --surface "..." --hidden "..." --tension N
 ```
-並產生 `memory/relationship_dynamics.yaml`
 
-```yaml
-# 關係動態記錄
-
-last_updated: "chapter_5"
-
-relationship_matrix:
-  - pair_id: "REL_001"
-    source: "CHAR_001"
-    target: "CHAR_002"
-    
-    # 表面關係（外人看到的）
-    surface_relation: "盟友"
-    
-    # 深層狀態
-    dynamics:
-      trust_score: 45
-      tension_score: 65
-      intimacy_score: 30  # 親密度（不一定是愛情）
-      
-    # 歷史累積
-    history:
-      positive_events: 3   # 正面互動次數
-      negative_events: 2   # 負面互動次數
-      major_incidents:
-        - chapter: 2
-          event: "CHAR_002 未能及時支援"
-          impact: "trust -20, tension +25"
-        - chapter: 4
-          event: "CHAR_002 冒險救出 CHAR_001"
-          impact: "trust +15, tension -10"
-          
-    # 未解決的問題
-    unresolved_issues:
-      - issue: "當初為何沒來救援？"
-        severity: "major"
-        addressed: false
-        
-    # 轉折點
-    turning_point:
-      ready: true
-      condition: "當 CHAR_001 得知 CHAR_002 當時的真實處境"
-      possible_outcomes:
-        - outcome: "誤會解開"
-          result: "trust +30, tension -40"
-        - outcome: "發現是藉口"
-          result: "trust -30, tension +30, 決裂風險"
-          
-    # 互動模式
-    interaction_pattern:
-      typical_tone: "表面客氣，暗藏芥蒂"
-      trigger_topics: ["過去的任務", "信任問題"]
-      safe_topics: ["任務進度", "敵人情報"]
-
-# 群體關係（多人互動）
-group_dynamics:
-  - group_id: "GROUP_001"
-    members: ["CHAR_001", "CHAR_002", "CHAR_003"]
-    
-    group_cohesion: 55  # 團隊凝聚力
-    internal_factions:
-      - faction: ["CHAR_001", "CHAR_003"]
-        reason: "價值觀相近"
-      - faction: ["CHAR_002"]
-        reason: "獨來獨往"
-        
-    potential_split_trigger: "資源分配不均時"
-
-# 關係建議
-relationship_suggestions:
-  - suggestion: "本章適合處理 CHAR_001 和 CHAR_002 的未解決問題"
-    reason: "tension 已達 65，接近 70 的爆發閾值"
-    recommended_scene: "私下對話，被打斷的質問"
-```
+每次更新需涵蓋：
+- `surface`：表面關係（外人看到的）
+- `hidden`：深層真相/隱藏動機
+- `tension`：緊張度 0-100
+（trust_score、intimacy_score、歷史事件、unresolved_issues、turning_point 等額外維度可作為分析中間產物保存在對話 context 中，但實際持久化只走 `update-rel`。）
 
 ## 執行步驟
 
@@ -217,7 +148,7 @@ relationship_suggestions:
 
 ### Step 5: 更新記錄
 
-將分析結果寫入 `relationship_dynamics.yaml`
+對每個有變化的關係呼叫 `char_query.py update-rel` 寫入 SQLite（不寫 YAML）。
 
 ## 互動模式自動判斷
 
@@ -234,16 +165,14 @@ relationship_suggestions:
 ## 與其他 Skill 的關聯
 
 - **前置 Skill**：
-  - `motivation_engine`：動機影響互動方式
-  
+  - `execution/motivation_engine`：動機影響互動方式
 - **協作 Skill**：
-  - `lorekeeper`：記錄關係變化事件
-  - `dialogue_director`：對話反映關係狀態
-  - `dialogue_subtext_editor`：潛台詞呼應張力
-  
+  - `memory/lorekeeper`：記錄關係變化事件
+  - `execution/dialogue_director`：對話反映關係狀態
+  - `execution/dialogue_subtext_editor`：潛台詞呼應張力
 - **輸出給**：
-  - `chapter_beater`：設計需要處理的關係節點
-  - `scene_writer`：互動細節依據
+  - `structure/chapter_beater`：設計需要處理的關係節點
+  - `execution/scene_writer`：互動細節依據
 
 ## 事件對積分的影響指南
 

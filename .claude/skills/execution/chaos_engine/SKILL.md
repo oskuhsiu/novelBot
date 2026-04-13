@@ -169,11 +169,11 @@ description: 意外生成器 - 引入隨機意外事件，打破劇情的平順
 ## 與其他 Skill 的關聯
 
 - **觸發者**：
-  - `skill_beat_optimizer`（檢測低張力）
-  - `workflow_maintenance`（定期評估）
+  - `structure/beat_optimizer`（檢測低張力）
+  - nvMaint（定期評估）
 - **影響**：
-  - `skill_status_monitor`（更新角色狀態）
-  - `skill_power_dynamic_updater`（調整勢力緊張度）
+  - `char_query.py update-state` CLI（更新角色狀態）
+  - `faction_query.py update-tension` CLI（調整勢力緊張度）
 
 ## 注意事項
 

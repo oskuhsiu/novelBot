@@ -34,11 +34,11 @@ description: 邏輯審查員 - 檢查新寫內容與已有設定是否衝突
 ### Step 1: 載入參考資料
 ```
 載入以下資料庫供對照：
-- templates/novel_config.yaml（世界規則）
-- 角色資料庫（SQLite, via `char_query.py --proj {proj} list` + `get`）
-- templates/power_system.yaml（力量體系）
+- {{PROJECT_DIR}}/config/novel_config.yaml（世界規則）
+- 角色資料庫（SQLite, via `char_query.py --proj {{PROJ}} list` + `get` + `get-state`）
+- {{PROJECT_DIR}}/config/power_system.yaml（力量體系）
 - ChromaDB (使用 tools/lore_query.py 搜尋已發生事實)
-- output/status_snapshot.yaml（當前狀態）
+- 角色當前狀態：透過 `char_query.py --proj {{PROJ}} get-state <char_id>` 取得（不再使用已廢棄的 output/status_snapshot.yaml）
 ```
 
 ### Step 2: 執行邏輯檢查
@@ -157,12 +157,12 @@ audit_report:
 ## 與其他 Skill 的關聯
 
 - **讀取**：
-  - `skill_lorekeeper`（已發生事實）
-  - `skill_status_monitor`（當前狀態）
+  - `memory/lorekeeper`（已發生事實）
+  - `char_query.py get-state` CLI（當前狀態）
 - **被呼叫於**：
-  - `workflow_chapter`（寫作後）
+  - nvChapter / nvReview（寫作後）
 - **輸出到**：
-  - `skill_scene_writer`（修正建議）
+  - `execution/scene_writer`（修正建議）
 
 ## 注意事項
 

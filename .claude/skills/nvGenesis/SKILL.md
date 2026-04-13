@@ -51,9 +51,9 @@ description: 建立新小說專案，初始化世界觀、角色與大綱
 
 1. 取得 repo 根目錄：`REPO_ROOT` = 當前工作目錄（即專案 repo 根）
 2. 驗證必填參數（`name`、`alias`）
-3. 組合路徑：`PROJECT_DIR = {REPO_ROOT}/projects/{name}`
-3. 若 `source=file`，確認檔案路徑存在
-4. **資源精度詢問**（在啟動 sub-agent 前）：
+3. 組合路徑：`PROJECT_DIR = {{REPO_ROOT}}/projects/{name}`
+4. 若 `source=file`，確認檔案路徑存在
+5. **資源精度詢問**（在啟動 sub-agent 前）：
    使用 AskUserQuestion 詢問：
    ```
    資源數字精度？
@@ -63,7 +63,7 @@ description: 建立新小說專案，初始化世界觀、角色與大綱
    直接 Enter 選 relative
    ```
    將回答存為 `{{RESOURCE_PRECISION}}`（空/無效 → `relative`）
-5. **風格錨定預檢**（在啟動 sub-agent 前執行）：
+6. **風格錨定預檢**（在啟動 sub-agent 前執行）：
    使用 Skill tool 呼叫 `/nvStyleBank`，確認全域 DB 有可用範本（**不帶 proj**，因為專案尚未註冊）：
    ```
    Skill: nvStyleBank
@@ -79,12 +79,13 @@ description: 建立新小說專案，初始化世界觀、角色與大綱
 
      完成後重新執行 /nvGenesis 即可繼續。
      ```
-6. 啟動 Agent tool：
+7. 啟動 Agent tool：
    - `subagent_type`: `general-purpose`
+   - `mode`: `bypassPermissions`
    - `run_in_background`: `false`
    - `prompt`: 將下方「Agent Prompt」的變數替換為實際值（含 `{{RESOURCE_PRECISION}}`）
-7. 接收 sub-agent 回傳的建立報告
-8. 輸出結果給用戶
+8. 接收 sub-agent 回傳的建立報告
+9. 輸出結果給用戶
 
 ---
 
@@ -250,10 +251,10 @@ cd {{REPO_ROOT}} && .venv/bin/python tools/item_query.py --proj {{ALIAS}} add --
 ## Step 10: 初始化動態檔案
 
 創建 `{{PROJECT_DIR}}/memory/` 下的動態追蹤檔案：
-- emotion_log.yaml（空白模板） — 情感記錄實際使用 SQLite
-- motivation_map.yaml（動機地圖模板）
-- relationship_dynamics.yaml（關係動態模板）
-- archive_index.yaml（冷儲存索引模板）
+- `motivation_map.yaml`（空動機地圖，後續由 `execution/motivation_engine` 填入）
+- `archive_index.yaml`（空冷儲存索引，後續由 nvArchive 寫入）
+
+> 情感記錄與角色關係不再寫 YAML — 分別由 SQLite `emotion_log` 表與 `char_query update-rel` 管理。
 
 ## Step 11: 埋設角色秘密
 

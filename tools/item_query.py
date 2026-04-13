@@ -68,6 +68,7 @@ ROOT_DIR = os.path.dirname(SCRIPT_DIR)
 sys.path.insert(0, ROOT_DIR)
 
 from tools.item_db import ItemDB
+from tools.commons.json_arg import resolve_json_arg
 
 
 _PRETTY = False
@@ -150,7 +151,7 @@ def cmd_update(db: ItemDB, args):
 
 
 def cmd_add(db: ItemDB, args):
-    data = json.loads(args.json)
+    data = json.loads(resolve_json_arg(args.json))
     item_id = data.pop("id")
     name = data.pop("name")
     category = data.pop("category", "Tool")

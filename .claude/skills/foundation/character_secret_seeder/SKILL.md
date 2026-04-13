@@ -71,16 +71,18 @@ character_secrets:
 
 ### Step 4: 寫入角色資料庫
 
-透過 CLI 將秘密寫入角色的 `base_profile` 中：
+秘密寫入 `base_profile.hidden_profile`。`update-field` 僅更新 `current_state` 下的單一欄位、無 `--json` 選項，故須用 `get` + `add`（upsert）覆寫完整角色資料：
+
 ```bash
-.venv/bin/python tools/char_query.py --proj {proj} update-field CHAR_001 hidden_profile --json '{"secrets":[...],"true_motivation":"...","secret_relationships":[...]}'
+# 1. 取得現有角色資料
+.venv/bin/python tools/char_query.py --proj {{PROJ}} get CHAR_001
+
+# 2. 在 base_profile 中加入 hidden_profile 後，用 add 覆寫
+.venv/bin/python tools/char_query.py --proj {{PROJ}} add --json '{"id":"CHAR_001","name":"...","role":"...","type":"character","identity":"...","base_profile":{"...":"...","hidden_profile":{"secrets":[...],"true_motivation":"...","secret_relationships":[...]}},"current_state":{...}}'
 ```
-注意：`update-field` 更新的是 `current_state` 下的欄位。秘密應寫入 `base_profile`，因此使用 `add` 指令重新寫入完整資料（upsert）：
-```bash
-.venv/bin/python tools/char_query.py --proj {proj} get CHAR_001
-# 取得現有資料後，在 base_profile 中加入 hidden_profile，再用 add 覆寫
-.venv/bin/python tools/char_query.py --proj {proj} add --json '{"id":"CHAR_001","name":"...","role":"...","type":"character","identity":"...","base_profile":{...含 hidden_profile...},"current_state":{...}}'
-```
+
+> [!WARNING]
+> `add` 是完整覆寫，呼叫前務必用 `get` 拿到最新完整資料並合併，否則會遺失並發更新。
 
 ## 輸出格式
 

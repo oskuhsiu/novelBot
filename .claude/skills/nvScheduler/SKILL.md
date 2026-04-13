@@ -53,12 +53,15 @@ Bash 中拼接檔案路徑時**必須**用 `"${TMPDIR}/filename"` 而非 `"${TMP
 
 ## 重要：JSON 寫入方式
 
-**禁止**使用 `cat > file << EOF` 寫 JSON（會觸發 sandbox 安全警告）。
-所有狀態檔寫入一律使用 Python：
+**禁止**使用 `cat > file << EOF` 寫 JSON（會觸發 sandbox 安全警告），也**禁止** inline `python3 -c "..."`（違反 `CLAUDE.md` 規則）。
+
+所有狀態檔寫入一律透過 `tools/scheduler/state_write.py`，直接 inline JSON：
 
 ```bash
-python3 -c "import json,tempfile,os; p=os.path.join(tempfile.gettempdir(),'claude_scheduler_{proj}.json'); json.dump({JSON_DICT}, open(p,'w'))"
+.venv/bin/python tools/scheduler/state_write.py --proj {proj} --json '{"key":"value",...}'
 ```
+
+腳本會把內容寫到 `$TMPDIR/claude_scheduler_{proj}.json` 並回傳實際路徑。
 
 ---
 
@@ -125,20 +128,11 @@ nvScheduler 已啟動
 for round = next_round to rounds:
   for phase in [nvBatch, nvAudit]（若 next_phase 指定則從該 phase 開始）:
 
-    1. 前置檢查：pause + 5h usage（合併為單一 Python 呼叫，避免多次 Bash approval）
+    1. 前置檢查：pause + 5h usage（單一 CLI 呼叫，避免 inline python -c）
        ```bash
-       python3 -c "
-       import json,os,tempfile
-       tmp=tempfile.gettempdir()
-       pf=os.path.join(tmp,'claude_scheduler_{proj}.pause')
-       result={'paused':os.path.isfile(pf),'usage':None}
-       try:
-        d=json.load(open('/private/tmp/claude_rate_limits.json'))
-        result['usage']=d.get('five_hour',{}).get('used_percentage')
-       except: pass
-       print(json.dumps(result))
-       "
+       cd {{REPO_ROOT}} && .venv/bin/python tools/scheduler/pre_check.py --proj {proj}
        ```
+       輸出一行 JSON：`{"paused": bool, "usage": float|null}`
        - 解析輸出 JSON：
          - 若 `paused == true` → 輸出「⏸ {proj} 排程已暫停（Round {round} {phase} 前）。說 resume 繼續。」
            - 使用 AskUserQuestion 等待使用者回應

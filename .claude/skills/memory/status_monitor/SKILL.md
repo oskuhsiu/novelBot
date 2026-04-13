@@ -180,10 +180,10 @@ Scene Writer 應參考此快照，確保連戲正確。
 ## 與其他 Skill 的關聯
 
 - **讀取者**：
-  - `skill_scene_writer`（寫作時參考）
-  - `skill_logic_auditor`（檢查矛盾）
+  - `execution/scene_writer`（寫作時參考）
+  - `memory/logic_auditor`（檢查矛盾）
 - **更新於**：
-  - `workflow_maintenance`
+  - nvMaint（章節維護流程）
   - 每次場景切換
 
 ## 注意事項

@@ -43,8 +43,8 @@ description: "透過本地 LLM API 執行任務（審查輔助、內容生成）
 # 生成打包
 .venv/bin/python tools/pack_context.py --proj {PROJ} generate --chapter {N} --instruction "生成指令"
 
-# 指定 budget 和輸出路徑
-.venv/bin/python tools/pack_context.py --proj {PROJ} --budget 80000 -o /tmp/packed.md review --chapters {A-B}
+# 指定 budget 和輸出路徑（臨時檔一律寫 $TMPDIR）
+.venv/bin/python tools/pack_context.py --proj {PROJ} --budget 80000 -o "$TMPDIR/packed.md" review --chapters {A-B}
 ```
 
 打包器按 token budget 分層填充：
@@ -60,11 +60,11 @@ description: "透過本地 LLM API 執行任務（審查輔助、內容生成）
 ```bash
 # 審查
 .venv/bin/python tools/local_llm.py --url "{URL}" review \
-  --input /tmp/packed.md --output {PROJECT_DIR}/reviews/review_ch{A}-{B}_local.md
+  --input "$TMPDIR/packed.md" --output {PROJECT_DIR}/reviews/review_ch{A}-{B}_local.md
 
 # 生成
 .venv/bin/python tools/local_llm.py --url "{URL}" generate \
-  --prompt-file /tmp/packed.md --output {PROJECT_DIR}/drafts/local_ch{N}.md \
+  --prompt-file "$TMPDIR/packed.md" --output {PROJECT_DIR}/drafts/local_ch{N}.md \
   --max-tokens 8192 --temperature 0.8
 ```
 
@@ -80,8 +80,8 @@ description: "透過本地 LLM API 執行任務（審查輔助、內容生成）
 典型用法（3 章 ≈ 15K tokens，budget 很充裕）：
 
 ```bash
-.venv/bin/python tools/pack_context.py --proj bnf -o /tmp/packed.md review --chapters 33-35
-.venv/bin/python tools/local_llm.py --url "{URL}" review --input /tmp/packed.md --output /tmp/review_local.md
+.venv/bin/python tools/pack_context.py --proj bnf -o "$TMPDIR/packed.md" review --chapters 33-35
+.venv/bin/python tools/local_llm.py --url "{URL}" review --input "$TMPDIR/packed.md" --output "$TMPDIR/review_local.md"
 ```
 
 > 建議一次審查 ≤5 章，避免 context 太擠導致品質下降。
@@ -90,11 +90,11 @@ description: "透過本地 LLM API 執行任務（審查輔助、內容生成）
 
 ```bash
 # 用 pack_context 自動組裝前文 + 角色 + 設定
-.venv/bin/python tools/pack_context.py --proj bnf -o /tmp/packed.md generate --chapter 36 \
+.venv/bin/python tools/pack_context.py --proj bnf -o "$TMPDIR/packed.md" generate --chapter 36 \
   --instruction "撰寫一段林默與趙天驕的對峙場景，約 2000 字，氣氛緊張，第三人稱限制視角（林默）。"
 
 .venv/bin/python tools/local_llm.py --url "{URL}" generate \
-  --prompt-file /tmp/packed.md --output /tmp/scene_ch36.md \
+  --prompt-file "$TMPDIR/packed.md" --output "$TMPDIR/scene_ch36.md" \
   --max-tokens 8192 --temperature 0.8
 ```
 

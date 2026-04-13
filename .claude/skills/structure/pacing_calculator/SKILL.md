@@ -32,7 +32,7 @@ description: 速度指針計算器 - 根據 pacing_pointer 計算本章應涵蓋
    - `progress.current_chapter`
    - `progress.current_beat_id`
 
-3. 從 `config/story_outline.yaml` 讀取：
+3. 從 `{{PROJECT_DIR}}/config/outline/arc_{current_arc}.yaml` 讀取（先由 `outline_index.yaml` 取得 current_arc）：
    - 當前 SubArc 的 pacing_pointer（若有）
    - 當前章節的 `beats` 列表
 
@@ -169,12 +169,12 @@ pacing_pointer: 0.9
 
 ## 與其他 Skill 的關聯
 
-- **讀取自**：`novel_config.yaml`、`narrative_progress.yaml`
+- **讀取自**：`{{PROJECT_DIR}}/config/novel_config.yaml`、`{{PROJECT_DIR}}/config/narrative_progress.yaml`
 - **影響到**：
-  - `skill_chapter_beater`：節拍數量
-  - `skill_scene_writer`：描寫詳細程度
-  - `skill_technique_elaborator`：技能描寫詳細度
-  - `skill_sensory_amplifier`：感官描寫程度
+  - `structure/chapter_beater`：節拍數量
+  - `execution/scene_writer`：描寫詳細程度
+  - `execution/technique_elaborator`：技能描寫詳細度
+  - `execution/sensory_amplifier`：感官描寫程度
 
 ## 注意事項
 

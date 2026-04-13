@@ -39,7 +39,7 @@ description: 角色對話測試
 根據 `topic` 和 `mood` 設定對話情境
 
 ### Step 3: 生成對話
-使用 `skill_dialogue_director` 生成測試對話：
+讀取 `execution/dialogue_director/SKILL.md` 並遵循其指令生成測試對話：
 - 5-10 個回合
 - 每個角色至少發言 2 次
 

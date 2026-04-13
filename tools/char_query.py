@@ -50,6 +50,7 @@ ROOT_DIR = os.path.dirname(SCRIPT_DIR)
 sys.path.insert(0, ROOT_DIR)
 
 from tools.char_db import CharacterDB
+from tools.commons.json_arg import resolve_json_arg
 
 
 _PRETTY = False
@@ -161,7 +162,7 @@ def cmd_search(db: CharacterDB, args):
 
 
 def cmd_update_state(db: CharacterDB, args):
-    state = json.loads(args.json)
+    state = json.loads(resolve_json_arg(args.json))
     db.update_state(args.char_id, state)
     print(f"OK: {args.char_id} current_state updated")
 
@@ -188,7 +189,7 @@ def cmd_update_rel(db: CharacterDB, args):
 
 
 def cmd_add(db: CharacterDB, args):
-    data = json.loads(args.json)
+    data = json.loads(resolve_json_arg(args.json))
     char_id = data.pop("id")
     name = data.pop("name")
     role = data.pop("role", "Minor")

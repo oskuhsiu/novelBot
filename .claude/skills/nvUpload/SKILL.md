@@ -15,22 +15,22 @@ description: 管理 czbooks.net 上的章節：上傳、更新、刪除、列表
 
 ### 列出章節
 ```bash
-python tools/czbooks_manage.py list --proj <proj>
+.venv/bin/python tools/czbooks_manage.py list --proj <proj>
 ```
 
 ### 上傳新章節
 ```bash
-python tools/czbooks_manage.py upload --proj <proj> --range <range> --state <draft|post> [--dry]
+.venv/bin/python tools/czbooks_manage.py upload --proj <proj> --range <range> --state <draft|post> [--dry]
 ```
 
 ### 更新已有章節
 ```bash
-python tools/czbooks_manage.py update --proj <proj> --range <range> --state <draft|post> [--dry]
+.venv/bin/python tools/czbooks_manage.py update --proj <proj> --range <range> --state <draft|post> [--dry]
 ```
 
 ### 刪除章節
 ```bash
-python tools/czbooks_manage.py delete --proj <proj> --range <range> [--dry]
+.venv/bin/python tools/czbooks_manage.py delete --proj <proj> --range <range> [--dry]
 ```
 
 ## 參數說明
@@ -44,7 +44,7 @@ python tools/czbooks_manage.py delete --proj <proj> --range <range> [--dry]
 
 ## 執行步驟
 1. 讀取 `projects/project_registry.yaml` 取得 `proj` 對應的真實資料夾名稱。
-2. 直接呼叫 `python tools/czbooks_manage.py` 並帶入對應的子命令與參數。
+2. 直接呼叫 `.venv/bin/python tools/czbooks_manage.py` 並帶入對應的子命令與參數。
 3. 腳本內部會：
    - 使用 `project_registry.yaml` 找出小說的中文名稱。
    - 分析作者後台 (`/creator/list`) 找出對應的 Novel ID。

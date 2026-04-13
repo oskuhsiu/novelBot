@@ -162,8 +162,8 @@ tactile:
 
 ## 與其他 Skill 的關聯
 
-- **協作**：`skill_scene_writer`（提供感官素材）
-- **受影響於**：`skill_pacing_calculator`（決定詳細程度）
+- **協作**：`execution/scene_writer`（提供感官素材）
+- **受影響於**：`structure/pacing_calculator`（決定詳細程度）
 
 ## 注意事項
 

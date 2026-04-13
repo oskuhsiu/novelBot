@@ -178,7 +178,7 @@ args: "proj={{PROJ}} {專案genre} {本章emotion_objective} n=2 format=brief"
 ### Step 6: 輸出確認
 // turbo
 
-使用 `word_counter` 計算字數。
+計算字數：`cd {{REPO_ROOT}} && .venv/bin/python tools/word_count.py {{PROJECT_DIR}}/output/chapters/chapter_{N}.md`
 
 ```
 📝 第 {N} 章草稿完成 | 標題：{title} | {words} 字 | {event_count} 事件 | SubArc：{id}

@@ -24,7 +24,7 @@ description: 預覽接下來的章節規劃
 
 ### Step 1: 載入大綱
 // turbo
-讀取 `story_outline.yaml` 的 `arcs` 和 `narrative_progress.yaml` 的進度
+讀取 `outline_index.yaml` 的 arcs list + 當前 arc 對應的 `outline/arc_{current_arc}.yaml`，以及 `narrative_progress.yaml` 的進度
 
 ### Step 2: 計算範圍
 // turbo
@@ -39,7 +39,7 @@ description: 預覽接下來的章節規劃
 - 可能觸發的伏筆
 
 ### Step 4: 張力分析
-使用 `skill_beat_optimizer` 分析這 N 章的張力曲線
+使用 `structure/beat_optimizer` 分析這 N 章的張力曲線
 
 ### Step 5: 建議
 提供調整建議：

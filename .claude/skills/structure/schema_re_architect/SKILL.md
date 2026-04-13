@@ -172,9 +172,9 @@ divergence = 1.0:
 
 - **調用前置**：此 Skill 會讀取所有專案設定檔
 - **調用後續**：
-  - `skill_consistency_validator` 驗證生成的大綱
-  - `skill_outline_architect` 可能需要調整整合
-- **被調用於**：`workflow_nvMirror`
+  - `memory/consistency_validator` 驗證生成的大綱
+  - `structure/outline_architect` 可能需要調整整合
+- **被調用於**：nvMirror
 
 ## 注意事項
 

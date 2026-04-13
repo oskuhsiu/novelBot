@@ -22,7 +22,7 @@ description: 顯示專案狀態總覽
 
 ### Step 1: 讀取進度
 // turbo
-讀取 `narrative_progress.yaml` 和 `story_outline.yaml`
+讀取 `narrative_progress.yaml` 和 `outline_index.yaml`（需詳細 arc 資訊時再讀對應 `outline/arc_{N}.yaml`）
 
 ### Step 2: 生成報告
 // turbo

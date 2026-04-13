@@ -121,6 +121,6 @@ technique_elaboration:
 
 ## 與其他 Skill 的連動
 
-1. **skill_scene_writer**：寫戰鬥場景時調用
-2. **skill_logic_auditor**：驗證能量消耗是否合理
-3. **skill_consistency_validator**：確保技能描寫與設定一致
+1. **`execution/scene_writer`**：寫戰鬥場景時調用
+2. **`memory/logic_auditor`**：驗證能量消耗是否合理
+3. **`memory/consistency_validator`**：確保技能描寫與設定一致

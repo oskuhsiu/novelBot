@@ -71,7 +71,7 @@ item_interaction_settings:
 
 如果道具是消耗品，使用 CLI 更新物品資料庫：
 ```bash
-.venv/bin/python tools/item_query.py --proj {proj} update {ITEM_ID} --quantity {N}
+.venv/bin/python tools/item_query.py --proj {{PROJ}} update {ITEM_ID} --quantity {N}
 ```
 同時更新角色資料庫：
 

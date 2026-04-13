@@ -43,6 +43,7 @@ ROOT_DIR = os.path.dirname(SCRIPT_DIR)
 sys.path.insert(0, ROOT_DIR)
 
 from tools.emotion_db import EmotionDB
+from tools.commons.json_arg import resolve_json_arg
 
 _PRETTY = False
 
@@ -81,7 +82,7 @@ def cmd_range(db: EmotionDB, args):
 
 
 def cmd_add(db: EmotionDB, args):
-    elements = json.loads(args.elements) if args.elements else {}
+    elements = json.loads(resolve_json_arg(args.elements)) if args.elements else {}
     db.upsert_chapter(
         args.chapter_id,
         tension_score=args.tension or 0,
@@ -117,13 +118,13 @@ def cmd_suggestions(db: EmotionDB, args):
 
 
 def cmd_set_suggestions(db: EmotionDB, args):
-    data = json.loads(args.json)
+    data = json.loads(resolve_json_arg(args.json))
     db.set_suggestions(data)
     print(f"OK: {len(data)} suggestions saved")
 
 
 def cmd_set_consecutive(db: EmotionDB, args):
-    data = json.loads(args.json)
+    data = json.loads(resolve_json_arg(args.json))
     db.set_consecutive(data)
     print("OK: consecutive tracking updated")
 

@@ -39,11 +39,11 @@ description: 重新生成指定章節
 1. 若 `keep=true` → 備份 `output/chapters/chapter_{ch}.md` 到 `output/chapters/chapter_{ch}_backup.md`
 2. 讀取原章節的摘要（ChromaDB）：
    ```bash
-   cd {REPO_ROOT} && .venv/bin/python tools/lore_query.py --proj {proj} chapters --ch {ch}
+   cd {{REPO_ROOT}} && .venv/bin/python tools/lore_query.py --proj {{PROJ}} chapter {{CH}}
    ```
 3. 清理該章的 ChromaDB lore 記錄：
    ```bash
-   cd {REPO_ROOT} && .venv/bin/python tools/lore_update.py --proj {proj} delete --ch {ch}
+   cd {{REPO_ROOT}} && .venv/bin/python tools/lore_update.py --proj {{PROJ}} delete --ch {{CH}}
    ```
 
 ### Step 2: 還原進度指針

@@ -80,7 +80,7 @@ description: 寫一章
 若有 Critical/Warning：
 1. 逐一修正（最小改動，消除矛盾 + 保持文風 + 不引入新問題）
 2. 若涉及設定變更，同步更新 yaml
-3. 字數再校驗（`word_counter`）——若修正僅改措辭未刪除大段文本則跳過；不足則補充
+3. 字數再校驗——若修正僅改措辭未刪除大段文本則跳過；不足則補充。校驗指令：`cd {{REPO_ROOT}} && .venv/bin/python tools/word_count.py {{PROJECT_DIR}}/output/chapters/chapter_{N}.md`
 4. 再次 nvReview light（最多 2 輪），仍有 Critical → 標註 `🔴 未解決`
 
 #### 3.5c: nvMaint light

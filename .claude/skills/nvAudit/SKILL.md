@@ -37,7 +37,7 @@ description: 完整維護 + 完整審查 + 自動修正（單一 sub-agent，ass
 
 ### Step 1：啟動 Sub-Agent
 
-啟動 Agent tool（`subagent_type: general-purpose`，`run_in_background: false`），prompt 為下方 **Agent Prompt**（替換 `{{...}}`）。
+啟動 Agent tool（`subagent_type: general-purpose`，`mode: bypassPermissions`，`run_in_background: false`），prompt 為下方 **Agent Prompt**（替換 `{{...}}`）。
 
 ### Step 2：輸出
 

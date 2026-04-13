@@ -27,6 +27,7 @@ PROJECT_ROOT = os.path.join(ROOT_DIR, "projects")
 sys.path.insert(0, ROOT_DIR)
 
 from tools.lore_vector import ChapterVector, LoreVector, get_project_folder
+from tools.commons.json_arg import resolve_json_arg
 
 def cmd_chapter(args, folder):
     if not all([args.title, args.arc is not None, args.subarc, args.words is not None, args.summary]):
@@ -72,7 +73,7 @@ def cmd_batch_event(args, folder):
     """批次寫入多筆 lore events，共用同一個 ChromaDB client。"""
     import json as _json
     try:
-        events = _json.loads(args.json)
+        events = _json.loads(resolve_json_arg(args.json))
     except _json.JSONDecodeError as e:
         print(f"❌ JSON 解析失敗: {e}")
         sys.exit(1)

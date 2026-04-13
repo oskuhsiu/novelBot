@@ -13,11 +13,11 @@ description: 角色鑄造廠 - 生成有血有肉的角色，維護 base_profile
 
 ## 輸入
 
-1. 從 `templates/novel_config.yaml` 讀取：
+1. 從 `{{PROJECT_DIR}}/config/novel_config.yaml` 讀取：
    - `style_profile`：確保角色符合風格
    - `meta.language`：命名語言
 
-2. 從 `templates/power_system.yaml` 讀取（如果存在）：
+2. 從 `{{PROJECT_DIR}}/config/power_system.yaml` 讀取（如果存在）：
    - 可用的技能框架
 
 3. 使用者提供：
@@ -32,9 +32,9 @@ description: 角色鑄造廠 - 生成有血有肉的角色，維護 base_profile
 
 ### Step 1: 讀取上下文
 ```
-讀取 templates/novel_config.yaml 的 style_profile
+讀取 {{PROJECT_DIR}}/config/novel_config.yaml 的 style_profile
 讀取 SQLite 世界地圖資料庫 (via atlas_query.py) 了解世界背景
-讀取 templates/power_system.yaml 了解可用技能（如有）
+讀取 {{PROJECT_DIR}}/config/power_system.yaml 了解可用技能（如有）
 ```
 
 ### Step 2: 生成角色核心
@@ -60,17 +60,17 @@ description: 角色鑄造廠 - 生成有血有肉的角色，維護 base_profile
    - 注意：這不是性格展演，是物理存在。「趴在門邊，耳朵追蹤聲響」✅ vs「忠誠地守護著主人」❌
 
 ## 內在驅動
-3. 核心慾望：他/她最想要什麼？（這是行動的根本動力）
-4. 恐懼/弱點：他/她最害怕什麼？（這是內心衝突的來源）
-5. 秘密：一個不為人知的過去或真相
+4. 核心慾望：他/她最想要什麼？（這是行動的根本動力）
+5. 恐懼/弱點：他/她最害怕什麼？（這是內心衝突的來源）
+6. 秘密：一個不為人知的過去或真相
 
 ## 性格與表達
-6. 性格關鍵字：3 個形容詞
-7. 說話方式：口頭禪、慣用語氣、說話節奏
-8. 行為模式：面對壓力時的典型反應
+7. 性格關鍵字：3 個形容詞
+8. 說話方式：口頭禪、慣用語氣、說話節奏
+9. 行為模式：面對壓力時的典型反應
 
 ## 系統參數
-9. 重要性 (Importance): 1-10
+10. 重要性 (Importance): 1-10
    - 10: 絕對主角
    - 8-9: 核心配角 (除非完結不封存)
    - 5-7: 重要配角 (活躍期後可歸檔)
@@ -113,7 +113,7 @@ description: 角色鑄造廠 - 生成有血有肉的角色，維護 base_profile
 
 使用 CLI 將每個角色直接寫入資料庫：
 ```bash
-.venv/bin/python tools/char_query.py --proj {proj} add --json '{
+.venv/bin/python tools/char_query.py --proj {{PROJ}} add --json '{
   "id": "CHAR_001",
   "name": "李玄 (Li Xuan)",
   "role": "Protagonist",
@@ -143,7 +143,7 @@ description: 角色鑄造廠 - 生成有血有肉的角色，維護 base_profile
 
 使用 CLI 寫入角色間的關係：
 ```bash
-.venv/bin/python tools/char_query.py --proj {proj} add-rel CHAR_001 CHAR_002 --surface "追捕者" --tension 70
+.venv/bin/python tools/char_query.py --proj {{PROJ}} add-rel CHAR_001 CHAR_002 --surface "追捕者" --tension 70
 ```
 
 ## 特殊模式
@@ -187,13 +187,13 @@ description: 角色鑄造廠 - 生成有血有肉的角色，維護 base_profile
 ## 與其他 Skill 的關聯
 
 - **前置 Skill**：
-  - `skill_world_builder`：需要世界背景
-  - `skill_power_architect`：需要技能體系（如有）
+  - `foundation/world_builder`：需要世界背景
+  - `foundation/power_architect`：需要技能體系（如有）
 - **後續 Skill**：
-  - `skill_status_monitor`：維護 current_state
-  - `skill_dialogue_director`：使用說話方式
+  - `char_query.py update-state`（CLI）：維護 current_state
+  - `execution/dialogue_director`：使用說話方式
 - **協作 Skill**：
-  - `skill_faction_forge`：將角色分配到派系
+  - `foundation/faction_forge`：將角色分配到派系
 
 ## 注意事項
 

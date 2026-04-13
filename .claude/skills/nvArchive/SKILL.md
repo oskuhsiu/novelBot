@@ -32,17 +32,18 @@ description: 歸檔過時記憶資料，保持工作檔案精簡
 
 1. 取得 repo 根目錄：`REPO_ROOT` = 當前工作目錄（即專案 repo 根）
 2. 讀取 `projects/project_registry.yaml`，解析 `proj` 參數 → 取得專案資料夾名稱
-3. 組合路徑：`PROJECT_DIR = {REPO_ROOT}/projects/{資料夾名稱}`
-3. 驗證參數（`keep` 預設 10，`dry` 預設 false）
-4. 判斷執行模式：
+3. 組合路徑：`PROJECT_DIR = {{REPO_ROOT}}/projects/{資料夾名稱}`
+4. 驗證參數（`keep` 預設 10，`dry` 預設 false）
+5. 判斷執行模式：
    - **自動觸發（如從 nvMaint 後自動呼叫）**：`run_in_background: true`
    - **用戶手動執行 / dry=true 預覽**：`run_in_background: false`
-5. 啟動 Agent tool：
+6. 啟動 Agent tool：
    - `subagent_type`: `general-purpose`
    - `model`: `haiku`
+   - `mode`: `bypassPermissions`
    - `run_in_background`: 依上述判斷
    - `prompt`: 將下方「Agent Prompt」的變數替換為實際值
-6. 接收並顯示 sub-agent 回傳的歸檔報告
+7. 接收並顯示 sub-agent 回傳的歸檔報告
 
 ---
 

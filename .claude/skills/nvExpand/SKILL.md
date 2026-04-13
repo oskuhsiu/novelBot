@@ -206,6 +206,12 @@ description: 將字數不足的章節擴寫至目標字數
 
 ### Step 5: 完成確認
 // turbo
+
+計算擴寫後字數（**禁止自行寫 regex 或用 wc**）：
+```
+cd {{REPO_ROOT}} && .venv/bin/python tools/word_count.py {{PROJECT_DIR}}/output/chapters/chapter_{chapter}.md
+```
+
 ```
 ✅ 第 {chapter} 章擴寫完成 | 標題：{title} | {before}→{after} 字 ({ratio}x) | 目標 {min}-{max}
 ```

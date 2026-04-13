@@ -35,14 +35,15 @@ description: 情感波段分析與自動調整
 
 1. 取得 repo 根目錄：`REPO_ROOT` = 當前工作目錄（即專案 repo 根）
 2. 讀取 `projects/project_registry.yaml`，解析 `proj` 參數 → 取得專案資料夾名稱
-3. 組合路徑：`PROJECT_DIR = {REPO_ROOT}/projects/{資料夾名稱}`
-3. 驗證參數（`range` 預設全部，`fix` 預設 false）
-4. 啟動 Agent tool：
+3. 組合路徑：`PROJECT_DIR = {{REPO_ROOT}}/projects/{資料夾名稱}`
+4. 驗證參數（`range` 預設全部，`fix` 預設 false）
+5. 啟動 Agent tool：
    - `subagent_type`: `general-purpose`
    - `model`: `haiku`
+   - `mode`: `bypassPermissions`
    - `run_in_background`: `false`
    - `prompt`: 將下方「Agent Prompt」的變數替換為實際值
-5. 接收並顯示 sub-agent 回傳的分析報告
+6. 接收並顯示 sub-agent 回傳的分析報告
 
 ---
 

@@ -98,7 +98,7 @@ navigation_result:
 
 ## 與 Scene Writer 的連動
 
-當 `skill_scene_writer` 寫到移動場景時：
+當 Scene Writer 寫到移動場景時：
 
 1. 自動調用 `atlas_navigator` 驗證路徑
 2. 如果路徑不通，提供劇情轉向建議

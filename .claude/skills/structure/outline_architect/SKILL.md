@@ -5,284 +5,83 @@ description: 大綱建築師 - 根據 Arc-SubArc 結構規劃全書大綱
 
 # 大綱建築師 (Outline Architect)
 
-## 功能概述
+規劃小說整體結構：**Arc（卷，預設 10）→ SubArc（情節段，預設每卷 5–10）→ Chapter（動態生成）**。
+章節數公式：`單 SubArc 章數 = 1 / pacing_pointer`，總章數 = Σ 各 SubArc 章數。
 
-此 Skill 負責規劃小說的整體結構，使用 **Arc-SubArc-Chapter** 三層架構：
-- **Arc（大綱/卷）**：故事的主要分段，預設 10 個
-- **SubArc（細目/情節點）**：每個 Arc 內的具體情節，預設每卷 5~10 個
-- **Chapter（章節）**：根據 pacing_pointer 動態生成，每章內有自己的 beats
-
-> [!IMPORTANT]
-> **術語區分**
-> - **SubArc**：Arc 下的細目，代表一個完整情節段落
-> - **Beat**：Chapter 內的場景節拍，由 chapter_beater 生成
-> 
-> 兩者層級不同，請勿混淆！
-
-## 核心概念
-
-### 三層架構
-
-```
-Arc 1: 開篇
-├── SubArc 1.1: 主角訪視 (pacing: 0.2 → 需 5 章)
-│     ├── Chapter 1 (內有 5-8 個 beats)
-│     ├── Chapter 2
-│     └── ...
-├── SubArc 1.2: 觸發事件 (pacing: 0.5 → 需 2 章)
-└── SubArc 1.3: 踏上旅程 (pacing: 1.0 → 需 1 章)
-
-Arc 2: 試煉
-├── SubArc 2.1: 第一次考驗
-...
-```
-
-### 章節數計算
-
-```
-單個 SubArc 的章節數 = 1 / subarc.pacing_pointer (或 arc.pacing_pointer 或 全域 pacing_pointer)
-總章節數 = Σ(每個 SubArc 的章節數)
-```
-
-例如：
-- 10 個 Arc × 8 個 SubArc = 80 個 SubArc
-- pacing_pointer = 0.5 → 每個 SubArc 約 2 章
-- 總章節數 ≈ 160 章
+> **術語**：SubArc 是 Arc 下的情節段（本 skill 產出）；Beat 是 Chapter 內的場景節拍（由 chapter_beater 產出）。兩者層級不同。
 
 ## 輸入
 
-1. 從 `config/novel_config.yaml` 讀取：
-   - `style_profile`：類型與風格
-   - `engine_settings.pacing_pointer`：全域速度指針
-   - `structure.arcs`：大綱數量（預設 10）
-   - `structure.subarcs_per_arc`：每卷細目數（預設 5~10）
-
-2. 從角色資料庫（SQLite）讀取主要角色：
-   ```bash
-   .venv/bin/python tools/char_query.py --proj {proj} list --role Protagonist
-   .venv/bin/python tools/char_query.py --proj {proj} get {CHAR_IDS}
-   ```
-   提取：`core_desire` 和 `fear`
+1. `{{PROJECT_DIR}}/config/novel_config.yaml`：`style_profile`（含 genre、tags、main_plot_trope）、`engine_settings.pacing_pointer`、`structure.arcs`（預設 10）、`structure.subarcs_per_arc`（預設 5~10）
+2. 角色 SQLite：`.venv/bin/python tools/char_query.py --proj {{PROJ}} list` → 篩 role==Protagonist → `get {CHAR_IDS}` → 取 `core_desire` / `fear`
+3. Trope 庫：`{{REPO_ROOT}}/templates/trope_library.yaml` 的 `category: Plot` 列表（全域共用）
+4. 伏筆狀態（增量時）：`.venv/bin/python tools/lore_query.py --proj {{PROJ}} lore "伏筆" --category foreshadowing`
 
 ## 輸出
 
-更新 `config/story_outline.yaml` 的 `arcs` 區塊
+雙檔結構（讀取端只需載入 index + 當前 arc）：
+
+```yaml
+# {{PROJECT_DIR}}/config/outline_index.yaml  — 輕量索引
+current_arc: <int>
+arcs:
+  - {arc_id, title, summary, emotion_arc, structure_role, pacing_pointer|null,
+     file: "outline/arc_{N}.yaml", is_completed: false}
+```
+
+```yaml
+# {{PROJECT_DIR}}/config/outline/arc_{N}.yaml  — 完整內容
+arc_id, title, summary
+subarcs:
+  - id: "A{arc_id}_S{n}"      # e.g. A1_S3
+    summary                    # 1 句核心事件
+    characters: [CHAR_IDS]
+    location
+    emotion_shift              # 平靜→緊張
+    hook                       # 結尾鉤子
+    pacing_pointer: null       # 覆蓋用，通常 null
+    chapters: []               # nvChapter 執行時動態填入
+    is_completed: false
+is_completed: false
+```
+
+`pacing_pointer` 優先級：`SubArc > Arc > 全域`。
 
 ## 執行步驟
 
-### Step 0: 結構檢查（新增 Arc/SubArc 前必做）
+### Step 0：結構檢查（新增 Arc/SubArc 前必做）
+讀 `outline_index.yaml`。若存在，對已完成/進行中的 arcs 從對應 `outline/arc_{N}.yaml` 取細節，彙整：
+- `last_arc_summary`、`last_subarc_ending`（當前位置、懸而未決衝突、角色狀態）
+- `pending_foreshadowing`（從 ChromaDB lore 查 `--category foreshadowing`，排除已回收者）
+- `character_trajectories`（各主要角色 current_state + next_growth_opportunity）
+- `thematic_progression`
 
-> [!IMPORTANT]
-> **在生成任何新的 Arc 或 SubArc 之前，必須先分析已有結構！**
+增量約束：新 Arc 必須銜接 `last_arc_summary`；新 SubArc 延續 `last_subarc_ending`；必須安排回收 `pending_foreshadowing`；角色行為符合 `character_trajectories`。
+若 `outline_index.yaml` 不存在但 `story_outline.yaml` 存在 → 視為 legacy，於 Step 5 改寫為新 schema。若兩者皆無 → 直接進 Step 1 全新生成。
 
-```yaml
-結構檢查流程:
-  1. 讀取 story_outline.yaml:
-     - 檢查是否已有 arcs[] 陣列
-     - 統計已完成/進行中的 arc 數量
-     
-  2. 若已有 arcs 結構:
-     分析已有內容:
-       - 主題發展脈絡：各 arc 的核心主題演變
-       - 角色發展軌跡：主要角色的成長歷程
-       - 伏筆追蹤：
-         - 從 ChromaDB 讀取伏筆（`tools/lore_query.py --proj {proj} lore "伏筆" --category foreshadowing`）
-         - 已回收的伏筆
-         - 待回收的伏筆
-       - 最後 arc/subarc 的狀態：
-         - 結束時的劇情位置
-         - 懸而未決的衝突
-         - 角色當前狀態
-         
-     彙整連貫性要點:
-       structure_context:
-         last_arc_summary: "最後一個 arc 的摘要"
-         last_subarc_ending: "最後一個 subarc 的結尾狀態"
-         pending_foreshadowing: ["待回收伏筆列表"]
-         character_trajectories:
-           - character_id: "CHAR_001"
-             current_state: "當前發展階段"
-             next_growth_opportunity: "下一步成長方向"
-         thematic_progression: "主題發展方向"
-         
-  3. 若無 arcs 結構:
-     - 直接進入 Step 1 生成全新結構
-     
-  4. 生成新內容時的約束:
-     - 新 Arc 必須銜接 last_arc_summary
-     - 新 SubArc 必須延續 last_subarc_ending
-     - 必須安排回收 pending_foreshadowing 中的伏筆
-     - 角色行為必須符合 character_trajectories
-```
+### Step 1：讀取設定
+取 `structure.arcs` / `structure.subarcs_per_arc` / `engine_settings.pacing_pointer`。
 
-### Step 1: 讀取設定
-```yaml
-# 從 config/novel_config.yaml 讀取
-structure:
-  arcs: {{arc_count}}              # 預設 10
-  subarcs_per_arc: {{subarc_range}} # 預設 "5~10"
+### Step 2：選擇 Plot Trope
+若 `style_profile.main_plot_trope` 為空：從 `trope_library.yaml` 的 `category: Plot` 依 genre/tags 匹配，無明顯匹配則隨機挑通用型（PLT_001/PLT_002）。否則用指定 ID 對應的 description。將 trope 作為核心敘事骨架（例：「復仇」→ Arc1-2 種子、Arc3-7 積蓄、Arc8-10 爆發）。
 
-engine_settings:
-  pacing_pointer: {{global_pacing}} # 預設 0.5
-```
+### Step 3：生成 Arc 大綱
+對每個 Arc 輸出 `arc_id, title, summary（呼應 trope 階段）, emotion_arc, structure_role, pacing_pointer(可選)`。輸入：genre、trope name+desc、protagonist core_desire+fear。
 
-### Step 2: 選擇結構模型與劇情套路 (Trope Selection)
-```
-1. **讀取設定**：
-   - 檢查 `novel_config.yaml` 中的 `style_profile.main_plot_trope`。
-   - 若為空，讀取 `templates/trope_library.yaml` 中的 `category: Plot` 列表。
+### Step 4：為每個 Arc 生成 SubArcs
+在 `subarcs_per_arc` 範圍內**隨機**取數量（不要固定中位數）。對每個 SubArc 輸出 schema 所有欄位。要求：首個 SubArc 銜接前一 Arc 結尾，末個 SubArc 設懸念引向下一 Arc，彼此邏輯遞進。
 
-2. **自動選擇套路 (Auto-Selection)**：
-   - 若 `main_plot_trope` 為空：
-     - 分析 `genre` ({{genre}}) 與 `tags` 的關聯性。
-     - 選擇一個最匹配的 Plot Trope id。
-     - 若無明顯匹配，隨機選擇一個通用型套路 (如 PLT_001, PLT_002)。
-   - 若已有指定，則使用該 ID 對應的 description。
-
-3. **結構分配**：
-   - 將選擇的 Plot Trope 作為「核心敘事骨架」。
-   - 例如：若選中「復仇行動 (Revenge Arc)」，則：
-     - Arc 1-2: 仇恨種子與遭受迫害
-     - Arc 3-7: 積蓄力量與逐步反擊
-     - Arc 8-10: 最終復仇與釋然
-```
-
-### Step 3: 生成 Arc 大綱
-```
-你是一位資深的小說策劃。
-請根據以下設定，規劃 {{arc_count}} 個 Arc：
-
-【類型】：{{genre}}
-【核心套路】：{{main_plot_trope_name}} - {{main_plot_trope_desc}}
-【主角核心慾望】：{{protagonist_desire}}
-【主角最大恐懼】：{{protagonist_fear}}
-
-對於每個 Arc，請輸出：
-1. **arc_id**：編號
-2. **title**：卷名（吸引力標題）
-3. **summary**：本卷核心主題（1-2 句）。**必須呼應核心套路的發展階段**。
-4. **emotion_arc**：情感走向（如：緊張→釋然→震驚）
-5. **structure_role**：在整體結構中的功能
-6. **pacing_pointer**（可選）：若此卷需要特殊節奏，指定覆蓋值
-```
-
-### Step 4: 為每個 Arc 生成 SubArcs
-```
-對於 Arc {{arc_id}}：{{arc_title}}
-
-請根據 subarcs_per_arc 範圍，隨機決定本卷的 SubArc 數量（請在範圍內隨機取值，不要固定使用中位數）：
-
-【Arc 摘要】：{{arc_summary}}
-【前一個 Arc 結尾】：{{previous_arc_ending}}
-【下一個 Arc 開頭】：{{next_arc_beginning}}
-
-對於每個 SubArc，請輸出：
-1. **id**：A{arc_id}_S{subarc_num}（如 A1_S3）
-2. **summary**：本細目核心事件（1 句話）
-3. **characters**：出場角色 ID
-4. **location**：場景地點
-5. **emotion_shift**：情緒變化（如：平靜→緊張）
-6. **hook**：結尾鉤子（讓讀者想繼續）
-7. **pacing_pointer**（可選）：若此細目需要特殊節奏
-
-確保：
-- 首個 SubArc 銜接前一 Arc
-- 末個 SubArc 設下懸念，引向下一 Arc
-- 各 SubArc 之間有邏輯遞進
-```
-
-### Step 5: 寫入 story_outline.yaml
-
-將完整的 arcs 結構寫入 `config/story_outline.yaml`：
-
-```yaml
-# Story Outline - 大綱結構
-arcs:
-  - arc_id: 1
-    title: "..."
-    summary: "..."
-    emotion_arc: "..."
-    structure_role: "..."
-    pacing_pointer: null  # 使用全域，或指定覆蓋值
-    subarcs:
-      - id: "A1_S1"
-        summary: "..."
-        characters: ["CHAR_001"]
-        location: "..."
-        emotion_shift: "..."
-        hook: "..."
-        pacing_pointer: null
-        chapters: []  # 執行時動態填入
-        is_completed: false
-    is_completed: false
-```
-
-## 大綱範例
-
-```yaml
-arcs:
-  - arc_id: 1
-    title: "頻段錯誤"
-    summary: "主角捲入黑市陰謀，被迫踏上逃亡之路"
-    emotion_arc: "平靜→緊張→決心"
-    structure_role: "開篇 + 觸發事件"
-    pacing_pointer: 0.3  # 慢節奏開場，建立世界觀
-    subarcs:
-      - id: "A1_S1"
-        summary: "黑市交易被突襲打斷"
-        characters: ["CHAR_001"]
-        location: "聽劍閣地下層"
-        emotion_shift: "平靜→驚恐"
-        hook: "神秘女子出現"
-        pacing_pointer: 0.2  # 特別慢，細膩鋪陳
-        
-      - id: "A1_S2"
-        summary: "與神秘女子暫時結盟逃亡"
-        characters: ["CHAR_001", "CHAR_002"]
-        location: "鏽城管道網"
-        emotion_shift: "驚恐→警惕"
-        hook: "發現追兵不是衝著他來"
-```
-
-## pacing_pointer 優先級
-
-```
-SubArc.pacing_pointer > Arc.pacing_pointer > 全域 pacing_pointer
-```
-
-當計算某個 SubArc 需要多少章時：
-1. 先檢查 SubArc 是否有指定 pacing_pointer
-2. 若無，使用 Arc 的 pacing_pointer
-3. 若無，使用 config 中的全域 pacing_pointer
-
-## 章節動態生成
-
-章節不在規劃階段產生，而是在 `/nvChapter` 執行時：
-1. 讀取當前 SubArc
-2. 確定該 SubArc 的有效 pacing_pointer
-3. 計算需要多少章完成此 SubArc
-4. 使用 `skill_chapter_beater` 為章節生成內部 beats
-5. 使用 `skill_scene_writer` 撰寫正文
-
-## 使用時機
-
-- **創世階段**：完成世界觀和角色後
-- **調整方向**：劇情需要大幅調整時
-- **延長故事**：需要增加 Arc 時
-
-## 與其他 Skill 的關聯
-
-- **前置 Skill**：
-  - `skill_character_forge`：需要角色動機
-  - `skill_world_builder`：需要場景資訊
-- **後續 Skill**：
-  - `skill_chapter_beater`：為章節生成內部 beats
-  - `skill_pacing_calculator`：計算實際章節數
+### Step 5：寫入檔案
+寫 `outline_index.yaml` + 各 `outline/arc_{N}.yaml`。**Legacy migration**：若原有 `story_outline.yaml`，拆解轉寫為新 schema，舊檔備份為 `story_outline.yaml.bak` 不再更新。
 
 ## 注意事項
 
 1. **Arc 是骨架，SubArc 是肌肉**：Arc 決定大方向，SubArc 決定具體發展
 2. **預留彈性**：不要把每個細節都寫死
 3. **情感曲線**：確保讀者情緒有起伏
-4. **伏筆意識**：在 Arc 規劃時就考慮埋設與回收
-5. **局部調速**：用 pacing_pointer 讓重要段落有足夠篇幅展開
+4. **伏筆意識**：Arc 規劃時就考慮埋設與回收
+5. **局部調速**：用 `pacing_pointer` 讓重要段落有足夠篇幅展開
+
+## 關聯
+
+前置：`foundation/character_forge`、`foundation/world_builder`｜後續：`structure/chapter_beater`（章內 beats）、`structure/pacing_calculator`（章數計算）、`/nvChapter`（動態生章並呼叫 scene_writer）

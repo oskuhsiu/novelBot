@@ -29,9 +29,10 @@ description: 維護記憶與設定檔同步
 
 以下為 CLI 命令縮寫。`{{...}}` = 初始化/本表定義的固定值；`{...}` = 執行時動態替換。`{{REPO_ROOT}}`/`{{PROJ}}`/`{{PROJECT_DIR}}` 定義見上方初始化 section。**先解析 `{{PROJ}}`，再展開其他 Placeholder。** Step 內 code block 省略 `cd` 前綴，實際執行時補上：
 
-1. 讀取：`cd {{REPO_ROOT}} && cmd1 && cmd2`（失敗即停）
-2. 寫入：`cd {{REPO_ROOT}} && cmd1 ; cmd2 ; cmd3`（`cd` 用 `&&` 確保成功，`;` 串連後續寫入，單項失敗不阻斷）
-3. 先批次讀，再分析，再批次寫
+1. 讀取：`cd {{REPO_ROOT}} && cmd`（單一命令，失敗即停）
+2. 寫入：同一 API turn 內發出**多個並行 Bash tool call**，每個一個 CLI 命令。不要用 `;` 串連多個 CLI。
+3. `--json` 直接 inline：`--json '{"key":"value"}'`。JSON 內若含單引號則改用 `@file` 形式。
+4. 先批次讀，再分析，再批次寫
 
 | Placeholder | 展開為 |
 |-------------|--------|
@@ -72,32 +73,37 @@ description: 維護記憶與設定檔同步
 > status: `active` `permanent` `open` `closed` `archived`
 > `char` 選填，僅在有明確關聯角色時加上
 
-### Phase C: 並行寫入（1 個 API turn，多個 tool call）
+### Phase C: 並行寫入（1 個 API turn，多個並行 Bash tool call）
 
-在**同一個 API turn** 內並行發出以下 Bash call：
+在**同一個 API turn** 內**並行發出多個 Bash tool call**（每個一行命令，不用 `;` 串連），直接 inline JSON：
 
-**Bash call 1** — Lore + Emotion（`;` 串連）：
 ```
-{{LORE}} batch-event --json '[...]' ; {{EMO}} add {ch} --tension {score} --emotion "..." --elements '{...}' --note "..."
-```
+# call 1
+{{LORE}} batch-event --json '[{"id":"evt_event_{ch}","category":"event","name":"...","doc":"...","status":"active"}]'
 
-**Bash call 2** — Character state（`;` 串連）：
-```
-{{CHAR}} update-state ID1 --json '{...}' ; {{CHAR}} update-state ID2 --json '{...}'
-```
+# call 2
+{{EMO}} add {ch} --tension {score} --emotion "..." --elements '{"key":"value"}' --note "..."
 
-**Bash call 3**（僅在有關係變更時） — Character relations：
-```
+# call 3（每個角色一個並行 call）
+{{CHAR}} update-state ID1 --json '{"location":"...","hp":"...","mood":"..."}'
+{{CHAR}} update-state ID2 --json '{"location":"...","hp":"...","mood":"..."}'
+
+# call 4（若有關係變更，每對關係一個並行 call）
 {{CHAR}} update-rel SRC TGT --surface "..." --hidden "..." --tension N
 ```
 
-### Phase D: 驗證 + 報告（1 個 API turn）
+### Phase D: 驗證 + 報告（1 個 API turn，多個並行 tool call）
 
-**Bash**（`;` 串連）：
+驗證寫入結果：
 ```
 {{EMO}} recent --n 5
 ```
-- 若 Phase B 判定超過閾值 → 追加：`{{EMO}} set-suggestions --json '[...]' ; {{EMO}} set-consecutive --json '{...}'`
+
+若 Phase B 判定超過閾值 → **並行**發出：
+```
+{{EMO}} set-suggestions --json '{"suggestions":["...","..."]}'
+{{EMO}} set-consecutive --json '{"count":N,"direction":"..."}'
+```
 - 列出：更新了哪些項目、新增多少條目、待處理事項
 
 ---

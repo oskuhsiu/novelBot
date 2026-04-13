@@ -36,6 +36,7 @@ ROOT_DIR = os.path.dirname(SCRIPT_DIR)
 sys.path.insert(0, ROOT_DIR)
 
 from tools.atlas_db import AtlasDB
+from tools.commons.json_arg import resolve_json_arg
 
 
 _PRETTY = False
@@ -84,7 +85,7 @@ def cmd_search(db: AtlasDB, args):
 
 
 def cmd_add(db: AtlasDB, args):
-    data = json.loads(args.json)
+    data = json.loads(resolve_json_arg(args.json))
     region_id = data.pop("id")
     name = data.pop("name")
     region_type = data.pop("region_type", "region")

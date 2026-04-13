@@ -50,6 +50,7 @@ ROOT_DIR = os.path.dirname(SCRIPT_DIR)
 sys.path.insert(0, ROOT_DIR)
 
 from tools.faction_db import FactionDB
+from tools.commons.json_arg import resolve_json_arg
 
 
 _PRETTY = False
@@ -140,7 +141,7 @@ def cmd_search(db: FactionDB, args):
 
 
 def cmd_add(db: FactionDB, args):
-    data = json.loads(args.json)
+    data = json.loads(resolve_json_arg(args.json))
     faction_id = data.pop("id")
     name = data.pop("name")
     tier = data.pop("tier", "")
@@ -171,7 +172,7 @@ def cmd_add_rel(db: FactionDB, args):
 
 
 def cmd_add_event(db: FactionDB, args):
-    data = json.loads(args.json)
+    data = json.loads(resolve_json_arg(args.json))
     event_id = data.pop("event_id")
     affected = data.pop("affected_factions", [])
     description = data.pop("description", "")

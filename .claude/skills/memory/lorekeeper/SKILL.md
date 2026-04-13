@@ -176,11 +176,11 @@ closed_foreshadowing:
 
 ## 與其他 Skill 的關聯
 
-- **更新於**：`workflow_maintenance`
+- **更新於**：nvMaint（章節維護流程）
 - **被讀取於**：
-  - `skill_scene_writer`：確保連戲
-  - `skill_logic_auditor`：檢查矛盾
-  - `skill_loop_closer`：管理伏筆
+  - `execution/scene_writer`：確保連戲
+  - `memory/logic_auditor`：檢查矛盾
+  - `memory/loop_closer`：管理伏筆
 
 ## 注意事項
 

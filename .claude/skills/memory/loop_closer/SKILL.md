@@ -198,9 +198,9 @@ closed_loops:
 
 ## 與其他 Skill 的關聯
 
-- **寫入**：`skill_lorekeeper`（伏筆儲存）
-- **讀取於**：`skill_beat_optimizer`（植入建議）
-- **協作**：`skill_scene_writer`（實際執行）
+- **寫入**：`memory/lorekeeper`（伏筆儲存）
+- **讀取於**：`structure/beat_optimizer`（植入建議）
+- **協作**：`execution/scene_writer`（實際執行）
 
 ## 注意事項
 

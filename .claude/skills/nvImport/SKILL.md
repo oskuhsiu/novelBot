@@ -33,13 +33,14 @@ description: 從既有內容導入並繼續寫作
 1. 取得 repo 根目錄：`REPO_ROOT` = 當前工作目錄（即專案 repo 根）
 2. 驗證必填參數（`file`、`proj`）
 3. 確認來源檔案路徑存在（展開 `~` 為絕對路徑）
-4. 組合路徑：`PROJECT_DIR = {REPO_ROOT}/projects/{proj}`
-4. 啟動 Agent tool：
+4. 組合路徑：`PROJECT_DIR = {{REPO_ROOT}}/projects/{proj}`
+5. 啟動 Agent tool：
    - `subagent_type`: `general-purpose`
+   - `mode`: `bypassPermissions`
    - `run_in_background`: `false`
    - `prompt`: 將下方「Agent Prompt」的變數替換為實際值
-5. 接收 sub-agent 回傳的導入報告
-6. 輸出結果給用戶
+6. 接收 sub-agent 回傳的導入報告
+7. 輸出結果給用戶
 
 ---
 

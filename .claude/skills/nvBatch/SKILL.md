@@ -39,7 +39,7 @@ description: 批次寫作多章（狀態機模式）
 
 1. `REPO_ROOT` = 當前工作目錄
 2. 從 `projects/project_registry.yaml` 解析 `proj` → `PROJECT_DIR`
-3. 啟動 Agent tool（`subagent_type: general-purpose`，`run_in_background: false`）
+3. 啟動 Agent tool（`subagent_type: general-purpose`，`mode: bypassPermissions`，`run_in_background: false`）
 4. 將下方 Agent Prompt 的 `{{...}}` 替換為實際值
 5. 接收並**原封不動**輸出結果
 
@@ -104,11 +104,11 @@ parameters:
 - **若為 True（已完成所有目標章節）**：
   1. 執行結束審查（依 parameters.review 值）：
      - **review=light**：**直接在本 context 內**讀取 `{{REPO_ROOT}}/.claude/skills/nvReview/SKILL.md`，按其初始化 section 設定變數後執行。參數：`proj`={{PROJ}}, `range`={start_chapter}-{current_target-1}, `mode`=light, `assist`=none
-     - **review=end**：啟動 **fg sub-agent**（`subagent_type: general-purpose`, `model: sonnet`, `run_in_background: false`），prompt 指定：讀取 `{{REPO_ROOT}}/.claude/skills/nvReview/SKILL.md` 並以下列參數執行：`proj`={{PROJ}}, `range`={start_chapter}-{current_target-1}, `mode`=full, `assist`=none
+     - **review=end**：啟動 **fg sub-agent**（`subagent_type: general-purpose`, `model: sonnet`, `mode: bypassPermissions`, `run_in_background: false`），prompt 指定：讀取 `{{REPO_ROOT}}/.claude/skills/nvReview/SKILL.md` 並以下列參數執行：`proj`={{PROJ}}, `range`={start_chapter}-{current_target-1}, `mode`=full, `assist`=none
      - **review=every**：每章已做 per-chapter review，結束時不再做跨章 range review
      - **review=false**：跳過
   2. 執行最終維護（如果 parameters.maint 設為 end）：
-     啟動 **fg sub-agent**（`subagent_type: general-purpose`, `model: sonnet`, `run_in_background: false`），prompt 指定：讀取 `{{REPO_ROOT}}/.claude/skills/nvMaint/SKILL.md` 並以下列參數執行：`proj`={{PROJ}}, `mode`=full
+     啟動 **fg sub-agent**（`subagent_type: general-purpose`, `model: sonnet`, `mode: bypassPermissions`, `run_in_background: false`），prompt 指定：讀取 `{{REPO_ROOT}}/.claude/skills/nvMaint/SKILL.md` 並以下列參數執行：`proj`={{PROJ}}, `mode`=full
      - **maint=light**：不執行結束維護（僅依賴 nvChapter 的 per-chapter light maint）
      - **maint=every**：不執行結束維護（每章已做 full maint）
   3. 將 `{{PROJECT_DIR}}/config/nvbatch_config.yaml` 的 `enabled` 設為 `false`。
@@ -134,7 +134,7 @@ parameters:
 > 若在 sub-agent 環境內看到 `/nvXXX` 指令，改為「Read 對應 SKILL.md 並按其指令執行」。
 
 #### 3.5: 額外維護 (依參數)
-- 如果 `parameters.maint == "every"`，啟動 **fg sub-agent**（`subagent_type: general-purpose`, `model: sonnet`, `run_in_background: false`），prompt 指定：讀取 `{{REPO_ROOT}}/.claude/skills/nvMaint/SKILL.md` 並以下列參數執行：`proj`={{PROJ}}, `mode`=full, `chapter`={current_target}
+- 如果 `parameters.maint == "every"`，啟動 **fg sub-agent**（`subagent_type: general-purpose`, `model: sonnet`, `mode: bypassPermissions`, `run_in_background: false`），prompt 指定：讀取 `{{REPO_ROOT}}/.claude/skills/nvMaint/SKILL.md` 並以下列參數執行：`proj`={{PROJ}}, `mode`=full, `chapter`={current_target}
 - 如果 `parameters.maint == "light"` 或 `"end"`，nvChapter 已內建 light maint（maint=true），此處不額外執行。
 
 (註：maint=every 時，nvChapter 的內建 maint 被關閉（maint=false），改由本步驟的 full maint 取代，避免 double maint。maint=end 時，每章只有 nvChapter 的 light maint，直到整個批次結束時才在 Step 2 執行一次 full maint。)

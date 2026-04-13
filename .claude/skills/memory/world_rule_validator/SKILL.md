@@ -66,7 +66,7 @@ rule_matrix:
 
 ### Step 3: 驗證場景
 
-當 `skill_scene_writer` 產生內容時，驗證是否違規：
+當 Scene Writer 產生內容時，驗證是否違規：
 
 ```yaml
 validation_check:

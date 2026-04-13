@@ -34,15 +34,20 @@ description: 從指定章節開始分支劇情
 
 ### Step 3: 複製設定
 // turbo
-複製來源專案的所有設定檔到分支（含 `story_outline.yaml`）
+複製來源專案的所有設定檔到分支，包括：
+- `config/novel_config.yaml`、`config/power_system.yaml`、`config/narrative_progress.yaml`
+- `config/outline_index.yaml` 與整個 `config/outline/` 目錄（arc_N.yaml）
+- 舊 schema 專案若還有 `config/story_outline.yaml` 也一併複製（向後相容）
 
 ### Step 4: 複製章節
 // turbo
-複製第 1 章到第 {ch} 章的內容
+複製第 1 章到第 {ch} 章的內容（`output/chapters/chapter_{1..ch}.md`）
 
-### Step 5: 複製記憶
+### Step 5: 複製記憶與資料庫
 // turbo
-複製到第 {ch} 章為止的記憶庫狀態
+- 複製 `memory/` 下到第 {ch} 章為止的 YAML 狀態
+- **複製 `data/novel.db`（SQLite）**：character/emotion/item/faction/atlas 全量；若需精確剪裁至 ≤{ch} 章可另行處理，預設整庫複製
+- **複製 ChromaDB 向量索引**：`data/chroma/` 整個目錄複製到分支，確保 lore/chapter collection 可用
 
 ### Step 6: 設定進度
 // turbo

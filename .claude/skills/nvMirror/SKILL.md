@@ -40,15 +40,16 @@ description: 架構逆向與重鑄，借用外部劇情骨架
 
 1. 取得 repo 根目錄：`REPO_ROOT` = 當前工作目錄（即專案 repo 根）
 2. 讀取 `projects/project_registry.yaml`，解析 `proj` 參數 → 取得專案資料夾名稱
-3. 組合路徑：`PROJECT_DIR = {REPO_ROOT}/projects/{資料夾名稱}`
-3. 驗證參數（`divergence` 預設 0.5，`chapters` 預設 5）
-4. 若 `source=file`，確認檔案路徑存在
-5. 若 `source=url`，將 URL 傳給 sub-agent（sub-agent 用 WebFetch 抓取）
-6. 啟動 Agent tool：
+3. 組合路徑：`PROJECT_DIR = {{REPO_ROOT}}/projects/{資料夾名稱}`
+4. 驗證參數（`divergence` 預設 0.5，`chapters` 預設 5）
+5. 若 `source=file`，確認檔案路徑存在
+6. 若 `source=url`，將 URL 傳給 sub-agent（sub-agent 用 WebFetch 抓取）
+7. 啟動 Agent tool：
    - `subagent_type`: `general-purpose`
+   - `mode`: `bypassPermissions`
    - `run_in_background`: `false`
    - `prompt`: 將下方「Agent Prompt」的變數替換為實際值
-7. 接收並顯示 sub-agent 回傳的映射報告
+8. 接收並顯示 sub-agent 回傳的映射報告
 
 ---
 
@@ -135,7 +136,10 @@ chapter_X:
 
 ## Step 8: 寫入大綱
 
-將生成的大綱寫入 `{{PROJECT_DIR}}/output/mirror_outline.yaml`（或追加到 story_outline.yaml）。
+將生成的大綱先寫入 `{{PROJECT_DIR}}/output/mirror_outline.yaml` 作為中間格式；若要整合進正式 outline，新增一個 arc：
+- 在 `{{PROJECT_DIR}}/config/outline_index.yaml` 的 `arcs` list 追加 entry（arc_id、title、summary、status）
+- 將完整 arc 內容寫入 `{{PROJECT_DIR}}/config/outline/arc_{N}.yaml`（N 為新 arc 編號）
+不要再寫入舊的 `story_outline.yaml`。
 
 ## Step 9: 輸出報告
 
@@ -168,4 +172,4 @@ chapter_X:
 
 ## 輸出
 
-生成的大綱存放於 `output/mirror_outline.yaml` 或直接整合至 `story_outline.yaml`。
+生成的大綱存放於 `output/mirror_outline.yaml`，或整合至 `config/outline_index.yaml` + `config/outline/arc_{N}.yaml`（新增一個 arc）。
